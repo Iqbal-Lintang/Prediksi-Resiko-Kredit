@@ -13,6 +13,8 @@ import matplotlib as mpl
 import requests
 import gdown
 import anthropic
+import os
+import sys
 
 # Set page title and configuration
 st.set_page_config(
