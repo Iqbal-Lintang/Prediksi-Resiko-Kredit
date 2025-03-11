@@ -690,6 +690,7 @@ if __name__ == "__main__":
         """
         <div style='text-align: center; color: #666;'>
             Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+            heylintang@gmail.com
         </div>
         """, 
         unsafe_allow_html=True
