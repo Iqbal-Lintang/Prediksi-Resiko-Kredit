@@ -8,7 +8,7 @@ import matplotlib as mpl
 import requests
 import io
 import gdown
-import openai
+import anthropic
 
 # Set page title and configuration
 st.set_page_config(
@@ -71,42 +71,55 @@ def chatbot_with_context(risk_data=None):
             - Faktor risiko utama: {risk_factors_str}
             """
         
-        # Ambil API Key dari Streamlit Secrets
-            api_key = st.secrets["OPENAI_API_KEY"]
+        # Load API key from Streamlit secrets
+        api_key = st.secrets["ANTHROPIC_API_KEY"]
+        
+        # Initialize Anthropic client
+        client = anthropic.Anthropic(api_key=api_key)
+        
+        # Streamlit UI
+        st.set_page_config(page_title="Loan Assistant Chatbot", page_icon="💬")
+        st.title("Loan Assistant Chatbot (Claude 3 Haiku)")
+        
+        # Initialize chat history
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
+        
+        # Display chat history
+        for message in st.session_state.messages:
+            with st.chat_message(message["role"]):
+                st.markdown(message["content"])
+        
+        # Chat input
+        if prompt := st.chat_input("Ask me about loans or credit scoring:"):
+            # Add user message
+            st.session_state.messages.append({"role": "user", "content": prompt})
             
-            # Buat client OpenAI baru
-            client = openai.OpenAI(api_key=api_key)
+            # Display user input
+            with st.chat_message("user"):
+                st.markdown(prompt)
             
-            # Sistem prompt untuk asisten pinjaman
-            system_prompt = """
-            Anda adalah asisten pinjaman yang membantu menjelaskan proses aplikasi kredit dan faktor risiko.
-            Berikan penjelasan yang jelas dan sederhana tentang faktor risiko kredit.
-            Jelaskan bagaimana peminjam dapat meningkatkan profil kredit mereka.
-            """
-            
-            # Input dari pengguna
-            prompt = "Bagaimana cara meningkatkan skor kredit saya?"
-            
-            # Panggil API OpenAI
-            with st.spinner("Menyiapkan jawaban..."):
+            # Generate response using Claude 3 Haiku
+            with st.spinner("Thinking..."):
                 try:
-                    response = client.chat.completions.create(
-                        model="gpt-3.5-turbo",  # Bisa diganti ke "gpt-4-turbo" jika perlu
-                        messages=[
-                            {"role": "system", "content": system_prompt},
-                            {"role": "user", "content": prompt}
-                        ],
-                        max_tokens=300,
-                        temperature=0.7
+                    response = client.messages.create(
+                        model="claude-3-haiku-20240307",  # Cheapest option
+                        max_tokens=200,  # Limit tokens to save cost
+                        temperature=0.5,
+                        system="You are a helpful loan assistant providing credit scoring advice.",
+                        messages=[{"role": "user", "content": prompt}]
                     )
-            
-                    # Ambil jawaban dari model
-                    answer = response.choices[0].message.content
+                    answer = response.content[0].text
+        
                 except Exception as e:
-                    answer = f"Terjadi kesalahan: {str(e)}"
-            
-            # Tampilkan hasil di Streamlit
-            st.write(answer)
+                    answer = f"Error: {e}"
+        
+            # Display assistant response
+            with st.chat_message("assistant"):
+                st.markdown(answer)
+        
+            # Save response to history
+            st.session_state.messages.append({"role": "assistant", "content": answer})
 
 # Function to download model from Google Drive
 @st.cache_resource
