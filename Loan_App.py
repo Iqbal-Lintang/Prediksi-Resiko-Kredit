@@ -479,8 +479,8 @@ if __name__ == "__main__":
             
             # Risk gauge visualization (same as original)
             with result_col2:
-                # Create a centered layout
-                st.container()
+                # Create two columns (left is wider)
+                gauge_col, right_spacer = st.columns([6, 4])
             
                 # Define three columns to center the gauge
                 left_spacer, gauge_col, right_spacer = st.columns([1, 3, 1])
