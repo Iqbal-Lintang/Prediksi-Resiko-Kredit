@@ -663,16 +663,6 @@ if __name__ == "__main__":
             st.error(f"Error making prediction: {e}")
             st.error("If this error persists, please check the model compatibility or contact support.")
     
-    # Add footer
-    st.markdown("---")
-    st.markdown(
-        """
-        <div style='text-align: center; color: #666;'>
-            Aplikasi Prediksi Resiko Debitur
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
 
     # Add "About" section
     with st.expander("About This Application"):
@@ -693,3 +683,14 @@ if __name__ == "__main__":
             <img src="https://i.imgur.com/HQ6nTcZ.png" width="100">
         </div>
         """, unsafe_allow_html=True)
+
+    # Add footer
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style='text-align: center; color: #666;'>
+            Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
