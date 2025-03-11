@@ -5,3 +5,4 @@ joblib
 matplotlib
 seaborn
 gdown
+scikit-learn
