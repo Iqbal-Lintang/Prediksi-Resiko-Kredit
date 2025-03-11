@@ -8,7 +8,7 @@ import matplotlib as mpl
 import requests
 import io
 import gdown
-import anthropic  # pip install anthropic
+import openai
 
 # Set page title and configuration
 st.set_page_config(
