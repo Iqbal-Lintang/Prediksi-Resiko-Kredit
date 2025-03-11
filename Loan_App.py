@@ -12,9 +12,20 @@ import gdown
 # Set page title and configuration
 st.set_page_config(
     page_title="Loan Risk Prediction Model",
+    page_icon="https://github.com/Iqbal-Lintang/Prediksi-Resiko-Kredit/blob/main/Logo%20Tri%20Hita%20Karana.png",
     layout="wide"
 )
 
+# Construct the raw URL
+logo_url = f"https://github.com/Iqbal-Lintang/Prediksi-Resiko-Kredit/blob/main/Logo%20Tri%20Hita%20Karana.png"
+
+# Use the URL in your app
+col1, col2 = st.columns([1, 5])
+with col1:
+    st.image(logo_url, width=100)
+with col2:
+    st.title("Aplikasi Prediksi Resiko Debitur")
+    
 # App title and description
 st.title("Aplikasi Prediksi Resiko Debitur")
 st.markdown("Aplikasi Ini Memprediksi Resiko Calon Debitur")
