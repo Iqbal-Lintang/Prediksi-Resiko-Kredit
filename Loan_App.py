@@ -488,3 +488,56 @@ if st.button("Prediksi Resiko"):
                     st.write(f"Case mismatch: '{req_col}' (required) vs '{prov_col}' (provided)")
                 if req_col.strip() == prov_col.strip() and req_col != prov_col:
                     st.write(f"Whitespace mismatch: '{req_col}' (required) vs '{prov_col}' (provided)")
+
+
+#Chatbot
+import streamlit as st
+
+def main():
+    # Set page title and configuration
+    st.set_page_config(page_title="Streamlit Chatbot", page_icon="💬")
+    st.title("Simple Streamlit Chatbot")
+    
+    # Initialize chat history in session state if it doesn't exist
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+    
+    # Display chat history
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+    
+    # Chat input
+    if prompt := st.chat_input("What would you like to know?"):
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        
+        # Display user message
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        
+        # Generate and display assistant response
+        with st.chat_message("assistant"):
+            response = generate_response(prompt)
+            st.markdown(response)
+        
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "assistant", "content": response})
+
+def generate_response(prompt):
+    """
+    Function to generate chatbot responses.
+    In a real application, you might integrate with an LLM API here.
+    """
+    # Simple response logic (replace with your own logic or API calls)
+    if "hello" in prompt.lower():
+        return "Hello! How can I help you today?"
+    elif "help" in prompt.lower():
+        return "I'm here to assist you. What would you like to know about our product/service?"
+    elif "bye" in prompt.lower():
+        return "Goodbye! Have a great day!"
+    else:
+        return f"Thanks for your message: '{prompt}'. How can I assist you further?"
+
+if __name__ == "__main__":
+    main()
