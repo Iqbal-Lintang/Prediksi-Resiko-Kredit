@@ -21,7 +21,7 @@ from typing import Dict, Any, Optional
 
 # Set page title and configuration
 st.set_page_config(
-    page_title="Loan Risk Prediction Model with OCR",
+    page_title="Loan Risk Prediction Model",
     page_icon="https://i.imgur.com/HQ6nTcZ.png",
     layout="wide"
 )
@@ -74,314 +74,6 @@ def load_model_from_direct_link():
         st.error(f"Error with direct download: {e}")
         raise e
 
-        # Function to preprocess the image for better OCR results
-        def preprocess_image(image: Image.Image) -> Image.Image:
-            """
-            Apply image preprocessing techniques to improve OCR accuracy.
-            
-            Args:
-                image: Original uploaded image
-                
-            Returns:
-                Processed image optimized for OCR
-            """
-            # Convert to numpy array if not already
-            img_array = np.array(image)
-            
-            # Convert to grayscale
-            gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
-            
-            # Apply adaptive thresholding to handle variations in brightness
-            thresh = cv2.adaptiveThreshold(
-                gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
-            )
-            
-            # Noise removal
-            processed = cv2.medianBlur(thresh, 3)
-            
-            # Deskew if needed
-            try:
-                coords = np.column_stack(np.where(processed > 0))
-                angle = cv2.minAreaRect(coords)[-1]
-                if angle < -45:
-                    angle = -(90 + angle)
-                else:
-                    angle = -angle
-                (h, w) = processed.shape[:2]
-                center = (w // 2, h // 2)
-                M = cv2.getRotationMatrix2D(center, angle, 1.0)
-                processed = cv2.warpAffine(
-                    processed, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE
-                )
-            except:
-                # If deskewing fails, continue with the processed image
-                pass
-            
-            return Image.fromarray(processed)
-    
-        # Function to extract form data from the image
-        def extract_form_data(image: Image.Image) -> Dict[str, Any]:
-            """
-            Extract structured data from loan application form using OCR.
-            
-            Args:
-                image: Preprocessed image
-                
-            Returns:
-                Dictionary containing extracted form fields
-            """
-            # Configure tesseract parameters
-            custom_config = r'--oem 3 --psm 6 -l eng'
-            
-            try:
-                # Get OCR text
-                text = pytesseract.image_to_string(image, config=custom_config)
-                
-                # Initialize data dictionary
-                data = {}
-                
-                # Extract income (for Indian Rupees)
-                income_match = re.search(r'income.*?(?:rupee|rs\.?|inr)?.*?(\d[\d,.]*)k?', 
-                                        text, re.IGNORECASE)
-                if income_match:
-                    # Clean and standardize value
-                    income_str = income_match.group(1).replace(',', '')
-                    try:
-                        income_value = float(income_str)
-                        data["income"] = income_value
-                    except ValueError:
-                        pass
-                
-                # Extract car ownership
-                car_match = re.search(r'car\s*ownership.*?(?::|is|=)\s*(yes|no|true|false|owned|leased)',
-                                     text, re.IGNORECASE)
-                if car_match:
-                    value = car_match.group(1).lower()
-                    if value in ['yes', 'true', 'owned']:
-                        data["car_ownership"] = True
-                    elif value in ['no', 'false', 'leased']:
-                        data["car_ownership"] = False
-                
-                # Extract home ownership status
-                home_match = re.search(r'home.*?(?:ownership|status).*?(?::|is|=)\s*(owned|rented|mortgaged|leased)',
-                                      text, re.IGNORECASE)
-                if home_match:
-                    data["home_status"] = home_match.group(1).lower()
-                
-                # Extract employment status
-                employment_match = re.search(r'employment.*?(?:status|type).*?(?::|is|=)\s*(\w+)',
-                                            text, re.IGNORECASE)
-                if employment_match:
-                    data["employment_status"] = employment_match.group(1).lower()
-                
-                # Extract loan purpose
-                purpose_match = re.search(r'loan\s*purpose.*?(?::|is|=)\s*([a-zA-Z\s]+)',
-                                         text, re.IGNORECASE)
-                if purpose_match:
-                    data["loan_purpose"] = purpose_match.group(1).strip()
-                
-                # Extract applicant name
-                name_match = re.search(r'(?:applicant|name).*?(?::|is|=)\s*([a-zA-Z\s]+)',
-                                      text, re.IGNORECASE)
-                if name_match:
-                    data["applicant_name"] = name_match.group(1).strip()
-                    
-                # Extract credit score if present
-                credit_match = re.search(r'credit\s*score.*?(?::|is|=)\s*(\d{3,})',
-                                        text, re.IGNORECASE)
-                if credit_match:
-                    try:
-                        data["credit_score"] = int(credit_match.group(1))
-                    except ValueError:
-                        pass
-                
-                return data
-            
-            except Exception as e:
-                st.error(f"OCR processing error: {str(e)}")
-                return {}
-        
-        # Function to assess image quality
-        def assess_image_quality(image: Image.Image) -> Dict[str, Any]:
-            """
-            Analyze image quality to determine if it's suitable for OCR.
-            
-            Args:
-                image: Original image
-                
-            Returns:
-                Dictionary with quality metrics and suggestions
-            """
-            img_array = np.array(image)
-            
-            # Check resolution
-            height, width = img_array.shape[:2]
-            resolution_ok = width >= 1000 and height >= 1000
-            
-            # Check brightness/contrast
-            if len(img_array.shape) == 3:
-                gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
-            else:
-                gray = img_array
-            
-            brightness = np.mean(gray)
-            contrast = np.std(gray)
-            
-            brightness_ok = 90 < brightness < 200
-            contrast_ok = contrast > 40
-            
-            # Calculate blur detection (Laplacian variance)
-            laplacian = cv2.Laplacian(gray, cv2.CV_64F)
-            blur_score = np.var(laplacian)
-            blur_ok = blur_score > 100
-            
-            quality_report = {
-                "resolution_ok": resolution_ok,
-                "brightness_ok": brightness_ok,
-                "contrast_ok": contrast_ok,
-                "blur_ok": blur_ok,
-                "resolution": (width, height),
-                "brightness": brightness,
-                "contrast": contrast,
-                "blur_score": blur_score,
-                "overall_ok": resolution_ok and brightness_ok and contrast_ok and blur_ok
-            }
-            
-            return quality_report
-        
-        # Function to display image quality report with recommendations
-        def display_quality_report(report: Dict[str, Any]) -> None:
-            """Display image quality report with recommendations for improvement"""
-            
-            st.subheader("Image Quality Analysis")
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                st.metric("Resolution", f"{report['resolution'][0]}x{report['resolution'][1]}px", 
-                         delta="Good" if report['resolution_ok'] else "Low")
-                st.metric("Brightness", f"{report['brightness']:.1f}", 
-                         delta="Good" if report['brightness_ok'] else "Poor")
-                
-            with col2:
-                st.metric("Contrast", f"{report['contrast']:.1f}", 
-                         delta="Good" if report['contrast_ok'] else "Low")
-                st.metric("Blur Score", f"{report['blur_score']:.1f}", 
-                         delta="Clear" if report['blur_ok'] else "Blurry")
-            
-            if not report['overall_ok']:
-                st.warning("Image quality issues detected")
-                
-                tips = []
-                if not report['resolution_ok']:
-                    tips.append("• Use a higher resolution image (at least 1000x1000 pixels)")
-                if not report['brightness_ok']:
-                    if report['brightness'] < 90:
-                        tips.append("• Image is too dark. Increase lighting when scanning")
-                    else:
-                        tips.append("• Image is too bright. Reduce exposure when scanning")
-                if not report['contrast_ok']:
-                    tips.append("• Low contrast detected. Ensure form is printed with dark text on white background")
-                if not report['blur_ok']:
-                    tips.append("• Image appears blurry. Hold camera steady and ensure proper focus")
-                    
-                st.info("Recommendations for better results:\n" + "\n".join(tips))
-        
-        # Main application logic
-        def main():
-            """Main application function"""
-            
-            st.write("Upload a loan application form to extract relevant information.")
-            
-            # File uploader
-            uploaded_file = st.file_uploader("Choose an image of the form", 
-                                            type=["jpg", "jpeg", "png", "bmp", "tiff"])
-            
-            # Show sample form option
-            st.markdown("---")
-            use_sample = st.checkbox("Use sample form instead")
-            
-            # Process image
-            if uploaded_file is not None or use_sample:
-                try:
-                    # Get image (either uploaded or sample)
-                    if use_sample:
-                        # Use a sample image (you'd need to have this in your assets)
-                        image = Image.open("sample_loan_form.jpg")
-                        st.info("Using sample form image")
-                    else:
-                        image = Image.open(uploaded_file)
-                    
-                    # Display original image
-                    st.subheader("Original Image")
-                    st.image(image, width=400)
-                    
-                    # Check image quality
-                    quality_report = assess_image_quality(image)
-                    display_quality_report(quality_report)
-                    
-                    # Process image if quality is acceptable or user wants to proceed anyway
-                    if quality_report['overall_ok'] or st.button("Process Anyway"):
-                        with st.spinner("Preprocessing image..."):
-                            # Preprocess image
-                            processed_image = preprocess_image(image)
-                        
-                        # Show processed image
-                        st.subheader("Preprocessed Image")
-                        st.image(processed_image, width=400)
-                        
-                        # Extract data
-                        with st.spinner("Extracting data from form..."):
-                            extracted_data = extract_form_data(processed_image)
-                        
-                        # Display results
-                        st.subheader("Extracted Data")
-                        
-                        if not extracted_data:
-                            st.error("Failed to extract any data from the form.")
-                            st.info("""
-                            Suggestions:
-                            - Make sure the form is well-aligned and properly lit
-                            - Ensure text is clearly visible and not blurry
-                            - Try using a higher resolution image
-                            - Confirm the form contains standard loan application fields
-                            """)
-                        else:
-                            # Display extracted fields
-                            st.json(extracted_data)
-                            
-                            # Allow download of JSON
-                            st.download_button(
-                                label="Download Extracted Data (JSON)",
-                                data=json.dumps(extracted_data, indent=4),
-                                file_name="loan_application_data.json",
-                                mime="application/json"
-                            )
-                            
-                            # Show confidence about extraction
-                            expected_fields = ["income", "car_ownership", "home_status", 
-                                              "employment_status", "loan_purpose", "applicant_name"]
-                            found_fields = sum(1 for field in expected_fields if field in extracted_data)
-                            confidence = (found_fields / len(expected_fields)) * 100
-                            
-                            st.progress(int(confidence))
-                            st.write(f"Extraction confidence: {confidence:.1f}% ({found_fields}/{len(expected_fields)} fields found)")
-                            
-                            if confidence < 70:
-                                st.warning("Some fields could not be extracted. Review the results carefully.")
-                        
-                        # Show raw OCR text for debugging
-                        with st.expander("Show Raw OCR Text"):
-                            custom_config = r'--oem 3 --psm 6'
-                            raw_text = pytesseract.image_to_string(processed_image, config=custom_config)
-                            st.text(raw_text)
-                
-                except Exception as e:
-                    st.error(f"Error processing image: {str(e)}")
-                    st.info("Please try a different image or check if the file is valid.")
-        
-        if __name__ == "__main__":
-            main()
 # Context-aware chatbot function (same as original)
 def chatbot_with_context(risk_data=None, key_suffix="default"):
     st.header("CrediBot - Asisten Virtual")
@@ -484,42 +176,13 @@ if __name__ == "__main__":
         st.stop()
 
     # Create tabs for better organization - now four tabs including OCR
-    tab1, tab2, tab3, tab4 = st.tabs(["OCR Form Upload", "Informasi Calon Debitur", "Stability Metrics", "CrediBot"])
+    tab1, tab2, tab3 = st.tabs(["Informasi Calon Debitur", "Stability Metrics", "CrediBot"])
 
     # Initialize session state for form data
     if 'form_data' not in st.session_state:
         st.session_state.form_data = {}
 
     with tab1:
-        st.header("Upload Standardized OCR Form")
-        st.write("Upload gambar formulir standar untuk ekstraksi data otomatis menggunakan OCR.")
-        
-        uploaded_file = st.file_uploader("Upload Form Image", type=["jpg", "jpeg", "png", "pdf"], key="ocr_form")
-        
-        if uploaded_file is not None:
-            # Display the uploaded image
-            st.image(uploaded_file, caption="Uploaded Form", use_column_width=True)
-            
-            # Process with OCR
-            if st.button("Process OCR"):
-                with st.spinner("Processing OCR..."):
-                    if uploaded_file is not None:
-                        image = Image.open(uploaded_file)
-                        processed_image = preprocess_image(image)
-                        extracted_data = extract_form_data(processed_image)
-                        if extracted_data:
-                            st.session_state.form_data = extracted_data
-                            st.success("Form processed successfully! Data extracted and ready for use.")
-                            
-                            # Add button to navigate to the next tab
-                            if st.button("Continue to Personal Information"):
-                                st.session_state.active_tab = "Informasi Calon Debitur"
-                        else:
-                            st.error("Failed to extract data from the form. Please check the image quality and try again.")
-                    else:
-                        st.error("Please upload a file first.")
-
-    with tab2:
         # Create 3 columns for better layout
         col1, col2, col3 = st.columns(3)
         
@@ -615,7 +278,7 @@ if __name__ == "__main__":
             current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=100, 
                                             value=st.session_state.form_data.get('CURRENT_JOB_YRS', 5))
 
-    with tab3:
+    with tab2:
         st.subheader("Calculated Stability Metrics")
         st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
         
@@ -634,7 +297,7 @@ if __name__ == "__main__":
         col2.metric("Home Stability", f"{home_stability:.4f}")
         col3.metric("Financial Stability", f"{financial_stability:.2f}")
 
-    with tab4:
+    with tab3:
         # If no prediction has been made yet, show a simple chat interface
         if "risk_data" not in st.session_state:
             st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
@@ -1014,8 +677,7 @@ if __name__ == "__main__":
     st.markdown(
         """
         <div style='text-align: center; color: #666;'>
-            Aplikasi Prediksi Resiko Debitur dengan OCR &copy; 2023
-            <br>Powered by Streamlit and OCR Technology
+            Aplikasi Prediksi Resiko Debitur
         </div>
         """, 
         unsafe_allow_html=True
@@ -1024,21 +686,11 @@ if __name__ == "__main__":
     # Add "About" section
     with st.expander("About This Application"):
         st.write("""
-        ### About Aplikasi Prediksi Resiko Debitur dengan OCR
-        
-        Aplikasi ini menggunakan OCR (Optical Character Recognition) untuk mengekstrak data dari formulir aplikasi pinjaman dan menerapkan model machine learning untuk memprediksi risiko calon debitur.
-        
-        #### Fitur Utama:
-        - **OCR Form Processing**: Ekstraksi data otomatis dari formulir standar
-        - **Prediksi Risiko**: Menggunakan model ML terlatih untuk prediksi risiko
-        - **Metrik Stabilitas**: Perhitungan stabilitas pekerjaan dan tempat tinggal
-        - **CrediBot**: Asisten AI untuk menjawab pertanyaan tentang aplikasi
         
         #### Penggunaan:
-        1. Upload formulir aplikasi di tab OCR
-        2. Verifikasi dan lengkapi data pada tab Informasi Calon Debitur
-        3. Klik "Prediksi Resiko" untuk mendapatkan hasil analisis
-        4. Gunakan asisten CrediBot untuk informasi tambahan
+        1. Verifikasi dan lengkapi data pada tab Informasi Calon Debitur
+        2. Klik "Prediksi Resiko" untuk mendapatkan hasil analisis
+        3. Gunakan asisten CrediBot untuk informasi tambahan
         
         #### Catatan:
         Model ini dilatih menggunakan data historis dari India dengan mata uang INR.
