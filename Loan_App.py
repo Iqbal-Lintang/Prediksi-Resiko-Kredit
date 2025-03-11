@@ -57,7 +57,8 @@ def load_model_from_direct_link():
                     st.error(f"Failed to download model: HTTP {response.status_code}")
                     raise Exception(f"Failed to download model: HTTP {response.status_code}")
         else:
-            raise Exception("No direct URL provided")
+            # Changed: Don't raise an exception or show error if no URL is provided
+            return None
     except Exception as e:
         st.error(f"Error with direct download: {e}")
         raise e
@@ -67,15 +68,13 @@ try:
     # Show a message while loading
     with st.spinner("Loading model... This may take a moment."):
         # First try the direct link method if you have one configured in secrets
-        try:
-            model = load_model_from_direct_link()
-        except Exception as direct_link_error:
-            # Only show error if it's not about missing URL
-            if "No direct URL provided" not in str(direct_link_error):
-                st.warning(f"Direct link error: {direct_link_error}. Trying Google Drive method...")
-            
-            # Fall back to Google Drive method
+        direct_model = load_model_from_direct_link()
+        
+        # If direct link didn't work, use Google Drive method
+        if direct_model is None:
             model = load_model_from_gdrive()
+        else:
+            model = direct_model
     
     st.success("Model Sukses Dimasukan!")
 except Exception as e:
