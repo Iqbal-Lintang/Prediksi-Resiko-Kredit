@@ -1,18 +1,22 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import cv2
+import pytesseract
+from PIL import Image
+import re
+import io
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib as mpl
 import requests
-import io
 import gdown
 import anthropic
 
-# Set page title and configuration (Must be the first Streamlit command)
+# Set page title and configuration
 st.set_page_config(
-    page_title="Loan Risk Prediction Model",
+    page_title="Loan Risk Prediction Model with OCR",
     page_icon="https://i.imgur.com/HQ6nTcZ.png",
     layout="wide"
 )
@@ -25,9 +29,9 @@ col1, col2 = st.columns([1, 5])
 with col1:
     st.image(logo_url, width=100)
 with col2:
-    st.title("Aplikasi Prediksi Resiko Debitur")
+    st.title("Aplikasi Prediksi Resiko Debitur dengan OCR")
 
-# Function to download model from Google Drive
+# Function to load model from Google Drive (same as original)
 @st.cache_resource
 def load_model_from_gdrive():
     """Load model from Google Drive"""
@@ -44,12 +48,11 @@ def load_model_from_gdrive():
         st.error(f"Error downloading or loading model: {e}")
         raise e
 
-# Alternative approach using direct download
+# Alternative approach using direct download (same as original)
 @st.cache_resource
 def load_model_from_direct_link():
     """Load model from direct download link if available"""
     try:
-        # If you have a direct download link instead of Google Drive
         direct_url = st.secrets.get("MODEL_DIRECT_URL", "")
         if direct_url:
             with st.spinner("Downloading model... This may take a moment."):
@@ -61,13 +64,71 @@ def load_model_from_direct_link():
                     st.error(f"Failed to download model: HTTP {response.status_code}")
                     raise Exception(f"Failed to download model: HTTP {response.status_code}")
         else:
-            # Don't raise an exception or show error if no URL is provided
             return None
     except Exception as e:
         st.error(f"Error with direct download: {e}")
         raise e
 
-# Context-aware chatbot function
+# OCR Processing Function
+def process_ocr_form(uploaded_file):
+    """Process the uploaded form using OCR and extract information"""
+    try:
+        # Read the image file
+        image_bytes = uploaded_file.read()
+        nparr = np.frombuffer(image_bytes, np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        
+        # Convert to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        
+        # Apply thresholding to improve text detection
+        _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
+        
+        # Run OCR on the processed image
+        ocr_text = pytesseract.image_to_string(thresh)
+        
+        # Extract information using regex pattern matching
+        extracted_data = {}
+        
+        # Define patterns for each field
+        patterns = {
+            'Age': r'Age:\s*(\d+)',
+            'Married/Single': r'Married/Single:\s*(married|single)',
+            'Profession': r'Profession:\s*(\w+(?:_\w+)*)',
+            'Experience': r'Experience.*:\s*(\d+)',
+            'Income': r'Income.*:\s*(\d+)',
+            'House_Ownership': r'House Ownership:\s*(owned|rented|norent_noown)',
+            'Car_Ownership': r'Car Ownership:\s*(yes|no)',
+            'STATE': r'State:\s*(\w+(?:_\w+)*)',
+            'CITY': r'City:\s*(\w+(?:_\w+)*)',
+            'CURRENT_HOUSE_YRS': r'Current House Years:\s*(\d+)',
+            'CURRENT_JOB_YRS': r'Current Job Years:\s*(\d+)'
+        }
+        
+        # Extract data using patterns
+        for key, pattern in patterns.items():
+            match = re.search(pattern, ocr_text, re.IGNORECASE)
+            if match:
+                if key in ['Age', 'Experience', 'Income', 'CURRENT_HOUSE_YRS', 'CURRENT_JOB_YRS']:
+                    extracted_data[key] = int(match.group(1))
+                else:
+                    extracted_data[key] = match.group(1).lower()
+        
+        # Display extracted text for debugging
+        with st.expander("View OCR Raw Text"):
+            st.text(ocr_text)
+        
+        # Display extracted data
+        with st.expander("View Extracted Data"):
+            st.json(extracted_data)
+        
+        return extracted_data
+    
+    except Exception as e:
+        st.error(f"OCR Processing Error: {e}")
+        return {}
+
+# Context-aware chatbot function (same as original)
 def chatbot_with_context(risk_data=None, key_suffix="default"):
     st.header("CrediBot - Asisten Virtual")
 
@@ -113,17 +174,17 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
             """
 
         # Load API key from Streamlit secrets
-        api_key = st.secrets["ANTHROPIC_API_KEY"]
+        api_key = st.secrets.get("ANTHROPIC_API_KEY", "your_api_key_here")
 
         # Initialize Anthropic client
         client = anthropic.Anthropic(api_key=api_key)
 
-        # Generate response using Claude 3 Haiku (Cost-efficient)
+        # Generate response using Claude 3 Haiku
         with st.spinner("Memproses jawaban..."):
             try:
                 response = client.messages.create(
                     model="claude-3-haiku-20240307",
-                    max_tokens=400,  # Limit to save cost
+                    max_tokens=400,
                     temperature=0.8,
                     system="Anda adalah asisten pinjaman dari aplikasi prediksi resiko calon debitur yang memberikan saran tentang penilaian risiko kredit menggunakan dataset dari India dan mata uang INR.",
                     messages=[{"role": "user", "content": f"{context}\n{prompt}"}]
@@ -146,7 +207,7 @@ if __name__ == "__main__":
     try:
         # Show a message while loading
         with st.spinner("Loading model... This may take a moment."):
-            # First try the direct link method if you have one configured in secrets
+            # First try the direct link method if configured in secrets
             direct_model = load_model_from_direct_link()
             
             # If direct link didn't work, use Google Drive method
@@ -158,8 +219,6 @@ if __name__ == "__main__":
         st.success("Model Sukses Dimasukan!")
     except Exception as e:
         st.error(f"Error loading model: {e}")
-        
-        # Provide detailed instructions for troubleshooting
         st.error("""
         Failed to load the model. Please check that:
         1. The Google Drive link is accessible/shareable
@@ -170,39 +229,75 @@ if __name__ == "__main__":
         """)
         st.stop()
 
-    # Create tabs for better organization - now three tabs including chatbot
-    tab1, tab2, tab3 = st.tabs(["Informasi Calon Debitur", "Stability Metrics", "CrediBot"])
+    # Create tabs for better organization - now four tabs including OCR
+    tab1, tab2, tab3, tab4 = st.tabs(["OCR Form Upload", "Informasi Calon Debitur", "Stability Metrics", "CrediBot"])
+
+    # Initialize session state for form data
+    if 'form_data' not in st.session_state:
+        st.session_state.form_data = {}
 
     with tab1:
+        st.header("Upload Standardized OCR Form")
+        st.write("Upload gambar formulir standar untuk ekstraksi data otomatis menggunakan OCR.")
+        
+        uploaded_file = st.file_uploader("Upload Form Image", type=["jpg", "jpeg", "png", "pdf"], key="ocr_form")
+        
+        if uploaded_file is not None:
+            # Display the uploaded image
+            st.image(uploaded_file, caption="Uploaded Form", use_column_width=True)
+            
+            # Process with OCR
+            if st.button("Process OCR"):
+                with st.spinner("Processing OCR..."):
+                    extracted_data = process_ocr_form(uploaded_file)
+                    if extracted_data:
+                        st.session_state.form_data = extracted_data
+                        st.success("Form processed successfully! Data extracted and ready for use.")
+                        
+                        # Add button to navigate to the next tab
+                        if st.button("Continue to Personal Information"):
+                            st.session_state.active_tab = "Informasi Calon Debitur"
+                    else:
+                        st.error("Failed to extract data from the form. Please check the image quality and try again.")
+
+    with tab2:
         # Create 3 columns for better layout
         col1, col2, col3 = st.columns(3)
         
         # Personal Information
         with col1:
             st.subheader("Informasi Pribadi")
-            age = st.number_input("Age", min_value=17, max_value=120, value=35)
+            age = st.number_input("Age", min_value=17, max_value=120, 
+                                value=st.session_state.form_data.get('Age', 35))
+            
             # Create age group based on input age
-            if age < 40:  # Based on your data categories
+            if age < 40:
                 age_group = "middle age"
             else:
                 age_group = "old"
                 
-            marital_status = st.selectbox("Married/Single", ["married", "single"])
+            marital_status = st.selectbox("Married/Single", ["married", "single"], 
+                                        index=0 if st.session_state.form_data.get('Married/Single') == "married" else 1)
             
-            profession = st.selectbox("Profession", [
+            profession_options = [
                 "mechanical_engineer", "software_developer", "technical_writer", 
                 "civil_servant", "librarian", "economist", "flight_attendant", 
                 "architect", "designer", "physician", "financial_analyst", 
                 "air_traffic_controller", "police_officer", "artist", "engineer",
                 "lawyer", "consultant", "teacher", "doctor", "other"
-            ])
+            ]
+            profession = st.selectbox("Profession", profession_options,
+                                    index=profession_options.index(st.session_state.form_data.get('Profession', 'other')) 
+                                    if st.session_state.form_data.get('Profession') in profession_options else 19)
             
-            experience = st.number_input("Experience", min_value=0, max_value=100, value=5)
+            experience = st.number_input("Experience", min_value=0, max_value=100, 
+                                        value=st.session_state.form_data.get('Experience', 5))
             
         # Financial Information    
         with col2:
             st.subheader("Informasi Finansial")
-            income = st.number_input("Income (Rupee India)", min_value=0, max_value=15000000, value=5000000)
+            income = st.number_input("Income (Rupee India)", min_value=0, max_value=15000000, 
+                                    value=st.session_state.form_data.get('Income', 5000000))
             
             # Determine income segment based on income
             if income < 2500000:
@@ -212,45 +307,67 @@ if __name__ == "__main__":
             else:
                 income_segment = "high"
                 
-            house_ownership = st.selectbox("House_Ownership", ["owned", "rented", "norent_noown"])
-            car_ownership = st.selectbox("Car_Ownership", ["yes", "no"])
+            house_ownership_options = ["owned", "rented", "norent_noown"]
+            house_ownership = st.selectbox("House_Ownership", house_ownership_options,
+                                        index=house_ownership_options.index(st.session_state.form_data.get('House_Ownership', 'owned'))
+                                        if st.session_state.form_data.get('House_Ownership') in house_ownership_options else 0)
+            
+            car_ownership_options = ["yes", "no"]
+            car_ownership = st.selectbox("Car_Ownership", car_ownership_options,
+                                        index=car_ownership_options.index(st.session_state.form_data.get('Car_Ownership', 'yes'))
+                                        if st.session_state.form_data.get('Car_Ownership') in car_ownership_options else 0)
             
         # Location Information    
         with col3:
             st.subheader("Informasi Tempat Tinggal")
-            # Use actual states from the dataset
-            state = st.selectbox("STATE", [
+            
+            state_options = [
                 "madhya_pradesh", "maharashtra", "kerala", "odisha", "tamil_nadu",
                 "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
                 "west_bengal", "haryana", "puducherry", "karnataka",
                 "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
                 "uttarakhand", "jharkhand", "delhi", "chandigarh"
-            ])
+            ]
             
-            # Use a subset of actual cities from your dataset
-            city = st.selectbox("CITY", [
+            # Find index of state from form data or default to 0
+            state_index = 0
+            if 'STATE' in st.session_state.form_data and st.session_state.form_data['STATE'] in state_options:
+                state_index = state_options.index(st.session_state.form_data['STATE'])
+                
+            state = st.selectbox("STATE", state_options, index=state_index)
+            
+            city_options = [
                 "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
                 "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
                 "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
                 "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
-            ])
+            ]
             
-            # Replaced sliders with number input fields
-            current_house_yrs = st.number_input("Current House Years", min_value=1, max_value=120, value=10)
-            current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=100, value=5)
+            # Find index of city from form data or default to 0
+            city_index = 0
+            if 'CITY' in st.session_state.form_data and st.session_state.form_data['CITY'] in city_options:
+                city_index = city_options.index(st.session_state.form_data['CITY'])
+                
+            city = st.selectbox("CITY", city_options, index=city_index)
+            
+            current_house_yrs = st.number_input("Current House Years", min_value=1, max_value=120, 
+                                                value=st.session_state.form_data.get('CURRENT_HOUSE_YRS', 10))
+                                                
+            current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=100, 
+                                            value=st.session_state.form_data.get('CURRENT_JOB_YRS', 5))
 
-    with tab2:
+    with tab3:
         st.subheader("Calculated Stability Metrics")
         st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
         
-        # Calculate job stability as a float value (using the range from your data)
-        job_stability = round(current_job_yrs / (age - 18), 8) if age > 18 else 0  # Added safeguard against division by zero
+        # Calculate job stability as a float value
+        job_stability = round(current_job_yrs / (age - 18), 8) if age > 18 else 0
         
         # Calculate home stability as a float value
-        home_stability = round(current_house_yrs / age, 8) if age > 0 else 0  # Added safeguard against division by zero
+        home_stability = round(current_house_yrs / age, 8) if age > 0 else 0
         
         # For financial stability, using income as proxy
-        financial_stability = float(income / 2)  # Simple approximation
+        financial_stability = float(income / 2)
         
         # Display calculated metrics
         col1, col2, col3 = st.columns(3)
@@ -258,14 +375,14 @@ if __name__ == "__main__":
         col2.metric("Home Stability", f"{home_stability:.4f}")
         col3.metric("Financial Stability", f"{financial_stability:.2f}")
 
-    with tab3:
+    with tab4:
         # If no prediction has been made yet, show a simple chat interface
         if "risk_data" not in st.session_state:
             st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
-            chatbot_with_context(key_suffix="tab3")
+            chatbot_with_context(key_suffix="tab4")
         else:
             # If prediction exists, pass the risk data to the chatbot
-            chatbot_with_context(st.session_state.risk_data, key_suffix="tab3_with_data")
+            chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
 
     # Button to make prediction
     if st.button("Prediksi Resiko"):
@@ -286,7 +403,7 @@ if __name__ == "__main__":
             'House_Ownership': [house_ownership],
             'STATE': [state],
             'income_segment': [income_segment],
-            'Age': [age]  # Added Age column
+            'Age': [age]
         })
         
         # Display the input data in a collapsible section for debugging
@@ -301,7 +418,7 @@ if __name__ == "__main__":
                 with st.expander("Model Feature Information"):
                     st.write("Model expected features:", model.feature_names_in_)
                 
-                # Check if all expected features are in the right order
+                # Check if all expected features are present
                 input_cols = list(input_data.columns)
                 
                 # Make sure all required features are present
@@ -339,20 +456,20 @@ if __name__ == "__main__":
             # Make prediction
             risk_probability = model.predict_proba(input_data)[0, 1]
 
-            # Step 2: Apply moderate risk penalties
+            # Apply risk penalties and adjustments (same as original)
             risk_adjustment = 0
             
-            # Define income-based risk adjustments (lower risk for high-income)
+            # Define income-based risk adjustments
             if income < 1000000:
-                risk_adjustment += 0.10  # High risk for very low income
+                risk_adjustment += 0.10
             elif 1000000 <= income < 2500000:
-                risk_adjustment += 0.05  # Moderate risk
+                risk_adjustment += 0.05
             elif 2500000 <= income < 5000000:
-                risk_adjustment += 0.02  # Low risk
+                risk_adjustment += 0.02
             elif 5000000 <= income < 7500000:
-                risk_adjustment += 0  # No impact
+                risk_adjustment += 0
             elif income >= 7500000:
-                risk_adjustment -= 0.05  # Reduce risk for very high earners
+                risk_adjustment -= 0.05
             
             # Job and financial stability
             if job_stability < 0.1:
@@ -368,11 +485,11 @@ if __name__ == "__main__":
             
             # Age-based risk adjustment
             if age < 25:
-                risk_adjustment += 0.08  # Higher risk for young borrowers
+                risk_adjustment += 0.08
             elif 25 <= age < 55:
-                risk_adjustment -= 0.03  # Reduced risk for stable working-age borrowers
+                risk_adjustment -= 0.03
             elif age >= 55:
-                risk_adjustment += 0.05  # Moderate risk for older borrowers nearing retirement
+                risk_adjustment += 0.05
             
             # Final risk probability
             adjusted_risk_probability = min(risk_probability + risk_adjustment, 1.0)
@@ -415,13 +532,13 @@ if __name__ == "__main__":
                 'job_stability': job_stability
             }
             
-            # Step 6: Generate risk explanation message
+            # Risk explanation message
             if risk_prediction == 1:
                 risk_factors_message = "Faktor Resiko Utama:\n- " + "\n- ".join(risk_factors)
             else:
                 risk_factors_message = "Tidak Ada Resiko Signifikan Yang Teridentifikasi."
             
-            # Step 7: Display the results
+            # Display the results
             st.metric("Probabilitas Resiko", f"{adjusted_risk_probability:.2%}", delta=None, delta_color="off")
             st.write(f"Loan Risk Assessment: {'❌ High Risk' if risk_prediction == 1 else '✅ Low Risk'}")
             st.write(risk_factors_message)
@@ -437,10 +554,8 @@ if __name__ == "__main__":
                     st.error("Resiko Tinggi - Tidak Direkomendasikan untuk Approval")
                 else:
                     st.success("Resiko Rendah - Direkomendasikan untuk Approval")
-                    
-                #st.metric("Risk Probability", f"{risk_probability:.2%}")
             
-            # This code should replace the visualization part in the result_col2 section
+            # Risk gauge visualization (same as original)
             with result_col2:
                 # Create columns with specific widths to center the gauge
                 left_spacer, gauge_col, right_spacer = st.columns([1, 3, 1])
@@ -456,7 +571,6 @@ if __name__ == "__main__":
                     ax.set_thetamax(0)
                     
                     # Create custom colormap with smoother transition: green->yellow->orange->red
-                    # Adjust colors to emphasize yellow/orange/red regions with threshold at 0.28
                     colors = [
                         (0.2, 0.7, 0.2),      # Green (for the lowest risk range)
                         (0.7, 0.9, 0.2),      # Yellow-green transition (around 0.15-0.20)
@@ -468,7 +582,6 @@ if __name__ == "__main__":
                     ]
                     
                     # Create the colormap with positions to control the distribution
-                    # This allocates more space to yellow/orange/red sections
                     positions = [0, 0.15, 0.28, 0.40, 0.60, 0.80, 1.0]
                     cmap = mpl.colors.LinearSegmentedColormap.from_list('GreenToRed', list(zip(positions, colors)), N=100)
                     
@@ -509,96 +622,172 @@ if __name__ == "__main__":
                     # Title with score - larger and more prominent
                     score_text = f'{adjusted_risk_probability:.1%}'
                     ax.text(np.radians(90), -0.2, score_text, 
-                            ha='center', va='center', fontsize=24, fontweight='bold', color='#333333')
-                    ax.text(np.radians(90), -0.35, 'Adjusted Risk Score', 
-                            ha='center', va='center', fontsize=12, color='#555555')
+                    ha='center', va='center', fontsize=24, fontweight='bold', color='#333333')
                     
-                    # Clean up the chart - remove all axes elements for a cleaner look
-                    ax.set_axis_off()
+                    # Add classification text below the score
+                    risk_text = "HIGH RISK" if risk_prediction == 1 else "LOW RISK"
+                    risk_color = "#d9534f" if risk_prediction == 1 else "#5cb85c"
+                    ax.text(np.radians(90), -0.35, risk_text, 
+                            ha='center', va='center', fontsize=16, 
+                            fontweight='bold', color=risk_color)
                     
-                    # Set background color to transparent
-                    fig.patch.set_alpha(0.0)
-                    ax.patch.set_alpha(0.0)
+                    # Remove all tick marks and labels for clean appearance
+                    ax.set_rgrids([])
+                    ax.set_thetagrids([])
+                    ax.set_yticklabels([])
                     
-                    # Add some padding around the plot
-                    plt.tight_layout(pad=2.0)
+                    # Remove all spines for modern minimal look
+                    ax.spines['polar'].set_visible(False)
                     
-                    # Display the gauge with extra vertical space before and after
-                    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+                    # Adjust figure to make best use of space
+                    plt.tight_layout()
+                    plt.subplots_adjust(top=1.1)
+                    
+                    # Display the gauge
                     st.pyplot(fig)
-                    st.markdown("<div style='height: 20px;'></div>", unsafe_allow_html=True)
+                    
+                    # Additional text below the gauge
+                    st.markdown(f"<div style='text-align: center; font-size: 16px;'>Score: <b>{adjusted_risk_probability:.2%}</b></div>", 
+                                unsafe_allow_html=True)
             
-                # Explanation section
-                st.subheader("Penjelasan Faktor Resiko")
-                
-                factors = []
-                
-                # Income-based risk factors
-                if income < 1000000:
-                    factors.append("Penghasilan Rendah")
-                elif 1000000 <= income < 2500000:
-                    factors.append("Penghasilan Sedang")
-                
-                # Job and financial stability
-                if job_stability < 0.1:
-                    factors.append("Stabilitas Pekerjaan Rendah")
-                if home_stability < 0.2:
-                    factors.append("Stabilitas Domisili Rendah")
-                if house_ownership != "owned":
-                    factors.append("Tidak Memiliki Rumah")
-                if car_ownership == "no":
-                    factors.append("Tidak Memiliki Mobil")
-                if experience < 3:
-                    factors.append("Pengalaman Kerja Terbatas")
-                
-                # Age-based risk factors
-                if age < 25:
-                    factors.append("Calon Debitur Muda Dengan Credit History Sedikit")
-                elif age >= 55:
-                    factors.append("Calon Debitur Tua Mendekati Masa Pensiun")
-                
-                # Display identified risk factors
-                if factors:
-                    st.markdown("#### Faktor Resiko Utama:")
-                    for factor in factors:
-                        st.markdown(f"- {factor}")
-                else:
-                    st.markdown("Tidak Ada Resiko Signifikan")
-    
-
-            explanation_text = """
-            Penilaian risiko didasarkan pada beberapa faktor termasuk stabilitas keuangan, tingkat pendapatan, stabilitas pekerjaan, stabilitas rumah, kepemilikan aset, umur, dan pengalaman kerja. 
+            # Risk factors detail section
+            st.subheader("Detail Analisis Risiko")
             
-            Model ini menggunakan ambang batas 0.28 untuk klasifikasi risiko, yang lebih konservatif daripada ambang batas standar 0.5 untuk meminimalkan hasil negatif palsu.
-            """
+            # Display risk factors and model details in expandable sections
+            col1, col2 = st.columns(2)
             
-            st.info(explanation_text)
+            with col1:
+                with st.expander("Faktor-Faktor Risiko", expanded=True):
+                    if risk_factors:
+                        for factor in risk_factors:
+                            st.markdown(f"• {factor}")
+                    else:
+                        st.write("Tidak ada faktor risiko signifikan yang teridentifikasi.")
             
-            # Add a notice about the chatbot
-            st.success("Hasil prediksi telah diproses. Anda sekarang dapat menggunakan Asisten Virtual di tab ketiga untuk mendapatkan informasi lebih lanjut tentang hasil penilaian risiko ini.")
+            with col2:
+                with st.expander("Probabilitas & Penyesuaian", expanded=True):
+                    st.write(f"Model Base Probability: {risk_probability:.2%}")
+                    st.write(f"Risk Adjustment: {risk_adjustment:.2%}")
+                    st.write(f"Final Adjusted Probability: {adjusted_risk_probability:.2%}")
+                    st.write(f"Risk Threshold: {risk_threshold:.2%}")
             
+            # Add recommendations section
+            st.subheader("Rekomendasi")
+            
+            if risk_prediction == 1:
+                st.warning("""
+                ### Rekomendasi untuk Kasus Risiko Tinggi
+                
+                Berdasarkan analisis, aplikasi ini menunjukkan risiko tinggi. Rekomendasi:
+                
+                1. **Tinjau Ulang Jumlah Pinjaman**: Pertimbangkan untuk mengurangi jumlah.
+                2. **Minta Jaminan Tambahan**: Untuk mengurangi risiko.
+                3. **Verifikasi Dokumen Ekstra**: Lakukan pemeriksaan tambahan.
+                4. **Riwayat Kredit Lengkap**: Periksa riwayat kredit yang lengkap.
+                5. **Pertimbangan Pendapatan Pasangan**: Untuk menilai kemampuan bayar.
+                """)
+            else:
+                st.success("""
+                ### Rekomendasi untuk Kasus Risiko Rendah
+                
+                Berdasarkan analisis, aplikasi ini menunjukkan risiko rendah. Rekomendasi:
+                
+                1. **Proses Approval Standar**: Dapat diproses dengan prosedur standar.
+                2. **Pertimbangkan Penawaran Khusus**: Debitur berkualitas baik.
+                3. **Minimum Dokumentasi**: Cukup dengan dokumen standar.
+                4. **Fast-Track Processing**: Dapat dimasukkan dalam jalur cepat.
+                5. **Cross-selling Opportunity**: Pertimbangkan penawaran produk lain.
+                """)
+            
+            # Advanced metrics section
+            with st.expander("Metrik Lanjutan", expanded=False):
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.subheader("Stabilitas Finansial")
+                    
+                    # Financial stability as percentage of maximum expected value
+                    financial_stability_pct = min(financial_stability / 10000000, 1.0) * 100
+                    
+                    # Create a progress bar for financial stability
+                    st.markdown(f"**Financial Stability Index:** {financial_stability_pct:.1f}%")
+                    st.progress(financial_stability_pct / 100)
+                    
+                    # Income to age ratio - a rough metric of earning power
+                    income_age_ratio = income / age if age > 0 else 0
+                    st.markdown(f"**Income to Age Ratio:** {income_age_ratio:,.0f}")
+                    
+                    # Calculate debt service ratio (fictional for this demo)
+                    # In a real app, this would come from actual data
+                    fictional_debt_ratio = 0.25 if income > 5000000 else (0.35 if income > 2500000 else 0.45)
+                    st.markdown(f"**Est. Debt Service Ratio:** {fictional_debt_ratio:.2f}")
+                
+                with col2:
+                    st.subheader("Stabilitas Pekerjaan & Tempat Tinggal")
+                    
+                    # Job stability visualization
+                    st.markdown(f"**Job Stability:** {job_stability:.4f}")
+                    job_stability_pct = min(job_stability * 100, 100)
+                    st.progress(job_stability_pct / 100)
+                    
+                    # Home stability visualization
+                    st.markdown(f"**Home Stability:** {home_stability:.4f}")
+                    home_stability_pct = min(home_stability * 100, 100)
+                    st.progress(home_stability_pct / 100)
+                    
+                    # Experience visualization
+                    experience_pct = min(experience / 20, 1.0) * 100
+                    st.markdown(f"**Experience Level:** {experience_pct:.1f}%")
+                    st.progress(experience_pct / 100)
+            
+            # Chatbot recommendation
+            st.info("""
+            📱 Gunakan asisten AI kami di tab 'CrediBot' untuk informasi lebih lanjut tentang hasil analisis ini 
+            dan rekomendasi khusus untuk kasus Anda.
+            """)
         
         except Exception as e:
             st.error(f"Error making prediction: {e}")
-            st.markdown("##### Debug Information:")
-            st.write("Error details:", str(e))
-            st.write("Column mismatch error. Check the exact column names, capitalization, and formatting.")
-            st.write("Input data columns:")
-            st.write(list(input_data.columns))
-            st.write("Required columns:")
-            st.write(['CURRENT_HOUSE_YRS', 'financial_stability', 'Married/Single', 'Experience', 'CURRENT_JOB_YRS', 'home_stability', 'job_stability', 'Profession', 'Car_Ownership', 'CITY', 'age_group', 'Income', 'House_Ownership', 'STATE', 'income_segment', 'Age'])
-            
-            # Additional debugging - compare the two sets
-            st.write("Missing columns (if any):")
-            required = {'CURRENT_HOUSE_YRS', 'financial_stability', 'Married/Single', 'Experience', 'CURRENT_JOB_YRS', 'home_stability', 'job_stability', 'Profession', 'Car_Ownership', 'CITY', 'age_group', 'Income', 'House_Ownership', 'STATE', 'income_segment', 'Age'}
-            provided = set(input_data.columns)
-            st.write(list(required - provided))
+            st.error("If this error persists, please check the model compatibility or contact support.")
+    
+    # Add footer
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style='text-align: center; color: #666;'>
+            Aplikasi Prediksi Resiko Debitur dengan OCR &copy; 2023
+            <br>Powered by Streamlit and OCR Technology
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+
+    # Add "About" section
+    with st.expander("About This Application"):
+        st.write("""
+        ### About Aplikasi Prediksi Resiko Debitur dengan OCR
         
-            # Check for whitespace or case issues
-            st.write("Check for whitespace or case sensitivity issues:")
-            for req_col in required:
-                for prov_col in provided:
-                    if req_col.lower() == prov_col.lower() and req_col != prov_col:
-                        st.write(f"Case mismatch: '{req_col}' (required) vs '{prov_col}' (provided)")
-                    if req_col.strip() == prov_col.strip() and req_col != prov_col:
-                        st.write(f"Whitespace mismatch: '{req_col}' (required) vs '{prov_col}' (provided)")
+        Aplikasi ini menggunakan OCR (Optical Character Recognition) untuk mengekstrak data dari formulir aplikasi pinjaman dan menerapkan model machine learning untuk memprediksi risiko calon debitur.
+        
+        #### Fitur Utama:
+        - **OCR Form Processing**: Ekstraksi data otomatis dari formulir standar
+        - **Prediksi Risiko**: Menggunakan model ML terlatih untuk prediksi risiko
+        - **Metrik Stabilitas**: Perhitungan stabilitas pekerjaan dan tempat tinggal
+        - **CrediBot**: Asisten AI untuk menjawab pertanyaan tentang aplikasi
+        
+        #### Penggunaan:
+        1. Upload formulir aplikasi di tab OCR
+        2. Verifikasi dan lengkapi data pada tab Informasi Calon Debitur
+        3. Klik "Prediksi Resiko" untuk mendapatkan hasil analisis
+        4. Gunakan asisten CrediBot untuk informasi tambahan
+        
+        #### Catatan:
+        Model ini dilatih menggunakan data historis dari India dengan mata uang INR.
+        Prediksi harus digunakan sebagai alat bantu, bukan penentu keputusan final.
+        """)
+        
+        st.markdown("""
+        <div style='text-align: center; margin-top: 20px;'>
+            <img src="https://i.imgur.com/HQ6nTcZ.png" width="100">
+        </div>
+        """, unsafe_allow_html=True)
