@@ -664,8 +664,21 @@ if __name__ == "__main__":
             st.error("If this error persists, please check the model compatibility or contact support.")
     
 
+
+    # Add footer
+    st.markdown("---")
+    st.markdown(
+        """
+        <div style="text-align: center; color: #666;">
+    Copyright © 2025 Iqbal Lintang. All Rights Reserved.<br>
+    <span style="font-size: 0.8em;">heylintang@gmail.com</span>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+
     # Add "About" section
-    with st.expander("About This Application"):
+    with st.expander("About This App"):
         st.write("""
         
         #### Penggunaan:
@@ -683,15 +696,3 @@ if __name__ == "__main__":
             <img src="https://i.imgur.com/HQ6nTcZ.png" width="100">
         </div>
         """, unsafe_allow_html=True)
-
-    # Add footer
-    st.markdown("---")
-    st.markdown(
-        """
-        <div style="text-align: center; color: #666;">
-    Copyright © 2025 Iqbal Lintang. All Rights Reserved.<br>
-    <span style="font-size: 0.8em;">heylintang@gmail.com</span>
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
