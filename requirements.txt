@@ -10,3 +10,4 @@ scikit-learn
 anthropic
 reportlab
 pillow
+pytesseract
