@@ -479,7 +479,10 @@ if __name__ == "__main__":
             
             # Risk gauge visualization (same as original)
             with result_col2:
-                # Create columns with specific widths to center the gauge
+                # Create a centered layout
+                st.container()
+            
+                # Define three columns to center the gauge
                 left_spacer, gauge_col, right_spacer = st.columns([1, 3, 1])
                 with gauge_col:
                     # Create a modern, sleek speedometer-style gauge
