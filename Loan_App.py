@@ -9,9 +9,6 @@ import requests
 import io
 import gdown
 import anthropic
-from io import BytesIO
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
 
 # Set page title and configuration (Must be the first Streamlit command)
 st.set_page_config(
@@ -567,31 +564,7 @@ if __name__ == "__main__":
                         st.markdown(f"- {factor}")
                 else:
                     st.markdown("Tidak Ada Resiko Signifikan")
-            
-            def generate_pdf():
-                buffer = BytesIO()
-                c = canvas.Canvas(buffer, pagesize=letter)
-                c.drawString(100, 750, "Loan Risk Assessment Report")
-                c.drawString(100, 730, "----------------------------")
-                c.drawString(100, 700, "Risk Level: High")
-                c.drawString(100, 680, "Main Risk Factors:")
-                c.drawString(120, 660, "- Unstable Job")
-                c.drawString(120, 640, "- Frequent Address Changes")
-                c.save()
-                
-                buffer.seek(0)  # Move cursor to start of the file
-                return buffer
-            
-            st.title("Loan Risk Prediction Report")
-            
-            if st.button("Generate & Download Report"):
-                pdf_buffer = generate_pdf()
-                st.download_button(
-                    label="Download Report",
-                    data=pdf_buffer,
-                    file_name="Loan_Risk_Report.pdf",
-                    mime="application/pdf"
-                )
+    
 
             explanation_text = """
             Penilaian risiko didasarkan pada beberapa faktor termasuk stabilitas keuangan, tingkat pendapatan, stabilitas pekerjaan, stabilitas rumah, kepemilikan aset, umur, dan pengalaman kerja. 
