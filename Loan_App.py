@@ -4,10 +4,11 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-import matplotlib as mpl  # Add this import if not already present
+import matplotlib as mpl
 import requests
 import io
 import gdown
+import anthropic  # pip install anthropic
 
 # Set page title and configuration
 st.set_page_config(
@@ -25,6 +26,85 @@ with col1:
     st.image(logo_url, width=100)
 with col2:
     st.title("Aplikasi Prediksi Resiko Debitur")
+
+# Context-aware chatbot function
+def chatbot_with_context(risk_data=None):
+    st.header("Asisten Pinjaman Cerdas")
+    
+    # Initialize conversation
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {"role": "assistant", "content": "Halo! Saya asisten virtual yang dapat membantu menjawab pertanyaan tentang aplikasi pinjaman Anda. Apa yang ingin Anda ketahui?"}
+        ]
+    
+    # Display conversation
+    for message in st.session_state.messages:
+        with st.chat_message(message["role"]):
+            st.write(message["content"])
+    
+    # Get user input
+    prompt = st.chat_input("Ketik pesan Anda di sini...")
+    
+    if prompt:
+        # Add user message to history
+        st.session_state.messages.append({"role": "user", "content": prompt})
+        
+        # Display user message
+        with st.chat_message("user"):
+            st.write(prompt)
+        
+        # Create context from risk assessment if available
+        context = ""
+        if risk_data:
+            risk_factors_str = ", ".join(risk_data['risk_factors']) if risk_data['risk_factors'] else "Tidak Ada Resiko Signifikan"
+            context = f"""
+            Informasi aplikasi pinjaman:
+            - Usia: {risk_data['Age']}
+            - Pendapatan: {risk_data['Income']}
+            - Status Pernikahan: {risk_data['marital_status']}
+            - Profesi: {risk_data['profession']}
+            - Pengalaman: {risk_data['experience']} tahun
+            - Stabilitas Pekerjaan: {risk_data['job_stability']:.4f}
+            - Stabilitas Rumah: {risk_data['home_stability']:.4f}
+            - Skor risiko: {risk_data['risk_score']:.2%}
+            - Prediksi: {"Risiko Tinggi" if risk_data['risk_prediction'] == 1 else "Risiko Rendah"}
+            - Faktor risiko utama: {risk_factors_str}
+            """
+        
+        # Call LLM API with context
+        with st.spinner("Menyiapkan jawaban..."):
+            try:
+                # Get the API key from secrets
+                api_key = st.secrets["ANTHROPIC_API_KEY"]
+                client = anthropic.Anthropic(api_key=api_key)
+                
+                system_prompt = f"""
+                Anda adalah asisten pinjaman yang membantu menjelaskan proses aplikasi kredit dan faktor risiko.
+                Berikan penjelasan yang jelas dan sederhana tentang faktor risiko kredit.
+                Jelaskan bagaimana peminjam dapat meningkatkan profil kredit mereka.
+                {context}
+                """
+                
+                response = client.messages.create(
+                    model="claude-3-haiku-20240307",
+                    max_tokens=500,
+                    system=system_prompt,
+                    messages=[
+                        {"role": "user", "content": prompt}
+                    ]
+                )
+                answer = response.content[0].text
+                
+                # Add response to history
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+                
+                # Display response
+                with st.chat_message("assistant"):
+                    st.write(answer)
+                    
+            except Exception as e:
+                st.error(f"Error: {e}")
+                st.session_state.messages.append({"role": "assistant", "content": f"Maaf, terjadi kesalahan: {e}"})
 
 # Function to download model from Google Drive
 @st.cache_resource
@@ -60,7 +140,7 @@ def load_model_from_direct_link():
                     st.error(f"Failed to download model: HTTP {response.status_code}")
                     raise Exception(f"Failed to download model: HTTP {response.status_code}")
         else:
-            # Changed: Don't raise an exception or show error if no URL is provided
+            # Don't raise an exception or show error if no URL is provided
             return None
     except Exception as e:
         st.error(f"Error with direct download: {e}")
@@ -97,8 +177,8 @@ except Exception as e:
 # Create input form
 st.header("Masukan Informasi Calon Debitur")
 
-# Create tabs for better organization - now just two tabs with personal and financial info combined
-tab1, tab2 = st.tabs(["Informasi Calon Debitur", "Stability Metrics"])
+# Create tabs for better organization - now three tabs including chatbot
+tab1, tab2, tab3 = st.tabs(["Informasi Calon Debitur", "Stability Metrics", "Asisten Virtual"])
 
 with tab1:
     # Create 3 columns for better layout
@@ -184,6 +264,15 @@ with tab2:
     col1.metric("Job Stability", f"{job_stability:.4f}")
     col2.metric("Home Stability", f"{home_stability:.4f}")
     col3.metric("Financial Stability", f"{financial_stability:.2f}")
+
+with tab3:
+    # If no prediction has been made yet, show a simple chat interface
+    if "risk_data" not in st.session_state:
+        st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
+        chatbot_with_context()
+    else:
+        # If prediction exists, pass the risk data to the chatbot
+        chatbot_with_context(st.session_state.risk_data)
 
 # Button to make prediction
 if st.button("Prediksi Resiko"):
@@ -304,6 +393,19 @@ if st.button("Prediksi Resiko"):
         elif age >= 55:
             risk_factors.append("Usia lanjut mendekati usia pensiun")
 
+        # Store risk information in session state for the chatbot to use
+        st.session_state.risk_data = {
+            'Age': age,
+            'Income': income,
+            'risk_score': adjusted_risk_probability,
+            'risk_factors': risk_factors if risk_factors else ["Tidak Ada Resiko Signifikan"],
+            'risk_prediction': risk_prediction,
+            'marital_status': marital_status,
+            'experience': experience,
+            'profession': profession,
+            'home_stability': home_stability,
+            'job_stability': job_stability
+        }
         
         # Step 6: Generate risk explanation message
         if risk_prediction == 1:
@@ -463,6 +565,9 @@ if st.button("Prediksi Resiko"):
         """
         
         st.info(explanation_text)
+        
+        # Add a notice about the chatbot
+        st.success("Hasil prediksi telah diproses. Anda sekarang dapat menggunakan Asisten Virtual di tab ketiga untuk mendapatkan informasi lebih lanjut tentang hasil penilaian risiko ini.")
     
     except Exception as e:
         st.error(f"Error making prediction: {e}")
