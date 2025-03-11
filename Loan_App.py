@@ -10,7 +10,7 @@ import io
 import gdown
 import anthropic
 
-# Set page title and configuration
+# Set page title and configuration (Must be the first Streamlit command)
 st.set_page_config(
     page_title="Loan Risk Prediction Model",
     page_icon="https://i.imgur.com/HQ6nTcZ.png",
@@ -30,96 +30,79 @@ with col2:
 # Context-aware chatbot function
 def chatbot_with_context(risk_data=None):
     st.header("CrediBot - Asisten Virtual")
-    
-    # Initialize conversation
+
+    # Initialize conversation in session state
     if "messages" not in st.session_state:
         st.session_state.messages = [
-            {"role": "assistant", "content": "Halo! Saya CrediBot asisten virtual Anda yang dapat membantu menjawab pertanyaan tentang calon debitur. Apa yang ingin Anda ketahui?"}
+            {"role": "assistant", "content": "Halo! Saya CrediBot, asisten virtual Anda. Apa yang ingin Anda ketahui tentang calon debitur?"}
         ]
-    
-    # Display conversation
+
+    # Display chat history
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.write(message["content"])
-    
-    # Get user input
+            st.markdown(message["content"])
+
+    # User input
     prompt = st.chat_input("Ketik pesan Anda di sini...")
-    
+
     if prompt:
-        # Add user message to history
+        # Add user message to session
         st.session_state.messages.append({"role": "user", "content": prompt})
-        
+
         # Display user message
         with st.chat_message("user"):
-            st.write(prompt)
-        
-        # Create context from risk assessment if available
+            st.markdown(prompt)
+
+        # Construct context if risk data is available
         context = ""
         if risk_data:
-            risk_factors_str = ", ".join(risk_data['risk_factors']) if risk_data['risk_factors'] else "Tidak Ada Resiko Signifikan"
+            risk_factors_str = ", ".join(risk_data.get('risk_factors', [])) or "Tidak Ada Resiko Signifikan"
             context = f"""
             Informasi aplikasi pinjaman:
-            - Usia: {risk_data['Age']}
-            - Pendapatan: {risk_data['Income']}
-            - Status Pernikahan: {risk_data['marital_status']}
-            - Profesi: {risk_data['profession']}
-            - Pengalaman: {risk_data['experience']} tahun
-            - Stabilitas Pekerjaan: {risk_data['job_stability']:.4f}
-            - Stabilitas Rumah: {risk_data['home_stability']:.4f}
-            - Skor risiko: {risk_data['risk_score']:.2%}
-            - Prediksi: {"Risiko Tinggi" if risk_data['risk_prediction'] == 1 else "Risiko Rendah"}
+            - Usia: {risk_data.get('Age', 'Tidak tersedia')}
+            - Pendapatan: {risk_data.get('Income', 'Tidak tersedia')}
+            - Status Pernikahan: {risk_data.get('marital_status', 'Tidak tersedia')}
+            - Profesi: {risk_data.get('profession', 'Tidak tersedia')}
+            - Pengalaman: {risk_data.get('experience', 'Tidak tersedia')} tahun
+            - Stabilitas Pekerjaan: {risk_data.get('job_stability', 0.0):.4f}
+            - Stabilitas Rumah: {risk_data.get('home_stability', 0.0):.4f}
+            - Skor risiko: {risk_data.get('risk_score', 0.0):.2%}
+            - Prediksi: {"Risiko Tinggi" if risk_data.get('risk_prediction', 0) == 1 else "Risiko Rendah"}
             - Faktor risiko utama: {risk_factors_str}
             """
-        
+
         # Load API key from Streamlit secrets
         api_key = st.secrets["ANTHROPIC_API_KEY"]
-        
+
         # Initialize Anthropic client
         client = anthropic.Anthropic(api_key=api_key)
-        
-        # Streamlit UI
-        st.set_page_config(page_title="Loan Assistant Chatbot", page_icon="💬")
-        st.title("Loan Assistant Chatbot (Claude 3 Haiku)")
-        
-        # Initialize chat history
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
-        
-        # Display chat history
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
-        
-        # Chat input
-        if prompt := st.chat_input("Ask me about loans or credit scoring:"):
-            # Add user message
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            
-            # Display user input
-            with st.chat_message("user"):
-                st.markdown(prompt)
-            
-            # Generate response using Claude 3 Haiku
-            with st.spinner("Thinking..."):
-                try:
-                    response = client.messages.create(
-                        model="claude-3-haiku-20240307",  # Cheapest option
-                        max_tokens=200,  # Limit tokens to save cost
-                        temperature=0.5,
-                        system="You are a helpful loan assistant providing credit scoring advice.",
-                        messages=[{"role": "user", "content": prompt}]
-                    )
-                    answer = response.content[0].text
-        
-                except Exception as e:
-                    answer = f"Error: {e}"
-        
-            # Display assistant response
-            with st.chat_message("assistant"):
-                st.markdown(answer)
-        
-            # Save response to history
-            st.session_state.messages.append({"role": "assistant", "content": answer})
+
+        # Generate response using Claude 3 Haiku (Cost-efficient)
+        with st.spinner("Memproses jawaban..."):
+            try:
+                response = client.messages.create(
+                    model="claude-3-haiku-20240307",
+                    max_tokens=200,  # Limit to save cost
+                    temperature=0.5,
+                    system="Anda adalah asisten pinjaman yang memberikan saran tentang penilaian risiko kredit.",
+                    messages=[{"role": "user", "content": f"{context}\n{prompt}"}]
+                )
+                answer = response.content[0].text
+
+            except Exception as e:
+                answer = f"Terjadi kesalahan: {e}"
+
+        # Display assistant response
+        with st.chat_message("assistant"):
+            st.markdown(answer)
+
+        # Save response to session history
+        st.session_state.messages.append({"role": "assistant", "content": answer})
+
+# Run chatbot with risk data if available
+if __name__ == "__main__":
+    chatbot_with_context(st.session_state.get("risk_data", {}))
+
 
 # Function to download model from Google Drive
 @st.cache_resource
