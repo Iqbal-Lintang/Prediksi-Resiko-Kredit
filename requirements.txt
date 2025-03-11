@@ -1,5 +1,5 @@
 streamlit
-opencv-python
+opencv-python-headless
 pandas
 numpy
 joblib
@@ -9,3 +9,4 @@ gdown
 scikit-learn
 anthropic
 reportlab
+pillow
