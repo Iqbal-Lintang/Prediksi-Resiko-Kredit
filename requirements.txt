@@ -6,3 +6,4 @@ matplotlib
 seaborn
 gdown
 scikit-learn
+anthropic
