@@ -100,10 +100,6 @@ def chatbot_with_context(risk_data=None):
                 answer = f"Terjadi kesalahan: {str(e)}"
         
         st.write(answer)
-                    
-            except Exception as e:
-                st.error(f"Error: {e}")
-                st.session_state.messages.append({"role": "assistant", "content": f"Maaf, terjadi kesalahan: {e}"})
 
 # Function to download model from Google Drive
 @st.cache_resource
