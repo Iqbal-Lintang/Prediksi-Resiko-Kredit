@@ -4,8 +4,10 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
-from threshold_classifier import ThresholdClassifier  # Import the class
 import matplotlib as mpl  # Add this import if not already present
+import requests
+import io
+import gdown
 
 # Set page title and configuration
 st.set_page_config(
@@ -17,16 +19,73 @@ st.set_page_config(
 st.title("Aplikasi Prediksi Resiko Debitur")
 st.markdown("Aplikasi Ini Memprediksi Resiko Calon Debitur")
 
-# Load the trained model
+# Function to download model from Google Drive
 @st.cache_resource
-def load_model():
-    return joblib.load("calibrated_risk_prediction_model.pkl")
+def load_model_from_gdrive():
+    """Load model from Google Drive"""
+    try:
+        # Google Drive file ID from your shared link
+        file_id = "1O6mDaL3ptQSR0YHdMgrCjlNjvJzeVXbc"
+        
+        # Use gdown to download the file
+        output = "calibrated_risk_prediction_model.pkl"
+        url = f"https://drive.google.com/uc?id={file_id}"
+        
+        with st.spinner("Downloading model from Google Drive... This may take a moment."):
+            gdown.download(url, output, quiet=False)
+        
+        # Load the model
+        return joblib.load(output)
+    except Exception as e:
+        st.error(f"Error downloading or loading model: {e}")
+        raise e
 
+# Alternative approach using direct download
+@st.cache_resource
+def load_model_from_direct_link():
+    """Load model from direct download link if available"""
+    try:
+        # If you have a direct download link instead of Google Drive
+        direct_url = st.secrets.get("MODEL_DIRECT_URL", "")
+        if direct_url:
+            with st.spinner("Downloading model... This may take a moment."):
+                response = requests.get(direct_url)
+                if response.status_code == 200:
+                    model_data = io.BytesIO(response.content)
+                    return joblib.load(model_data)
+                else:
+                    st.error(f"Failed to download model: HTTP {response.status_code}")
+                    raise Exception(f"Failed to download model: HTTP {response.status_code}")
+        else:
+            raise Exception("No direct URL provided")
+    except Exception as e:
+        st.error(f"Error with direct download: {e}")
+        raise e
+
+# Try to load the model
 try:
-    model = load_model()
+    # Show a message while loading
+    with st.spinner("Loading model... This may take a moment."):
+        # First try the direct link method if you have one configured in secrets
+        try:
+            model = load_model_from_direct_link()
+        except:
+            # Fall back to Google Drive method
+            model = load_model_from_gdrive()
+    
     st.success("Model Sukses Dimasukan!")
 except Exception as e:
     st.error(f"Error loading model: {e}")
+    
+    # Provide detailed instructions for troubleshooting
+    st.error("""
+    Failed to load the model. Please check that:
+    1. The Google Drive link is accessible/shareable
+    2. You have the required packages installed (gdown)
+    3. Your internet connection is stable
+    
+    If you're running this locally, try installing gdown: `pip install gdown`
+    """)
     st.stop()
 
 # Create input form
