@@ -13,4 +13,3 @@ pillow
 pytesseract
 opencv-python
 PIL
-cv2
