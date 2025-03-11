@@ -183,7 +183,7 @@ if __name__ == "__main__":
         # Personal Information
         with col1:
             st.subheader("Informasi Pribadi")
-            age = st.number_input("Age", min_value=18, max_value=100, value=30)
+            age = st.number_input("Age", min_value=17, max_value=120, value=35)
             # Create age group based on input age
             if age < 40:  # Based on your data categories
                 age_group = "middle age"
@@ -200,7 +200,7 @@ if __name__ == "__main__":
                 "lawyer", "consultant", "teacher", "doctor", "other"
             ])
             
-            experience = st.number_input("Experience", min_value=0, max_value=20, value=5)
+            experience = st.number_input("Experience", min_value=0, max_value=100, value=5)
             
         # Financial Information    
         with col2:
@@ -239,8 +239,8 @@ if __name__ == "__main__":
             ])
             
             # Replaced sliders with number input fields
-            current_house_yrs = st.number_input("Current House Years", min_value=1, max_value=50, value=11)
-            current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=50, value=3)
+            current_house_yrs = st.number_input("Current House Years", min_value=1, max_value=120, value=10)
+            current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=100, value=5)
 
     with tab2:
         st.subheader("Calculated Stability Metrics")
