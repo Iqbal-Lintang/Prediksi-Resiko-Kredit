@@ -579,8 +579,6 @@ if __name__ == "__main__":
             # Add a notice about the chatbot
             st.success("Hasil prediksi telah diproses. Anda sekarang dapat menggunakan Asisten Virtual di tab ketiga untuk mendapatkan informasi lebih lanjut tentang hasil penilaian risiko ini.")
             
-            # After prediction, force a refresh of the tab3 content
-            st.experimental_rerun()
         
         except Exception as e:
             st.error(f"Error making prediction: {e}")
