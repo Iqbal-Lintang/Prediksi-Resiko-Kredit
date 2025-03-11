@@ -491,14 +491,7 @@ if st.button("Prediksi Resiko"):
 
 
 #Chatbot
-import streamlit as st
-
-def main():
-    # Set page title and configuration
-    st.set_page_config(page_title="Streamlit Chatbot", page_icon="💬")
-    st.title("Simple Streamlit Chatbot")
-    
-    # Initialize chat history in session state if it doesn't exist
+# Initialize chat history in session state if it doesn't exist
     if "messages" not in st.session_state:
         st.session_state.messages = []
     
