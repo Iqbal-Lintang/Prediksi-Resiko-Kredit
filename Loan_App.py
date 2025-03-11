@@ -9,6 +9,7 @@ import requests
 import io
 import gdown
 import anthropic
+from io import BytesIO
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
@@ -141,26 +142,6 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
 
         # Save response to session history
         st.session_state[message_key].append({"role": "assistant", "content": answer})
-
-#Download Report
-def generate_pdf_report(name, risk_score, risk_factors):
-    buffer = io.BytesIO()
-    pdf = canvas.Canvas(buffer, pagesize=letter)
-    
-    pdf.setFont("Helvetica", 12)
-    pdf.drawString(100, 750, "Loan Risk Assessment Report")
-    pdf.drawString(100, 730, f"Name: {name}")
-    pdf.drawString(100, 710, f"Risk Score: {risk_score:.2%}")
-    pdf.drawString(100, 690, "Risk Factors:")
-    
-    y_position = 670
-    for factor in risk_factors:
-        pdf.drawString(120, y_position, f"- {factor}")
-        y_position -= 20
-    
-    pdf.save()
-    buffer.seek(0)
-    return buffer
 
 # Main application execution
 if __name__ == "__main__":
@@ -586,14 +567,29 @@ if __name__ == "__main__":
                         st.markdown(f"- {factor}")
                 else:
                     st.markdown("Tidak Ada Resiko Signifikan")
-
-            #Download Report
-            if st.button("Download PDF Report"):
-                pdf_buffer = generate_pdf_report("User", risk_score, risk_factors)
+            
+            def generate_pdf():
+                buffer = BytesIO()
+                c = canvas.Canvas(buffer, pagesize=letter)
+                c.drawString(100, 750, "Loan Risk Assessment Report")
+                c.drawString(100, 730, "----------------------------")
+                c.drawString(100, 700, "Risk Level: High")
+                c.drawString(100, 680, "Main Risk Factors:")
+                c.drawString(120, 660, "- Unstable Job")
+                c.drawString(120, 640, "- Frequent Address Changes")
+                c.save()
+                
+                buffer.seek(0)  # Move cursor to start of the file
+                return buffer
+            
+            st.title("Loan Risk Prediction Report")
+            
+            if st.button("Generate & Download Report"):
+                pdf_buffer = generate_pdf()
                 st.download_button(
-                    label="Download Report as PDF",
+                    label="Download Report",
                     data=pdf_buffer,
-                    file_name="loan_risk_report.pdf",
+                    file_name="Loan_Risk_Report.pdf",
                     mime="application/pdf"
                 )
 
