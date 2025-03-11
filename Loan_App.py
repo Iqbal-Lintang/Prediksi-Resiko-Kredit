@@ -688,9 +688,9 @@ if __name__ == "__main__":
     st.markdown("---")
     st.markdown(
         """
-        <div style='text-align: center; color: #666;'>
-            Copyright © 2025 Iqbal Lintang. All Rights Reserved.
-            heylintang@gmail.com
+        <div style="text-align: center; color: #666;">
+    Copyright © 2025 Iqbal Lintang. All Rights Reserved.<br>
+    <span style="font-size: 0.8em;">heylintang@gmail.com</span>
         </div>
         """, 
         unsafe_allow_html=True
