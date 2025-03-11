@@ -504,18 +504,20 @@ if __name__ == "__main__":
             if st.button("Process OCR"):
                 with st.spinner("Processing OCR..."):
                     if uploaded_file is not None:
-                    image = Image.open(uploaded_file)
-                    processed_image = preprocess_image(image)
-                    extracted_data = extract_form_data(processed_image)
-                    if extracted_data:
-                        st.session_state.form_data = extracted_data
-                        st.success("Form processed successfully! Data extracted and ready for use.")
-                        
-                        # Add button to navigate to the next tab
-                        if st.button("Continue to Personal Information"):
-                            st.session_state.active_tab = "Informasi Calon Debitur"
+                        image = Image.open(uploaded_file)
+                        processed_image = preprocess_image(image)
+                        extracted_data = extract_form_data(processed_image)
+                        if extracted_data:
+                            st.session_state.form_data = extracted_data
+                            st.success("Form processed successfully! Data extracted and ready for use.")
+                            
+                            # Add button to navigate to the next tab
+                            if st.button("Continue to Personal Information"):
+                                st.session_state.active_tab = "Informasi Calon Debitur"
+                        else:
+                            st.error("Failed to extract data from the form. Please check the image quality and try again.")
                     else:
-                        st.error("Failed to extract data from the form. Please check the image quality and try again.")
+                        st.error("Please upload a file first.")
 
     with tab2:
         # Create 3 columns for better layout
