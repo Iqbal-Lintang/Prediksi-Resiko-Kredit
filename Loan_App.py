@@ -15,6 +15,9 @@ import gdown
 import anthropic
 import os
 import sys
+import re
+import json
+from typing import Dict, Any, Optional
 
 # Set page title and configuration
 st.set_page_config(
@@ -71,89 +74,314 @@ def load_model_from_direct_link():
         st.error(f"Error with direct download: {e}")
         raise e
 
-# OCR Processing Function
-def preprocess_image(image):
-    import cv2
-    import numpy as np
-    
-    # Convert to grayscale
-    gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
-    
-    # Apply thresholding to handle variations in brightness
-    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-    
-    # Noise removal
-    processed = cv2.medianBlur(thresh, 3)
-    
-    return Image.fromarray(processed)
-
-# Use in your app
-if uploaded_file is not None:
-    try:
-        image = Image.open(uploaded_file)
-        processed_image = preprocess_image(image)
-        # Use processed_image for OCR
-    except Exception as e:
-        st.error(f"Error processing image: {e}")
-        
-def process_ocr_form(uploaded_file):
-    """Process the uploaded form using OCR and extract information"""
-    try:
-        # Read the image file
-        image_bytes = uploaded_file.read()
-        nparr = np.frombuffer(image_bytes, np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        
-        # Convert to grayscale
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        # Apply thresholding to improve text detection
-        _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY_INV)
-        
-        # Run OCR on the processed image
-        ocr_text = pytesseract.image_to_string(thresh)
-        
-        # Extract information using regex pattern matching
-        extracted_data = {}
-        
-        # Define patterns for each field
-        patterns = {
-            'Age': r'Age:\s*(\d+)',
-            'Married/Single': r'Married/Single:\s*(married|single)',
-            'Profession': r'Profession:\s*(\w+(?:_\w+)*)',
-            'Experience': r'Experience.*:\s*(\d+)',
-            'Income': r'Income.*:\s*(\d+)',
-            'House_Ownership': r'House Ownership:\s*(owned|rented|norent_noown)',
-            'Car_Ownership': r'Car Ownership:\s*(yes|no)',
-            'STATE': r'State:\s*(\w+(?:_\w+)*)',
-            'CITY': r'City:\s*(\w+(?:_\w+)*)',
-            'CURRENT_HOUSE_YRS': r'Current House Years:\s*(\d+)',
-            'CURRENT_JOB_YRS': r'Current Job Years:\s*(\d+)'
-        }
-        
-        # Extract data using patterns
-        for key, pattern in patterns.items():
-            match = re.search(pattern, ocr_text, re.IGNORECASE)
-            if match:
-                if key in ['Age', 'Experience', 'Income', 'CURRENT_HOUSE_YRS', 'CURRENT_JOB_YRS']:
-                    extracted_data[key] = int(match.group(1))
+        # Function to preprocess the image for better OCR results
+        def preprocess_image(image: Image.Image) -> Image.Image:
+            """
+            Apply image preprocessing techniques to improve OCR accuracy.
+            
+            Args:
+                image: Original uploaded image
+                
+            Returns:
+                Processed image optimized for OCR
+            """
+            # Convert to numpy array if not already
+            img_array = np.array(image)
+            
+            # Convert to grayscale
+            gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
+            
+            # Apply adaptive thresholding to handle variations in brightness
+            thresh = cv2.adaptiveThreshold(
+                gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
+            )
+            
+            # Noise removal
+            processed = cv2.medianBlur(thresh, 3)
+            
+            # Deskew if needed
+            try:
+                coords = np.column_stack(np.where(processed > 0))
+                angle = cv2.minAreaRect(coords)[-1]
+                if angle < -45:
+                    angle = -(90 + angle)
                 else:
-                    extracted_data[key] = match.group(1).lower()
+                    angle = -angle
+                (h, w) = processed.shape[:2]
+                center = (w // 2, h // 2)
+                M = cv2.getRotationMatrix2D(center, angle, 1.0)
+                processed = cv2.warpAffine(
+                    processed, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_REPLICATE
+                )
+            except:
+                # If deskewing fails, continue with the processed image
+                pass
+            
+            return Image.fromarray(processed)
         
-        # Display extracted text for debugging
-        with st.expander("View OCR Raw Text"):
-            st.text(ocr_text)
+        # Function to extract form data from the image
+        def extract_form_data(image: Image.Image) -> Dict[str, Any]:
+            """
+            Extract structured data from loan application form using OCR.
+            
+            Args:
+                image: Preprocessed image
+                
+            Returns:
+                Dictionary containing extracted form fields
+            """
+            # Configure tesseract parameters
+            custom_config = r'--oem 3 --psm 6 -l eng'
+            
+            try:
+                # Get OCR text
+                text = pytesseract.image_to_string(image, config=custom_config)
+                
+                # Initialize data dictionary
+                data = {}
+                
+                # Extract income (for Indian Rupees)
+                income_match = re.search(r'income.*?(?:rupee|rs\.?|inr)?.*?(\d[\d,.]*)k?', 
+                                        text, re.IGNORECASE)
+                if income_match:
+                    # Clean and standardize value
+                    income_str = income_match.group(1).replace(',', '')
+                    try:
+                        income_value = float(income_str)
+                        data["income"] = income_value
+                    except ValueError:
+                        pass
+                
+                # Extract car ownership
+                car_match = re.search(r'car\s*ownership.*?(?::|is|=)\s*(yes|no|true|false|owned|leased)',
+                                     text, re.IGNORECASE)
+                if car_match:
+                    value = car_match.group(1).lower()
+                    if value in ['yes', 'true', 'owned']:
+                        data["car_ownership"] = True
+                    elif value in ['no', 'false', 'leased']:
+                        data["car_ownership"] = False
+                
+                # Extract home ownership status
+                home_match = re.search(r'home.*?(?:ownership|status).*?(?::|is|=)\s*(owned|rented|mortgaged|leased)',
+                                      text, re.IGNORECASE)
+                if home_match:
+                    data["home_status"] = home_match.group(1).lower()
+                
+                # Extract employment status
+                employment_match = re.search(r'employment.*?(?:status|type).*?(?::|is|=)\s*(\w+)',
+                                            text, re.IGNORECASE)
+                if employment_match:
+                    data["employment_status"] = employment_match.group(1).lower()
+                
+                # Extract loan purpose
+                purpose_match = re.search(r'loan\s*purpose.*?(?::|is|=)\s*([a-zA-Z\s]+)',
+                                         text, re.IGNORECASE)
+                if purpose_match:
+                    data["loan_purpose"] = purpose_match.group(1).strip()
+                
+                # Extract applicant name
+                name_match = re.search(r'(?:applicant|name).*?(?::|is|=)\s*([a-zA-Z\s]+)',
+                                      text, re.IGNORECASE)
+                if name_match:
+                    data["applicant_name"] = name_match.group(1).strip()
+                    
+                # Extract credit score if present
+                credit_match = re.search(r'credit\s*score.*?(?::|is|=)\s*(\d{3,})',
+                                        text, re.IGNORECASE)
+                if credit_match:
+                    try:
+                        data["credit_score"] = int(credit_match.group(1))
+                    except ValueError:
+                        pass
+                
+                return data
+            
+            except Exception as e:
+                st.error(f"OCR processing error: {str(e)}")
+                return {}
         
-        # Display extracted data
-        with st.expander("View Extracted Data"):
-            st.json(extracted_data)
+        # Function to assess image quality
+        def assess_image_quality(image: Image.Image) -> Dict[str, Any]:
+            """
+            Analyze image quality to determine if it's suitable for OCR.
+            
+            Args:
+                image: Original image
+                
+            Returns:
+                Dictionary with quality metrics and suggestions
+            """
+            img_array = np.array(image)
+            
+            # Check resolution
+            height, width = img_array.shape[:2]
+            resolution_ok = width >= 1000 and height >= 1000
+            
+            # Check brightness/contrast
+            if len(img_array.shape) == 3:
+                gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
+            else:
+                gray = img_array
+            
+            brightness = np.mean(gray)
+            contrast = np.std(gray)
+            
+            brightness_ok = 90 < brightness < 200
+            contrast_ok = contrast > 40
+            
+            # Calculate blur detection (Laplacian variance)
+            laplacian = cv2.Laplacian(gray, cv2.CV_64F)
+            blur_score = np.var(laplacian)
+            blur_ok = blur_score > 100
+            
+            quality_report = {
+                "resolution_ok": resolution_ok,
+                "brightness_ok": brightness_ok,
+                "contrast_ok": contrast_ok,
+                "blur_ok": blur_ok,
+                "resolution": (width, height),
+                "brightness": brightness,
+                "contrast": contrast,
+                "blur_score": blur_score,
+                "overall_ok": resolution_ok and brightness_ok and contrast_ok and blur_ok
+            }
+            
+            return quality_report
         
-        return extracted_data
-    
-    except Exception as e:
-        st.error(f"OCR Processing Error: {e}")
-        return {}
-
+        # Function to display image quality report with recommendations
+        def display_quality_report(report: Dict[str, Any]) -> None:
+            """Display image quality report with recommendations for improvement"""
+            
+            st.subheader("Image Quality Analysis")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.metric("Resolution", f"{report['resolution'][0]}x{report['resolution'][1]}px", 
+                         delta="Good" if report['resolution_ok'] else "Low")
+                st.metric("Brightness", f"{report['brightness']:.1f}", 
+                         delta="Good" if report['brightness_ok'] else "Poor")
+                
+            with col2:
+                st.metric("Contrast", f"{report['contrast']:.1f}", 
+                         delta="Good" if report['contrast_ok'] else "Low")
+                st.metric("Blur Score", f"{report['blur_score']:.1f}", 
+                         delta="Clear" if report['blur_ok'] else "Blurry")
+            
+            if not report['overall_ok']:
+                st.warning("Image quality issues detected")
+                
+                tips = []
+                if not report['resolution_ok']:
+                    tips.append("• Use a higher resolution image (at least 1000x1000 pixels)")
+                if not report['brightness_ok']:
+                    if report['brightness'] < 90:
+                        tips.append("• Image is too dark. Increase lighting when scanning")
+                    else:
+                        tips.append("• Image is too bright. Reduce exposure when scanning")
+                if not report['contrast_ok']:
+                    tips.append("• Low contrast detected. Ensure form is printed with dark text on white background")
+                if not report['blur_ok']:
+                    tips.append("• Image appears blurry. Hold camera steady and ensure proper focus")
+                    
+                st.info("Recommendations for better results:\n" + "\n".join(tips))
+        
+        # Main application logic
+        def main():
+            """Main application function"""
+            
+            st.write("Upload a loan application form to extract relevant information.")
+            
+            # File uploader
+            uploaded_file = st.file_uploader("Choose an image of the form", 
+                                            type=["jpg", "jpeg", "png", "bmp", "tiff"])
+            
+            # Show sample form option
+            st.markdown("---")
+            use_sample = st.checkbox("Use sample form instead")
+            
+            # Process image
+            if uploaded_file is not None or use_sample:
+                try:
+                    # Get image (either uploaded or sample)
+                    if use_sample:
+                        # Use a sample image (you'd need to have this in your assets)
+                        image = Image.open("sample_loan_form.jpg")
+                        st.info("Using sample form image")
+                    else:
+                        image = Image.open(uploaded_file)
+                    
+                    # Display original image
+                    st.subheader("Original Image")
+                    st.image(image, width=400)
+                    
+                    # Check image quality
+                    quality_report = assess_image_quality(image)
+                    display_quality_report(quality_report)
+                    
+                    # Process image if quality is acceptable or user wants to proceed anyway
+                    if quality_report['overall_ok'] or st.button("Process Anyway"):
+                        with st.spinner("Preprocessing image..."):
+                            # Preprocess image
+                            processed_image = preprocess_image(image)
+                        
+                        # Show processed image
+                        st.subheader("Preprocessed Image")
+                        st.image(processed_image, width=400)
+                        
+                        # Extract data
+                        with st.spinner("Extracting data from form..."):
+                            extracted_data = extract_form_data(processed_image)
+                        
+                        # Display results
+                        st.subheader("Extracted Data")
+                        
+                        if not extracted_data:
+                            st.error("Failed to extract any data from the form.")
+                            st.info("""
+                            Suggestions:
+                            - Make sure the form is well-aligned and properly lit
+                            - Ensure text is clearly visible and not blurry
+                            - Try using a higher resolution image
+                            - Confirm the form contains standard loan application fields
+                            """)
+                        else:
+                            # Display extracted fields
+                            st.json(extracted_data)
+                            
+                            # Allow download of JSON
+                            st.download_button(
+                                label="Download Extracted Data (JSON)",
+                                data=json.dumps(extracted_data, indent=4),
+                                file_name="loan_application_data.json",
+                                mime="application/json"
+                            )
+                            
+                            # Show confidence about extraction
+                            expected_fields = ["income", "car_ownership", "home_status", 
+                                              "employment_status", "loan_purpose", "applicant_name"]
+                            found_fields = sum(1 for field in expected_fields if field in extracted_data)
+                            confidence = (found_fields / len(expected_fields)) * 100
+                            
+                            st.progress(int(confidence))
+                            st.write(f"Extraction confidence: {confidence:.1f}% ({found_fields}/{len(expected_fields)} fields found)")
+                            
+                            if confidence < 70:
+                                st.warning("Some fields could not be extracted. Review the results carefully.")
+                        
+                        # Show raw OCR text for debugging
+                        with st.expander("Show Raw OCR Text"):
+                            custom_config = r'--oem 3 --psm 6'
+                            raw_text = pytesseract.image_to_string(processed_image, config=custom_config)
+                            st.text(raw_text)
+                
+                except Exception as e:
+                    st.error(f"Error processing image: {str(e)}")
+                    st.info("Please try a different image or check if the file is valid.")
+        
+        if __name__ == "__main__":
+            main()
 # Context-aware chatbot function (same as original)
 def chatbot_with_context(risk_data=None, key_suffix="default"):
     st.header("CrediBot - Asisten Virtual")
