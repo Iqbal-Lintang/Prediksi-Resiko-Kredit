@@ -29,12 +29,12 @@ with col2:
 
 # Context-aware chatbot function
 def chatbot_with_context(risk_data=None):
-    st.header("Asisten Pinjaman Cerdas")
+    st.header("CrediBot - Asisten Virtual")
     
     # Initialize conversation
     if "messages" not in st.session_state:
         st.session_state.messages = [
-            {"role": "assistant", "content": "Halo! Saya asisten virtual yang dapat membantu menjawab pertanyaan tentang aplikasi pinjaman Anda. Apa yang ingin Anda ketahui?"}
+            {"role": "assistant", "content": "Halo! Saya CrediBot asisten virtual Anda yang dapat membantu menjawab pertanyaan tentang calon debitur. Apa yang ingin Anda ketahui?"}
         ]
     
     # Display conversation
@@ -75,8 +75,7 @@ def chatbot_with_context(risk_data=None):
         with st.spinner("Menyiapkan jawaban..."):
             try:
                 # Get the API key from secrets
-                api_key = st.secrets["ANTHROPIC_API_KEY"]
-                client = anthropic.Anthropic(api_key=api_key)
+                api_key = st.secrets["OPENAI_API_KEY"]
                 
                 system_prompt = f"""
                 Anda adalah asisten pinjaman yang membantu menjelaskan proses aplikasi kredit dan faktor risiko.
@@ -85,22 +84,22 @@ def chatbot_with_context(risk_data=None):
                 {context}
                 """
                 
-                response = client.messages.create(
-                    model="claude-3-haiku-20240307",
-                    max_tokens=500,
-                    system=system_prompt,
+                response = openai.ChatCompletion.create(
+                    model="gpt-3.5-turbo",  # Lebih hemat daripada GPT-4
                     messages=[
+                        {"role": "system", "content": system_prompt},
                         {"role": "user", "content": prompt}
-                    ]
+                    ],
+                    max_tokens=300,  # Batasi token output agar lebih hemat
+                    temperature=0.7  # Seimbang antara kreativitas dan konsistensi
                 )
-                answer = response.content[0].text
                 
-                # Add response to history
-                st.session_state.messages.append({"role": "assistant", "content": answer})
-                
-                # Display response
-                with st.chat_message("assistant"):
-                    st.write(answer)
+                answer = response["choices"][0]["message"]["content"]
+            
+            except Exception as e:
+                answer = f"Terjadi kesalahan: {str(e)}"
+        
+        st.write(answer)
                     
             except Exception as e:
                 st.error(f"Error: {e}")
