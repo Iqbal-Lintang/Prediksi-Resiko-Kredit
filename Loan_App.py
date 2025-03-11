@@ -12,12 +12,12 @@ import gdown
 # Set page title and configuration
 st.set_page_config(
     page_title="Loan Risk Prediction Model",
-    page_icon="https://i.imgur.com/jcLUY6v.png",
+    page_icon="https://i.imgur.com/HQ6nTcZ.png",
     layout="wide"
 )
 
 # Define logo URL
-logo_url = "https://i.imgur.com/jcLUY6v.png"
+logo_url = "https://i.imgur.com/HQ6nTcZ.png"
 
 # Display logo and title in a row
 col1, col2 = st.columns([1, 5])
