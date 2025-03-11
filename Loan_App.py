@@ -210,14 +210,16 @@ if st.button("Prediksi Resiko"):
     try:
         # Check if model has feature_names_in_ attribute and ensure columns match
         if hasattr(model, 'feature_names_in_'):
-            st.write("Model expected features:", model.feature_names_in_)
+            with st.expander("Model Feature Information"):
+                st.write("Model expected features:", model.feature_names_in_)
             
             # Check if all expected features are in the right order
             input_cols = list(input_data.columns)
             if list(model.feature_names_in_) != input_cols:
-                st.write("Feature order mismatch!")
-                st.write("Expected order:", list(model.feature_names_in_))
-                st.write("Provided order:", input_cols)
+                with st.expander("Feature Order Information"):
+                    st.write("Feature order mismatch - reordering columns to match model expectations")
+                    st.write("Expected order:", list(model.feature_names_in_))
+                    st.write("Provided order:", input_cols)
                 
                 # Reorder columns to match expected order
                 input_data = input_data[model.feature_names_in_]
@@ -451,7 +453,7 @@ if st.button("Prediksi Resiko"):
         explanation_text = """
         Penilaian risiko didasarkan pada beberapa faktor termasuk stabilitas keuangan, tingkat pendapatan, stabilitas pekerjaan, stabilitas rumah, kepemilikan aset, umur, dan pengalaman kerja. 
         
-        Model ini menggunakan ambang batas 0,3 untuk klasifikasi risiko, yang lebih konservatif daripada ambang batas standar 0,5 untuk meminimalkan hasil negatif palsu.
+        Model ini menggunakan ambang batas 0,28 untuk klasifikasi risiko, yang lebih konservatif daripada ambang batas standar 0,5 untuk meminimalkan hasil negatif palsu.
         """
         
         st.info(explanation_text)
