@@ -26,9 +26,6 @@ with col1:
 with col2:
     st.title("Aplikasi Prediksi Resiko Debitur")
 
-# App description
-st.markdown("Aplikasi Ini Memprediksi Resiko Calon Debitur")
-
 # Function to download model from Google Drive
 @st.cache_resource
 def load_model_from_gdrive():
