@@ -503,7 +503,10 @@ if __name__ == "__main__":
             # Process with OCR
             if st.button("Process OCR"):
                 with st.spinner("Processing OCR..."):
-                    extracted_data = process_ocr_form(uploaded_file)
+                    if uploaded_file is not None:
+                    image = Image.open(uploaded_file)
+                    processed_image = preprocess_image(image)
+                    extracted_data = extract_form_data(processed_image)
                     if extracted_data:
                         st.session_state.form_data = extracted_data
                         st.success("Form processed successfully! Data extracted and ready for use.")
