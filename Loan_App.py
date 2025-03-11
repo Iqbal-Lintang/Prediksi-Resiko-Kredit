@@ -69,7 +69,11 @@ try:
         # First try the direct link method if you have one configured in secrets
         try:
             model = load_model_from_direct_link()
-        except:
+        except Exception as direct_link_error:
+            # Only show error if it's not about missing URL
+            if "No direct URL provided" not in str(direct_link_error):
+                st.warning(f"Direct link error: {direct_link_error}. Trying Google Drive method...")
+            
             # Fall back to Google Drive method
             model = load_model_from_gdrive()
     
