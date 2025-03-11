@@ -1,4 +1,5 @@
 streamlit
+opencv-python
 pandas
 numpy
 joblib
@@ -8,4 +9,3 @@ gdown
 scikit-learn
 anthropic
 reportlab
-cv2
