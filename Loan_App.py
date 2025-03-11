@@ -72,6 +72,30 @@ def load_model_from_direct_link():
         raise e
 
 # OCR Processing Function
+def preprocess_image(image):
+    import cv2
+    import numpy as np
+    
+    # Convert to grayscale
+    gray = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2GRAY)
+    
+    # Apply thresholding to handle variations in brightness
+    thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+    
+    # Noise removal
+    processed = cv2.medianBlur(thresh, 3)
+    
+    return Image.fromarray(processed)
+
+# Use in your app
+if uploaded_file is not None:
+    try:
+        image = Image.open(uploaded_file)
+        processed_image = preprocess_image(image)
+        # Use processed_image for OCR
+    except Exception as e:
+        st.error(f"Error processing image: {e}")
+        
 def process_ocr_form(uploaded_file):
     """Process the uploaded form using OCR and extract information"""
     try:
