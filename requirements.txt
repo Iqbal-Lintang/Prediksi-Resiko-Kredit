@@ -8,3 +8,4 @@ gdown
 scikit-learn
 anthropic
 reportlab
+cv2
