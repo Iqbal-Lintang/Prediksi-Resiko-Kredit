@@ -462,7 +462,7 @@ if st.button("Prediksi Resiko"):
         explanation_text = """
         Penilaian risiko didasarkan pada beberapa faktor termasuk stabilitas keuangan, tingkat pendapatan, stabilitas pekerjaan, stabilitas rumah, kepemilikan aset, umur, dan pengalaman kerja. 
         
-        Model ini menggunakan ambang batas 0,28 untuk klasifikasi risiko, yang lebih konservatif daripada ambang batas standar 0,5 untuk meminimalkan hasil negatif palsu.
+        Model ini menggunakan ambang batas 0.28 untuk klasifikasi risiko, yang lebih konservatif daripada ambang batas standar 0.5 untuk meminimalkan hasil negatif palsu.
         """
         
         st.info(explanation_text)
