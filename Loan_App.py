@@ -123,8 +123,8 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
             try:
                 response = client.messages.create(
                     model="claude-3-haiku-20240307",
-                    max_tokens=200,  # Limit to save cost
-                    temperature=0.5,
+                    max_tokens=400,  # Limit to save cost
+                    temperature=0.8,
                     system="Anda adalah asisten pinjaman yang memberikan saran tentang penilaian risiko kredit.",
                     messages=[{"role": "user", "content": f"{context}\n{prompt}"}]
                 )
