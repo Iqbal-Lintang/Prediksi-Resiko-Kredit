@@ -586,13 +586,6 @@ if __name__ == "__main__":
                     else:
                         st.write("Tidak ada faktor risiko signifikan yang teridentifikasi.")
             
-            with col2:
-                with st.expander("Probabilitas & Penyesuaian", expanded=True):
-                    st.write(f"Model Base Probability: {risk_probability:.2%}")
-                    st.write(f"Risk Adjustment: {risk_adjustment:.2%}")
-                    st.write(f"Final Adjusted Probability: {adjusted_risk_probability:.2%}")
-                    st.write(f"Risk Threshold: {risk_threshold:.2%}")
-            
             # Add recommendations section
             st.subheader("Rekomendasi")
             
