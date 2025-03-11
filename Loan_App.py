@@ -655,7 +655,7 @@ if __name__ == "__main__":
             
             # Chatbot recommendation
             st.info("""
-            📱 Gunakan asisten AI kami di tab 'CrediBot' untuk informasi lebih lanjut tentang hasil analisis ini 
+            📱 Gunakan asisten AI kami di tab ['CrediBot'](#tab3) untuk informasi lebih lanjut tentang hasil analisis ini 
             dan rekomendasi khusus untuk kasus Anda.
             """)
         
