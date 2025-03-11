@@ -11,5 +11,3 @@ anthropic
 reportlab
 pillow
 pytesseract
-opencv-python
-PIL
