@@ -16,19 +16,17 @@ st.set_page_config(
     layout="wide"
 )
 
-# Construct the raw URL
+# Define logo URL
 logo_url = "https://i.imgur.com/jcLUY6v.png"
-st.image(logo_url, width=100)
 
-# Use the URL in your app
+# Display logo and title in a row
 col1, col2 = st.columns([1, 5])
 with col1:
     st.image(logo_url, width=100)
 with col2:
     st.title("Aplikasi Prediksi Resiko Debitur")
-    
-# App title and description
-st.title("Aplikasi Prediksi Resiko Debitur")
+
+# App description
 st.markdown("Aplikasi Ini Memprediksi Resiko Calon Debitur")
 
 # Function to download model from Google Drive
@@ -36,17 +34,13 @@ st.markdown("Aplikasi Ini Memprediksi Resiko Calon Debitur")
 def load_model_from_gdrive():
     """Load model from Google Drive"""
     try:
-        # Google Drive file ID from your shared link
         file_id = "1O6mDaL3ptQSR0YHdMgrCjlNjvJzeVXbc"
-        
-        # Use gdown to download the file
         output = "calibrated_risk_prediction_model.pkl"
         url = f"https://drive.google.com/uc?id={file_id}"
         
         with st.spinner("Downloading model from Google Drive... This may take a moment."):
             gdown.download(url, output, quiet=False)
         
-        # Load the model
         return joblib.load(output)
     except Exception as e:
         st.error(f"Error downloading or loading model: {e}")
