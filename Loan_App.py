@@ -9,6 +9,8 @@ import requests
 import io
 import gdown
 import anthropic
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # Set page title and configuration (Must be the first Streamlit command)
 st.set_page_config(
@@ -139,6 +141,26 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
 
         # Save response to session history
         st.session_state[message_key].append({"role": "assistant", "content": answer})
+
+#Download Report
+def generate_pdf_report(name, risk_score, risk_factors):
+    buffer = io.BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=letter)
+    
+    pdf.setFont("Helvetica", 12)
+    pdf.drawString(100, 750, "Loan Risk Assessment Report")
+    pdf.drawString(100, 730, f"Name: {name}")
+    pdf.drawString(100, 710, f"Risk Score: {risk_score:.2%}")
+    pdf.drawString(100, 690, "Risk Factors:")
+    
+    y_position = 670
+    for factor in risk_factors:
+        pdf.drawString(120, y_position, f"- {factor}")
+        y_position -= 20
+    
+    pdf.save()
+    buffer.seek(0)
+    return buffer
 
 # Main application execution
 if __name__ == "__main__":
@@ -564,6 +586,16 @@ if __name__ == "__main__":
                         st.markdown(f"- {factor}")
                 else:
                     st.markdown("Tidak Ada Resiko Signifikan")
+
+            #Download Report
+            if st.button("Download PDF Report"):
+                pdf_buffer = generate_pdf_report("User", risk_score, risk_factors)
+                st.download_button(
+                    label="Download Report as PDF",
+                    data=pdf_buffer,
+                    file_name="loan_risk_report.pdf",
+                    mime="application/pdf"
+                )
 
             explanation_text = """
             Penilaian risiko didasarkan pada beberapa faktor termasuk stabilitas keuangan, tingkat pendapatan, stabilitas pekerjaan, stabilitas rumah, kepemilikan aset, umur, dan pengalaman kerja. 
