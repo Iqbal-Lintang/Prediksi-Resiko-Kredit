@@ -170,11 +170,8 @@ if __name__ == "__main__":
         """)
         st.stop()
 
-    # Create input form
-    st.header("Masukan Informasi Calon Debitur")
-
     # Create tabs for better organization - now three tabs including chatbot
-    tab1, tab2, tab3 = st.tabs(["Informasi Calon Debitur", "Stability Metrics", "Asisten Virtual"])
+    tab1, tab2, tab3 = st.tabs(["Informasi Calon Debitur", "Stability Metrics", "CrediBot"])
 
     with tab1:
         # Create 3 columns for better layout
