@@ -34,7 +34,7 @@ col1, col2 = st.columns([1, 5])
 with col1:
     st.image(logo_url, width=100)
 with col2:
-    st.title("Aplikasi Prediksi Resiko Debitur dengan OCR")
+    st.title("Aplikasi Prediksi Resiko Debitur")
 
 # Function to load model from Google Drive (same as original)
 @st.cache_resource
