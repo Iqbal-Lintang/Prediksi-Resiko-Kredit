@@ -118,7 +118,7 @@ def load_model_from_direct_link():
                 pass
             
             return Image.fromarray(processed)
-        
+    
         # Function to extract form data from the image
         def extract_form_data(image: Image.Image) -> Dict[str, Any]:
             """
