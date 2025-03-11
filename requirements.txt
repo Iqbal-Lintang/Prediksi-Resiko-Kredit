@@ -7,3 +7,4 @@ seaborn
 gdown
 scikit-learn
 anthropic
+reportlab
