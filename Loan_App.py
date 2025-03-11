@@ -12,12 +12,14 @@ import gdown
 # Set page title and configuration
 st.set_page_config(
     page_title="Loan Risk Prediction Model",
-    page_icon="https://drive.google.com/uc?export=view&id=1danCeVNbhEn7PsfR2koe2z6dXkzhcyjR",
+    page_icon="https://raw.githubusercontent.com/Iqbal-Lintang/Prediksi-Resiko-Kredit/main/Logo%20Tri%20Hita%20Karana.png",
     layout="wide"
 )
 
 # Construct the raw URL
-logo_url = f"https://drive.google.com/uc?export=view&id=1danCeVNbhEn7PsfR2koe2z6dXkzhcyjR"
+logo_url = "https://raw.githubusercontent.com/Iqbal-Lintang/Prediksi-Resiko-Kredit/main/Logo%20Tri%20Hita%20Karana.png"
+st.image(logo_url, width=100)
+
 
 # Use the URL in your app
 col1, col2 = st.columns([1, 5])
