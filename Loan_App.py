@@ -634,11 +634,6 @@ if __name__ == "__main__":
                     # Income to age ratio - a rough metric of earning power
                     income_age_ratio = income / age if age > 0 else 0
                     st.markdown(f"**Income to Age Ratio:** {income_age_ratio:,.0f}")
-                    
-                    # Calculate debt service ratio (fictional for this demo)
-                    # In a real app, this would come from actual data
-                    fictional_debt_ratio = 0.25 if income > 5000000 else (0.35 if income > 2500000 else 0.45)
-                    st.markdown(f"**Est. Debt Service Ratio:** {fictional_debt_ratio:.2f}")
                 
                 with col2:
                     st.subheader("Stabilitas Pekerjaan & Tempat Tinggal")
