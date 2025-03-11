@@ -125,7 +125,7 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
                     model="claude-3-haiku-20240307",
                     max_tokens=400,  # Limit to save cost
                     temperature=0.8,
-                    system="Anda adalah asisten pinjaman yang memberikan saran tentang penilaian risiko kredit.",
+                    system="Anda adalah asisten pinjaman dari aplikasi prediksi resiko calon debitur yang memberikan saran tentang penilaian risiko kredit menggunakan dataset dari India dan mata uang INR.",
                     messages=[{"role": "user", "content": f"{context}\n{prompt}"}]
                 )
                 answer = response.content[0].text
