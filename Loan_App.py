@@ -71,35 +71,42 @@ def chatbot_with_context(risk_data=None):
             - Faktor risiko utama: {risk_factors_str}
             """
         
-        # Call LLM API with context
-        with st.spinner("Menyiapkan jawaban..."):
-            try:
-                # Get the API key from secrets
-                api_key = st.secrets["OPENAI_API_KEY"]
-                
-                system_prompt = f"""
-                Anda adalah asisten pinjaman yang membantu menjelaskan proses aplikasi kredit dan faktor risiko.
-                Berikan penjelasan yang jelas dan sederhana tentang faktor risiko kredit.
-                Jelaskan bagaimana peminjam dapat meningkatkan profil kredit mereka.
-                {context}
-                """
-                
-                response = openai.ChatCompletion.create(
-                    model="gpt-3.5-turbo",  # Lebih hemat daripada GPT-4
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": prompt}
-                    ],
-                    max_tokens=300,  # Batasi token output agar lebih hemat
-                    temperature=0.7  # Seimbang antara kreativitas dan konsistensi
-                )
-                
-                answer = response["choices"][0]["message"]["content"]
+        # Ambil API Key dari Streamlit Secrets
+            api_key = st.secrets["OPENAI_API_KEY"]
             
-            except Exception as e:
-                answer = f"Terjadi kesalahan: {str(e)}"
-        
-        st.write(answer)
+            # Buat client OpenAI baru
+            client = openai.OpenAI(api_key=api_key)
+            
+            # Sistem prompt untuk asisten pinjaman
+            system_prompt = """
+            Anda adalah asisten pinjaman yang membantu menjelaskan proses aplikasi kredit dan faktor risiko.
+            Berikan penjelasan yang jelas dan sederhana tentang faktor risiko kredit.
+            Jelaskan bagaimana peminjam dapat meningkatkan profil kredit mereka.
+            """
+            
+            # Input dari pengguna
+            prompt = "Bagaimana cara meningkatkan skor kredit saya?"
+            
+            # Panggil API OpenAI
+            with st.spinner("Menyiapkan jawaban..."):
+                try:
+                    response = client.chat.completions.create(
+                        model="gpt-3.5-turbo",  # Bisa diganti ke "gpt-4-turbo" jika perlu
+                        messages=[
+                            {"role": "system", "content": system_prompt},
+                            {"role": "user", "content": prompt}
+                        ],
+                        max_tokens=300,
+                        temperature=0.7
+                    )
+            
+                    # Ambil jawaban dari model
+                    answer = response.choices[0].message.content
+                except Exception as e:
+                    answer = f"Terjadi kesalahan: {str(e)}"
+            
+            # Tampilkan hasil di Streamlit
+            st.write(answer)
 
 # Function to download model from Google Drive
 @st.cache_resource
