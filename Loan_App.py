@@ -518,7 +518,7 @@ if __name__ == "__main__":
                     st.success("Resiko Rendah - Direkomendasikan untuk Approval")
             
             # RISK GAUGE VISUALIZATION Risk gauge visualization
-            with result_col2:
+            with result_col1:
                 # Create two columns (left is wider)
                 gauge_col, right_spacer = st.columns([6, 4])
             
