@@ -642,7 +642,7 @@ if __name__ == "__main__":
                     st.subheader("Stabilitas Pekerjaan & Tempat Tinggal")
                 
                     # Calculate Employment Stability Index (ESI)
-                    employment_stability_index = (years_at_current_job / experience) * 100 if experience > 0 else 0
+                    employment_stability_index = (current_job_yrs / experience) * 100 if experience > 0 else 0
                     st.markdown(f"**Employment Stability Index:** {employment_stability_index:.1f}%")
                     st.progress(min(employment_stability_index, 100) / 100)
                     st.markdown("<p style='font-size:12px; font-style:italic;'>Menunjukkan stabilitas pekerjaan berdasarkan lama bekerja di tempat saat ini dibandingkan dengan total pengalaman kerja.</p>", unsafe_allow_html=True)
