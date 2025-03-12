@@ -185,23 +185,23 @@ def create_prediction_pdf(risk_data, input_data):
     # Risk score and prediction
     pdf.set_font('Arial', 'B', 12)
     risk_text = "HIGH RISK - Not Recommended for Approval" if risk_data['risk_prediction'] == 1 else "LOW RISK - Recommended for Approval"
-    pdf.cell(60, 10, 'Risk Assessment:', 0, 0)
+    pdf.cell(60, 10, 'Risk Assessment:', 0, 0, 'L')
     pdf.set_font('Arial', '', 12)
-    pdf.cell(130, 10, risk_text, 0, 1)
+    pdf.cell(130, 10, risk_text, 0, 1, 'L')
     
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(60, 10, 'Risk Score:', 0, 0)
+    pdf.cell(60, 10, 'Risk Score:', 0, 0, 'L')
     pdf.set_font('Arial', '', 12)
-    pdf.cell(130, 10, f"{risk_data['risk_score']:.2%}", 0, 1)
+    pdf.cell(130, 10, f"{risk_data['risk_score']:.2%}", 0, 1, 'L')
     pdf.ln(5)
     
     # Risk factors
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(190, 10, 'Key Risk Factors:', 0, 1)
+    pdf.cell(190, 10, 'Key Risk Factors:', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
     for factor in risk_data['risk_factors']:
-        pdf.cell(10, 8, '-', 0, 0)
-        pdf.multi_cell(180, 8, factor, 0, 1)
+        pdf.cell(10, 8, '-', 0, 0, 'L')
+        pdf.multi_cell(180, 8, factor, 0, 'L')
     pdf.ln(5)
     
     # Applicant Information Section
@@ -211,33 +211,33 @@ def create_prediction_pdf(risk_data, input_data):
     
     # Personal Information
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(190, 8, 'Personal Information', 0, 1)
+    pdf.cell(190, 8, 'Personal Information', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
     
     # Two-column layout for personal info
-    pdf.cell(60, 8, 'Age:', 0, 0)
-    pdf.cell(40, 8, f"{risk_data['Age']}", 0, 0)
-    pdf.cell(60, 8, 'Marital Status:', 0, 0)
-    pdf.cell(40, 8, f"{risk_data['marital_status']}", 0, 1)
+    pdf.cell(60, 8, 'Age:', 0, 0, 'L')
+    pdf.cell(40, 8, f"{risk_data['Age']}", 0, 0, 'L')
+    pdf.cell(60, 8, 'Marital Status:', 0, 0, 'L')
+    pdf.cell(40, 8, f"{risk_data['marital_status']}", 0, 1, 'L')
     
-    pdf.cell(60, 8, 'Profession:', 0, 0)
-    pdf.cell(40, 8, f"{risk_data['profession']}", 0, 0)
-    pdf.cell(60, 8, 'Experience:', 0, 0)
-    pdf.cell(40, 8, f"{risk_data['experience']} years", 0, 1)
+    pdf.cell(60, 8, 'Profession:', 0, 0, 'L')
+    pdf.cell(40, 8, f"{risk_data['profession']}", 0, 0, 'L')
+    pdf.cell(60, 8, 'Experience:', 0, 0, 'L')
+    pdf.cell(40, 8, f"{risk_data['experience']} years", 0, 1, 'L')
     
-    pdf.cell(60, 8, 'Income:', 0, 0)
-    pdf.cell(130, 8, f"₹{risk_data['Income']:,}", 0, 1)
+    pdf.cell(60, 8, 'Income:', 0, 0, 'L')
+    pdf.cell(130, 8, f"₹{risk_data['Income']:,}", 0, 1, 'L')
     pdf.ln(5)
     
     # Stability Metrics
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(190, 8, 'Stability Metrics', 0, 1)
+    pdf.cell(190, 8, 'Stability Metrics', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
     
-    pdf.cell(60, 8, 'Job Stability:', 0, 0)
-    pdf.cell(40, 8, f"{risk_data['job_stability']:.4f}", 0, 0)
-    pdf.cell(60, 8, 'Home Stability:', 0, 0)
-    pdf.cell(40, 8, f"{risk_data['home_stability']:.4f}", 0, 1)
+    pdf.cell(60, 8, 'Job Stability:', 0, 0, 'L')
+    pdf.cell(40, 8, f"{risk_data['job_stability']:.4f}", 0, 0, 'L')
+    pdf.cell(60, 8, 'Home Stability:', 0, 0, 'L')
+    pdf.cell(40, 8, f"{risk_data['home_stability']:.4f}", 0, 1, 'L')
     pdf.ln(5)
     
     # Recommendations
@@ -263,8 +263,8 @@ def create_prediction_pdf(risk_data, input_data):
         ]
     
     for rec in recommendations:
-        pdf.cell(10, 8, '-', 0, 0)
-        pdf.multi_cell(180, 8, rec, 0, 1)
+        pdf.cell(10, 8, '-', 0, 0, 'L')
+        pdf.multi_cell(180, 8, rec, 0, 'L')
     
     # Footer
     pdf.set_y(-30)
