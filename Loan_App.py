@@ -226,7 +226,8 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(40, 8, f"{risk_data['experience']} years", 0, 1, 'L')
     
     pdf.cell(60, 8, 'Income:', 0, 0, 'L')
-    pdf.cell(130, 8, f"₹{risk_data['Income']:,}", 0, 1, 'L')
+    # Replace rupee symbol with INR abbreviation
+    pdf.cell(130, 8, f"INR {risk_data['Income']:,}", 0, 1, 'L')
     pdf.ln(5)
     
     # Stability Metrics
