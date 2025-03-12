@@ -34,7 +34,18 @@ col1, col2 = st.columns([1, 5])
 with col1:
     st.image(logo_url, width=100)
 with col2:
+    # Title
     st.title("Lendora – AI Powered Lending Intelligence")
+    
+    # Elegant tagline with styling
+    st.markdown(
+        """
+        <h4 style="text-align:center; color:#666; font-style:italic;">
+            Smarter Lending, Safer Decisions.
+        </h4>
+        """,
+        unsafe_allow_html=True
+    )
 
 # LOAD MODEL FROM GOOGLE DRIVE Function to load model from Google Drive (same as original)
 @st.cache_resource
