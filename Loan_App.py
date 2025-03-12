@@ -169,21 +169,6 @@ def create_prediction_pdf(risk_data, input_data):
     pdf = FPDF(orientation='P', unit='mm', format='A4')
     pdf.set_auto_page_break(auto=True, margin=30)  # Ensure proper page breaks
     pdf.add_page()
-
-    # Add logo at top left
-    logo_url = "https://i.imgur.com/8RKgXU5.png"
-    try:
-        # Add logo from URL - requires urllib and io modules
-        import urllib.request
-        import io
-        with urllib.request.urlopen(logo_url) as url:
-            img_data = url.read()
-            img_file = io.BytesIO(img_data)
-            pdf.image(img_file, x=10, y=10, w=30)  # Adjust width as needed
-    except:
-        # If logo loading fails, leave space but continue
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(30, 15, 'LOGO', 1, 0, 'C')
     
     # Add header and title
     pdf.set_font('Arial', 'B', 16)
