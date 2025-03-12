@@ -546,8 +546,8 @@ if __name__ == "__main__":
         download_button = get_download_link(st.session_state.risk_data, full_input_data)
         st.markdown(download_button, unsafe_allow_html=True)
             
-            # Add instructions for using the report
-            st.info("""
+        # Add instructions for using the report
+        st.info("""
             **Report Usage Instructions:**
             - The PDF report contains all input data and risk assessment results
             - Ideal for sharing with loan officers or keeping for your records
