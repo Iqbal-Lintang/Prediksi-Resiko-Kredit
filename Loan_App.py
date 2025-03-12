@@ -216,13 +216,10 @@ if __name__ == "__main__":
                                         value=st.session_state.form_data.get('Experience', 5))
             
         # FINANCIAL INFORMATION TAB 1    
-        with col2:
-        
+        with col2:    
             st.subheader("Informasi Finansial")
 
             #INCOME 
-            st.subheader("Informasi Finansial")
-
             income = st.slider(
                 "Income (Rupee India)", 
                 min_value=1000, 
