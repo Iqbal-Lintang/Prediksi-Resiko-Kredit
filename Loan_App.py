@@ -200,7 +200,7 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(190, 10, 'Key Risk Factors:', 0, 1)
     pdf.set_font('Arial', '', 12)
     for factor in risk_data['risk_factors']:
-        pdf.cell(10, 8, '•', 0, 0)
+        pdf.cell(10, 8, '-', 0, 0)
         pdf.multi_cell(180, 8, factor, 0, 1)
     pdf.ln(5)
     
@@ -263,7 +263,7 @@ def create_prediction_pdf(risk_data, input_data):
         ]
     
     for rec in recommendations:
-        pdf.cell(10, 8, '•', 0, 0)
+        pdf.cell(10, 8, '-', 0, 0)
         pdf.multi_cell(180, 8, rec, 0, 1)
     
     # Footer
