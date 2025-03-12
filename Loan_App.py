@@ -19,6 +19,9 @@ import re
 import json
 from typing import Dict, Any, Optional
 import time
+from fpdf import FPDF
+import base64
+from datetime import datetime
 
 # TITLE Set page title and configuration
 st.set_page_config(
@@ -149,7 +152,154 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
         # Save response to session history
         st.session_state[message_key].append({"role": "assistant", "content": answer})
 
+# DOWNLOAD REPORT FUNCTION
 
+def create_prediction_pdf(risk_data, input_data):
+    """
+    Create a PDF report of prediction results and input data
+    
+    Parameters:
+    risk_data (dict): Dictionary containing risk assessment results
+    input_data (dict): Dictionary containing all input parameters used for prediction
+    
+    Returns:
+    bytes: PDF file as bytes that can be downloaded
+    """
+    # Create PDF object
+    pdf = FPDF()
+    pdf.add_page()
+    
+    # Add header and title
+    pdf.set_font('Arial', 'B', 16)
+    pdf.cell(190, 10, 'Loan Risk Assessment Report', 0, 1, 'C')
+    pdf.set_font('Arial', 'I', 10)
+    pdf.cell(190, 10, f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 0, 1, 'C')
+    pdf.line(10, 30, 200, 30)
+    pdf.ln(10)
+    
+    # Add risk prediction result
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(190, 10, 'Risk Assessment Result', 0, 1, 'L')
+    pdf.set_font('Arial', '', 12)
+    
+    # Risk score and prediction
+    pdf.set_font('Arial', 'B', 12)
+    risk_text = "HIGH RISK - Not Recommended for Approval" if risk_data['risk_prediction'] == 1 else "LOW RISK - Recommended for Approval"
+    pdf.cell(60, 10, 'Risk Assessment:', 0, 0)
+    pdf.set_font('Arial', '', 12)
+    pdf.cell(130, 10, risk_text, 0, 1)
+    
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(60, 10, 'Risk Score:', 0, 0)
+    pdf.set_font('Arial', '', 12)
+    pdf.cell(130, 10, f"{risk_data['risk_score']:.2%}", 0, 1)
+    pdf.ln(5)
+    
+    # Risk factors
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(190, 10, 'Key Risk Factors:', 0, 1)
+    pdf.set_font('Arial', '', 12)
+    for factor in risk_data['risk_factors']:
+        pdf.cell(10, 8, '•', 0, 0)
+        pdf.multi_cell(180, 8, factor, 0, 1)
+    pdf.ln(5)
+    
+    # Applicant Information Section
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(190, 10, 'Applicant Information', 0, 1, 'L')
+    pdf.ln(2)
+    
+    # Personal Information
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(190, 8, 'Personal Information', 0, 1)
+    pdf.set_font('Arial', '', 12)
+    
+    # Two-column layout for personal info
+    pdf.cell(60, 8, 'Age:', 0, 0)
+    pdf.cell(40, 8, f"{risk_data['Age']}", 0, 0)
+    pdf.cell(60, 8, 'Marital Status:', 0, 0)
+    pdf.cell(40, 8, f"{risk_data['marital_status']}", 0, 1)
+    
+    pdf.cell(60, 8, 'Profession:', 0, 0)
+    pdf.cell(40, 8, f"{risk_data['profession']}", 0, 0)
+    pdf.cell(60, 8, 'Experience:', 0, 0)
+    pdf.cell(40, 8, f"{risk_data['experience']} years", 0, 1)
+    
+    pdf.cell(60, 8, 'Income:', 0, 0)
+    pdf.cell(130, 8, f"₹{risk_data['Income']:,}", 0, 1)
+    pdf.ln(5)
+    
+    # Stability Metrics
+    pdf.set_font('Arial', 'B', 12)
+    pdf.cell(190, 8, 'Stability Metrics', 0, 1)
+    pdf.set_font('Arial', '', 12)
+    
+    pdf.cell(60, 8, 'Job Stability:', 0, 0)
+    pdf.cell(40, 8, f"{risk_data['job_stability']:.4f}", 0, 0)
+    pdf.cell(60, 8, 'Home Stability:', 0, 0)
+    pdf.cell(40, 8, f"{risk_data['home_stability']:.4f}", 0, 1)
+    pdf.ln(5)
+    
+    # Recommendations
+    pdf.set_font('Arial', 'B', 14)
+    pdf.cell(190, 10, 'Recommendations', 0, 1, 'L')
+    pdf.set_font('Arial', '', 12)
+    
+    if risk_data['risk_prediction'] == 1:
+        recommendations = [
+            "Review Loan Amount: Consider reducing the requested amount.",
+            "Request Additional Collateral: To mitigate risk.",
+            "Extra Document Verification: Perform additional checks.",
+            "Full Credit History Review: Check complete credit history.",
+            "Consider Spouse Income: To assess repayment capability."
+        ]
+    else:
+        recommendations = [
+            "Standard Approval Process: Can be processed with standard procedures.",
+            "Consider Special Offers: Good quality borrower.",
+            "Minimum Documentation: Standard documents are sufficient.",
+            "Fast-Track Processing: Can be placed in fast track.",
+            "Cross-selling Opportunity: Consider offering other products."
+        ]
+    
+    for rec in recommendations:
+        pdf.cell(10, 8, '•', 0, 0)
+        pdf.multi_cell(180, 8, rec, 0, 1)
+    
+    # Footer
+    pdf.set_y(-30)
+    pdf.set_font('Arial', 'I', 8)
+    pdf.cell(0, 10, 'This is an automated risk assessment report. Further review by a loan officer is recommended.', 0, 1, 'C')
+    pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
+    
+    # Return PDF as bytes
+    return pdf.output(dest='S').encode('latin1')
+
+def get_download_link(risk_data, input_data):
+    """
+    Generate a download link for the PDF report
+    
+    Parameters:
+    risk_data (dict): Dictionary containing risk assessment results
+    input_data (dict): Dictionary containing all input parameters used for prediction
+    
+    Returns:
+    str: HTML link for downloading the PDF
+    """
+    # Generate PDF
+    pdf_bytes = create_prediction_pdf(risk_data, input_data)
+    
+    # Encode PDF to base64
+    b64 = base64.b64encode(pdf_bytes).decode()
+    
+    # Generate file name with datetime
+    file_name = f"loan_risk_assessment_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+    
+    # Create download link
+    href = f'<a href="data:application/pdf;base64,{b64}" download="{file_name}" class="download-button">Download PDF Report</a>'
+    
+    return href
+    
 # MAIN APP EXECUTE START Main application execution
 if __name__ == "__main__":
     # Try to load the model
@@ -367,6 +517,42 @@ if __name__ == "__main__":
             'income_segment': [income_segment],
             'Age': [age]
         })
+
+        # DOWNLOAD REPORT BUTTON
+            st.subheader("Download Report")
+            st.markdown("Download a detailed PDF report of this risk assessment:")
+            
+            # Create a dictionary of all input parameters for the PDF
+            full_input_data = {
+                'Age': age,
+                'Marital Status': marital_status,
+                'Profession': profession,
+                'Experience': experience,
+                'Income': income,
+                'House Ownership': house_ownership,
+                'Car Ownership': car_ownership,
+                'State': state,
+                'City': city,
+                'Current House Years': current_house_yrs,
+                'Current Job Years': current_job_yrs,
+                'Income Segment': income_segment,
+                'Age Group': age_group,
+                'Home Stability': home_stability,
+                'Job Stability': job_stability,
+                'Financial Stability': financial_stability
+            }
+            
+            # Generate and display download button
+            download_button = get_download_link(st.session_state.risk_data, full_input_data)
+            st.markdown(download_button, unsafe_allow_html=True)
+            
+            # Add instructions for using the report
+            st.info("""
+            **Report Usage Instructions:**
+            - The PDF report contains all input data and risk assessment results
+            - Ideal for sharing with loan officers or keeping for your records
+            - Report includes detailed recommendations based on risk assessment
+            """)
         
         # DEBUGGING COLLAPSIBLE INPUT Display the input data in a collapsible section for debugging
         with st.expander("Lihat Input Data"):
