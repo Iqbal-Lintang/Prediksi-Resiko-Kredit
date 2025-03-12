@@ -503,7 +503,6 @@ if __name__ == "__main__":
             # DISPLAY RESULT Display the results
             st.metric("Probabilitas Resiko", f"{adjusted_risk_probability:.2%}", delta=None, delta_color="off")
             st.write(f"Loan Risk Assessment: {'❌ High Risk' if risk_prediction == 1 else '✅ Low Risk'}")
-            st.write(risk_factors_message)
             
             # Display result
             st.header("Hasil Prediksi")
