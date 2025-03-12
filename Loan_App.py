@@ -19,24 +19,24 @@ import re
 import json
 from typing import Dict, Any, Optional
 
-# Set page title and configuration
+# TITLE Set page title and configuration
 st.set_page_config(
     page_title="Loan Risk Prediction Model",
     page_icon="https://i.imgur.com/HQ6nTcZ.png",
     layout="wide"
 )
 
-# Define logo URL
+# LOGO FAVICON Define logo URL
 logo_url = "https://i.imgur.com/HQ6nTcZ.png"
 
-# Display logo and title in a row
+# LOGO AND TITLE Display logo and title in a row
 col1, col2 = st.columns([1, 5])
 with col1:
     st.image(logo_url, width=100)
 with col2:
     st.title("Aplikasi Prediksi Resiko Debitur")
 
-# Function to load model from Google Drive (same as original)
+# LOAD MODEL FROM GOOGLE DRIVE Function to load model from Google Drive (same as original)
 @st.cache_resource
 def load_model_from_gdrive():
     """Load model from Google Drive"""
@@ -53,7 +53,7 @@ def load_model_from_gdrive():
         st.error(f"Error downloading or loading model: {e}")
         raise e
 
-# Alternative approach using direct download (same as original)
+# LOAD MODEL FROM DOWNLOAD DIRECT Alternative approach using direct download (same as original)
 @st.cache_resource
 def load_model_from_direct_link():
     """Load model from direct download link if available"""
@@ -74,11 +74,11 @@ def load_model_from_direct_link():
         st.error(f"Error with direct download: {e}")
         raise e
 
-# Context-aware chatbot function (same as original)
+# CREDIBOT CONTEXT AWARE LLM CHATBOT Context-aware chatbot function (same as original)
 def chatbot_with_context(risk_data=None, key_suffix="default"):
     st.header("CrediBot - Asisten Virtual")
 
-    # Initialize conversation in session state with a unique key for each instance
+    # 6.1 Initialize conversation in session state with a unique key for each instance
     message_key = f"messages_{key_suffix}"
     if message_key not in st.session_state:
         st.session_state[message_key] = [
@@ -147,7 +147,7 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
         # Save response to session history
         st.session_state[message_key].append({"role": "assistant", "content": answer})
 
-# Main application execution
+# MAIN APP EXECUTE START Main application execution
 if __name__ == "__main__":
     # Try to load the model
     try:
@@ -175,7 +175,7 @@ if __name__ == "__main__":
         """)
         st.stop()
 
-    # Create tabs for better organization - now four tabs including OCR
+    # APP TABS Create tabs for better organization
     tab1, tab2, tab3 = st.tabs(["Informasi Calon Debitur", "Stability Metrics", "CrediBot"])
 
     # Initialize session state for form data
@@ -186,7 +186,7 @@ if __name__ == "__main__":
         # Create 3 columns for better layout
         col1, col2, col3 = st.columns(3)
         
-        # Personal Information
+        # PERSONAL INFORMATION TAB 1
         with col1:
             st.subheader("Informasi Pribadi")
             age = st.number_input("Age", min_value=17, max_value=120, 
@@ -215,7 +215,7 @@ if __name__ == "__main__":
             experience = st.number_input("Experience", min_value=0, max_value=100, 
                                         value=st.session_state.form_data.get('Experience', 5))
             
-        # Financial Information    
+        # FINANCIAL INFORMATION TAB 1    
         with col2:
             st.subheader("Informasi Finansial")
             income = st.number_input("Income (Rupee India)", min_value=0, max_value=15000000, 
@@ -239,7 +239,7 @@ if __name__ == "__main__":
                                         index=car_ownership_options.index(st.session_state.form_data.get('Car_Ownership', 'yes'))
                                         if st.session_state.form_data.get('Car_Ownership') in car_ownership_options else 0)
             
-        # Location Information    
+        # LOCATION INFORMATION TAB 1    
         with col3:
             st.subheader("Informasi Tempat Tinggal")
             
@@ -277,7 +277,8 @@ if __name__ == "__main__":
                                                 
             current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=100, 
                                             value=st.session_state.form_data.get('CURRENT_JOB_YRS', 5))
-
+    
+    # STABILITY METRICS TAB 2
     with tab2:
         st.subheader("Calculated Stability Metrics")
         st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
@@ -297,6 +298,7 @@ if __name__ == "__main__":
         col2.metric("Home Stability", f"{home_stability:.4f}")
         col3.metric("Financial Stability", f"{financial_stability:.2f}")
 
+    # CREDIBOT LLM CHATBOT TAB 3
     with tab3:
         # If no prediction has been made yet, show a simple chat interface
         if "risk_data" not in st.session_state:
@@ -306,7 +308,7 @@ if __name__ == "__main__":
             # If prediction exists, pass the risk data to the chatbot
             chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
 
-    # Button to make prediction
+    # PREDICTION BUTTON Button to make prediction
     if st.button("Prediksi Resiko"):
         # Create a DataFrame with all the required columns - using EXACT column names from the model
         input_data = pd.DataFrame({
@@ -328,7 +330,7 @@ if __name__ == "__main__":
             'Age': [age]
         })
         
-        # Display the input data in a collapsible section for debugging
+        # DEBUGGING COLLAPSIBLE INPUT Display the input data in a collapsible section for debugging
         with st.expander("Lihat Input Data"):
             st.dataframe(input_data)
             st.write("Nama Column (untuk debugging):")
@@ -375,13 +377,13 @@ if __name__ == "__main__":
                 
                 input_data = input_data[column_order]
             
-            # Make prediction
+            # MAKE PREDICTION Make prediction
             risk_probability = model.predict_proba(input_data)[0, 1]
 
-            # Apply risk penalties and adjustments (same as original)
+            # APPLY RISK PENALTIES Apply risk penalties and adjustments (same as original)
             risk_adjustment = 0
             
-            # Define income-based risk adjustments
+            # INCOME BASED RISK ADJUSTMENT & PENALTIES Define income-based risk adjustments
             if income < 1000000:
                 risk_adjustment += 0.10
             elif 1000000 <= income < 2500000:
@@ -393,7 +395,7 @@ if __name__ == "__main__":
             elif income >= 7500000:
                 risk_adjustment -= 0.05
             
-            # Job and financial stability
+            # JOB AND FINANCIAL STABILITIES RISK ADJUSTMENTS Job and financial stability
             if job_stability < 0.1:
                 risk_adjustment += 0.1
             if home_stability < 0.2:
@@ -405,7 +407,7 @@ if __name__ == "__main__":
             if experience < 3:
                 risk_adjustment += 0.03
             
-            # Age-based risk adjustment
+            # AGE RISK ADJUSTMENTS Age-based risk adjustment
             if age < 25:
                 risk_adjustment += 0.08
             elif 25 <= age < 55:
@@ -413,14 +415,14 @@ if __name__ == "__main__":
             elif age >= 55:
                 risk_adjustment += 0.05
             
-            # Final risk probability
+            # FINAL RISK PROBABILITY Final risk probability
             adjusted_risk_probability = min(risk_probability + risk_adjustment, 1.0)
             
-            # Risk classification
+            # RISK THRESHOLD (CHANGEABLE DEPEND ON BANK's RISK APPETITE) Risk classification
             risk_threshold = 0.28
             risk_prediction = 1 if adjusted_risk_probability >= risk_threshold else 0
             
-            # Identify key risk factors
+            # KEY RISK FACTORS Identify key risk factors
             risk_factors = []
             
             if income < 1000000:
@@ -440,7 +442,7 @@ if __name__ == "__main__":
             elif age >= 55:
                 risk_factors.append("Usia lanjut mendekati usia pensiun")
 
-            # Store risk information in session state for the chatbot to use
+            # STORE INFO FOR CREDIBOT Store risk information in session state for the chatbot to use
             st.session_state.risk_data = {
                 'Age': age,
                 'Income': income,
@@ -454,13 +456,13 @@ if __name__ == "__main__":
                 'job_stability': job_stability
             }
             
-            # Risk explanation message
+            # RISK EXPLANATION Risk explanation message
             if risk_prediction == 1:
                 risk_factors_message = "Faktor Resiko Utama:\n- " + "\n- ".join(risk_factors)
             else:
                 risk_factors_message = "Tidak Ada Resiko Signifikan Yang Teridentifikasi."
             
-            # Display the results
+            # DISPLAY RESULT Display the results
             st.metric("Probabilitas Resiko", f"{adjusted_risk_probability:.2%}", delta=None, delta_color="off")
             st.write(f"Loan Risk Assessment: {'❌ High Risk' if risk_prediction == 1 else '✅ Low Risk'}")
             st.write(risk_factors_message)
@@ -477,7 +479,7 @@ if __name__ == "__main__":
                 else:
                     st.success("Resiko Rendah - Direkomendasikan untuk Approval")
             
-            # Risk gauge visualization (same as original)
+            # RISK GAUGE VISUALIZATION Risk gauge visualization
             with result_col2:
                 # Create two columns (left is wider)
                 gauge_col, right_spacer = st.columns([6, 4])
@@ -575,7 +577,7 @@ if __name__ == "__main__":
                     st.markdown(f"<div style='text-align: center; font-size: 16px;'>Score: <b>{adjusted_risk_probability:.2%}</b></div>", 
                                 unsafe_allow_html=True)
             
-            # Risk factors detail section
+            # RISK FACTORS DETAILS Risk factors detail section
             st.subheader("Detail Analisis Risiko")
             
             # Display risk factors and model details in expandable sections
@@ -589,7 +591,7 @@ if __name__ == "__main__":
                     else:
                         st.write("Tidak ada faktor risiko signifikan yang teridentifikasi.")
             
-            # Add recommendations section
+            # RECOMMENDATION SECTION Add recommendations section
             st.subheader("Rekomendasi")
             
             if risk_prediction == 1:
@@ -623,35 +625,40 @@ if __name__ == "__main__":
                 
                 with col1:
                     st.subheader("Stabilitas Finansial")
-                    
-                    # Financial stability as percentage of maximum expected value
+                
+                    # Financial Stability Index
                     financial_stability_pct = min(financial_stability / 10000000, 1.0) * 100
-                    
-                    # Create a progress bar for financial stability
                     st.markdown(f"**Financial Stability Index:** {financial_stability_pct:.1f}%")
                     st.progress(financial_stability_pct / 100)
-                    
-                    # Income to age ratio - a rough metric of earning power
+                    st.caption("Menunjukkan seberapa stabil kondisi finansial Anda dibandingkan standar maksimum yang diharapkan.")
+                
+                    # Income to Age Ratio
                     income_age_ratio = income / age if age > 0 else 0
                     st.markdown(f"**Income to Age Ratio:** {income_age_ratio:,.0f}")
+                    st.caption("Mengukur potensi penghasilan Anda relatif terhadap usia. Nilai lebih tinggi berarti daya penghasilan yang lebih kuat.")
                 
                 with col2:
                     st.subheader("Stabilitas Pekerjaan & Tempat Tinggal")
-                    
-                    # Job stability visualization
-                    st.markdown(f"**Job Stability:** {job_stability:.4f}")
+                
+                    # Job Stability
                     job_stability_pct = min(job_stability * 100, 100)
+                    st.markdown(f"**Job Stability:** {job_stability:.4f}")
                     st.progress(job_stability_pct / 100)
-                    
-                    # Home stability visualization
-                    st.markdown(f"**Home Stability:** {home_stability:.4f}")
+                    st.caption("Merepresentasikan seberapa stabil pekerjaan Anda berdasarkan faktor seperti lama bekerja dan jenis kontrak.")
+                
+                    # Home Stability
                     home_stability_pct = min(home_stability * 100, 100)
+                    st.markdown(f"**Home Stability:** {home_stability:.4f}")
                     st.progress(home_stability_pct / 100)
-                    
-                    # Experience visualization
+                    st.caption("Mengukur stabilitas tempat tinggal Anda, misalnya durasi menetap dan kepemilikan rumah.")
+                
+                    # Experience Level
                     experience_pct = min(experience / 20, 1.0) * 100
                     st.markdown(f"**Experience Level:** {experience_pct:.1f}%")
                     st.progress(experience_pct / 100)
+                    st.caption("Menunjukkan seberapa banyak pengalaman kerja Anda dibandingkan dengan standar maksimal 20 tahun.")
+                
+
             
             # Chatbot recommendation
             st.info("""
