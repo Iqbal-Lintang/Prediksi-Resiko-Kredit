@@ -330,11 +330,12 @@ if __name__ == "__main__":
     # DASHBOARD LOOKER TAB 4
     with tab4:
         st.subheader("Dashboard")
-        st.markdown("Lihat analisis lebih lanjut di Looker Dashboard:")
         
-        # Replace the URL with your actual Looker dashboard link
-        looker_url = "https://your-looker-dashboard-url.com"
-        st.markdown(f"[🔗 Buka Dashboard Looker]({looker_url})", unsafe_allow_html=True)
+        # Replace this with your Looker embed URL
+        looker_embed_url = "https://lookerstudio.google.com/embed/reporting/0B_U5RNpwhcE6QXg4SXFBVGUwMjg/page/6zXD"
+    
+        # Display the embedded Looker dashboard
+        st.components.v1.iframe(looker_embed_url, height=600, scrolling=True)
 
     # PREDICTION BUTTON Button to make prediction
     if st.button("Prediksi Resiko"):
