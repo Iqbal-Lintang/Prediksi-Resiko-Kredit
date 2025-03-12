@@ -251,19 +251,19 @@ def create_prediction_pdf(risk_data, input_data):
     
     if risk_data['risk_prediction'] == 1:
         recommendations = [
-            "**Tinjau Ulang Jumlah Pinjaman**: Pertimbangkan untuk mengurangi jumlah",
-            "**Minta Jaminan Tambahan**: Untuk mengurangi risiko",
-            "**Verifikasi Dokumen Ekstra**: Lakukan pemeriksaan tambahan.",
-            "**Riwayat Kredit Lengkap**: Periksa riwayat kredit yang lengkap.",
-            "**Pertimbangan Pendapatan Pasangan Jika Ada**: Untuk menilai kemampuan bayar"
+            "Tinjau Ulang Jumlah Pinjaman: Pertimbangkan untuk mengurangi jumlah",
+            "Minta Jaminan Tambahan: Untuk mengurangi risiko",
+            "Verifikasi Dokumen Ekstra: Lakukan pemeriksaan tambahan.",
+            "Riwayat Kredit Lengkap: Periksa riwayat kredit yang lengkap.",
+            "Pertimbangan Pendapatan Pasangan Jika Ada: Untuk menilai kemampuan bayar"
         ]
     else:
         recommendations = [
-            "**Proses Approval Standar**: Dapat diproses dengan prosedur standar.",
-            "**Pertimbangkan Penawaran Khusus**: Debitur berkualitas baik.",
-            "**Minimum Dokumentasi**: Cukup dengan dokumen standar.",
-            "**Fast-Track Processing**: Dapat dimasukkan dalam jalur cepat.",
-            "**Cross-selling Opportunity**: Pertimbangkan penawaran produk lain."
+            "Proses Approval Standar: Dapat diproses dengan prosedur standar.",
+            "Pertimbangkan Penawaran Khusus: Debitur berkualitas baik.",
+            "Minimum Dokumentasi: Cukup dengan dokumen standar.",
+            "Fast-Track Processing: Dapat dimasukkan dalam jalur cepat.",
+            "Cross-selling Opportunity: Pertimbangkan penawaran produk lain."
         ]
 
     # FIX: Use a different approach to render recommendations
