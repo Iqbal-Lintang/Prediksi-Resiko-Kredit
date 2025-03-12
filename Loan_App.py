@@ -162,8 +162,13 @@ if __name__ == "__main__":
                 model = load_model_from_gdrive()
             else:
                 model = direct_model
+                
+        success_placeholder = st.empty()
+        success_placeholder.success("Model Sukses Dimasukan!")
+        # Wait for 10 seconds, then clear the message
+        time.sleep(10)
+        success_placeholder.empty()  # Removes the success message
         
-        st.success("Model Sukses Dimasukan!")
     except Exception as e:
         st.error(f"Error loading model: {e}")
         st.error("""
