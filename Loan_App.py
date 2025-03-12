@@ -149,34 +149,24 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
         # Save response to session history
         st.session_state[message_key].append({"role": "assistant", "content": answer})
 
-# Define functions to load models
-def load_model_from_direct_link():
-    # Simulated function to load the model from a direct link
-    return None  # Returning None to simulate a failed attempt
 
-def load_model_from_gdrive():
-    # Simulated function to load the model from Google Drive
-    return "Loaded Model"
-
-# MAIN APP EXECUTION START
+# MAIN APP EXECUTE START Main application execution
 if __name__ == "__main__":
+    # Try to load the model
     try:
         # Show a message while loading
         with st.spinner("Loading model... This may take a moment."):
-            # First try the direct link method
+            # First try the direct link method if configured in secrets
             direct_model = load_model_from_direct_link()
             
             # If direct link didn't work, use Google Drive method
-            model = direct_model if direct_model is not None else load_model_from_gdrive()
-
-        # Display success message
-        success_placeholder = st.empty()
-        success_placeholder.success("Model Sukses Dimasukan!")
-
-        # Wait for 10 seconds, then clear the message
-        time.sleep(10)
-        success_placeholder.empty()
-
+            if direct_model is None:
+                model = load_model_from_gdrive()
+            else:
+                model = direct_model
+        
+        st.success("Model Sukses Dimasukan!")
+        
     except Exception as e:
         st.error(f"Error loading model: {e}")
         st.error("""
@@ -184,10 +174,9 @@ if __name__ == "__main__":
         1. The Google Drive link is accessible/shareable
         2. You have the required packages installed (gdown)
         3. Your internet connection is stable
-
+        
         If you're running this locally, try installing gdown: `pip install gdown`
         """)
-        st.stop()
         
     # APP TABS Create tabs for better organization
     tab1, tab2, tab3, tab4 = st.tabs([
