@@ -268,8 +268,8 @@ def create_prediction_pdf(risk_data, input_data):
     
     # FIX: Use a different approach to render recommendations
     y_position = pdf.get_y()
-    for i, rec in enumerate(recommendations):
-        pdf.set_xy(10, y_position + (i * 8))
+    for rec in recommendations:
+        pdf.set_font('Arial', '', 12)  # Reset font for each recommendation
         pdf.cell(10, 8, '-', 0, 0, 'L')
         pdf.multi_cell(180, 8, rec, 0, 'L')
     
