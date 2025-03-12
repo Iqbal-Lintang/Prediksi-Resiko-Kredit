@@ -667,7 +667,7 @@ if __name__ == "__main__":
             st.metric("Probabilitas Resiko", f"{adjusted_risk_probability:.2%}", delta=None, delta_color="off")
             
             # Create columns for the result display
-            result_col1 = st.columns(2)
+            result_col1,result_col2 = st.columns(2)
             
             with result_col1:
                 if risk_prediction == 1:
