@@ -218,8 +218,14 @@ if __name__ == "__main__":
         # FINANCIAL INFORMATION TAB 1    
         with col2:
             st.subheader("Informasi Finansial")
-            income = st.number_input("Income (Rupee India)", min_value=0, max_value=15000000, 
-                                    value=st.session_state.form_data.get('Income', 5000000))
+
+            income = st.slider(
+                "Income (Rupee India)", 
+                min_value=1, 
+                max_value=15000000, 
+                value=st.session_state.form_data.get('Income', 5000000),
+                step=10000  # Adjust step size as needed
+            )
             
             # Determine income segment based on income
             if income < 2500000:
