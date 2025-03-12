@@ -172,35 +172,35 @@ def create_prediction_pdf(risk_data, input_data):
     
     # Add header and title
     pdf.set_font('Arial', 'B', 16)
-    pdf.cell(190, 10, 'Loan Risk Assessment Report', 0, 1, 'C')
+    pdf.cell(190, 10, 'Laporan Penilaian Resiko Kredit', 0, 1, 'C')
     pdf.set_font('Arial', 'I', 10)
-    pdf.cell(190, 10, f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 0, 1, 'C')
-    pdf.cell(0, 10, 'This is an automated risk assessment report. Further review by a loan officer is recommended.', 0, 1, 'C')
+    pdf.cell(190, 10, f'{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 0, 1, 'C')
+    pdf.cell(0, 10, 'Laporan Ini Dibuat Secara Otomatis Oleh Lendora AI. Disarankan untuk tetap review lebih lanjut oleh Credit Analyst.', 0, 1, 'C')
     pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
     pdf.line(10, 30, 200, 30)
     pdf.ln(10)
     
     # Add risk prediction result
     pdf.set_font('Arial', 'B', 14)
-    pdf.cell(190, 10, 'Risk Assessment Result', 0, 1, 'L')
+    pdf.cell(190, 10, 'Hasil Penilaian Resiko Kredit', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
     
     # Risk score and prediction
     pdf.set_font('Arial', 'B', 12)
-    risk_text = "HIGH RISK - Not Recommended for Approval" if risk_data['risk_prediction'] == 1 else "LOW RISK - Recommended for Approval"
-    pdf.cell(60, 10, 'Risk Assessment:', 0, 0, 'L')
+    risk_text = "HIGH RISK - Tidak Direkomendasikan Untuk Approval Kredit" if risk_data['risk_prediction'] == 1 else "LOW RISK - Direkomendasikan Untuk Approval Kredit"
+    pdf.cell(60, 10, 'Penilaian Resiko:', 0, 0, 'L')
     pdf.set_font('Arial', '', 12)
     pdf.cell(130, 10, risk_text, 0, 1, 'L')
     
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(60, 10, 'Risk Score:', 0, 0, 'L')
+    pdf.cell(60, 10, 'Skor Resiko:', 0, 0, 'L')
     pdf.set_font('Arial', '', 12)
     pdf.cell(130, 10, f"{risk_data['risk_score']:.2%}", 0, 1, 'L')
     pdf.ln(5)
     
     # Risk factors
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(190, 10, 'Key Risk Factors:', 0, 1, 'L')
+    pdf.cell(190, 10, 'Faktor Resiko Utama', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
     for factor in risk_data['risk_factors']:
         pdf.cell(10, 8, '-', 0, 0, 'L')
@@ -209,12 +209,12 @@ def create_prediction_pdf(risk_data, input_data):
     
     # Applicant Information Section
     pdf.set_font('Arial', 'B', 14)
-    pdf.cell(190, 10, 'Applicant Information', 0, 1, 'L')
+    pdf.cell(190, 10, 'Informasi Calon Debitur', 0, 1, 'L')
     pdf.ln(2)
     
     # Personal Information
     pdf.set_font('Arial', 'B', 12)
-    pdf.cell(190, 8, 'Personal Information', 0, 1, 'L')
+    pdf.cell(190, 8, 'Informasi Pribadi', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
     
     # Two-column layout for personal info
@@ -246,24 +246,24 @@ def create_prediction_pdf(risk_data, input_data):
     
     # Recommendations
     pdf.set_font('Arial', 'B', 14)
-    pdf.cell(190, 10, 'Recommendations', 0, 1, 'L')
+    pdf.cell(190, 10, 'Rekomendasi Bisnis', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
     
     if risk_data['risk_prediction'] == 1:
         recommendations = [
-            "Review Loan Amount: Consider reducing the requested amount.",
-            "Request Additional Collateral: To mitigate risk.",
-            "Extra Document Verification: Perform additional checks.",
-            "Full Credit History Review: Check complete credit history.",
-            "Consider Spouse Income: To assess repayment capability."
+            "Tinjau Jumlah Pinjaman: Pertimbangkan untuk mengurangi jumlah pinjaman yang diminta guna menyesuaikan dengan kemampuan bayar peminjam.",
+            "Minta Jaminan Tambahan: Untuk mengurangi risiko kredit, pertimbangkan meminta agunan tambahan.",
+            "Verifikasi Dokumen Tambahan: Lakukan pemeriksaan lebih lanjut terhadap dokumen yang diajukan guna memastikan keabsahan dan kelayakan kredit.",
+            "Review Riwayat Kredit Lengkap: Periksa secara menyeluruh seluruh riwayat kredit peminjam guna menilai risiko dengan lebih akurat.",
+            "Pertimbangkan Pendapatan Pasangan Jika Ada: Evaluasi pendapatan pasangan peminjam untuk menentukan kapasitas pembayaran yang lebih stabil."
         ]
     else:
         recommendations = [
-            "Standard Approval Process: Can be processed with standard procedures.",
-            "Consider Special Offers: Good quality borrower.",
-            "Minimum Documentation: Standard documents are sufficient.",
-            "Fast-Track Processing: Can be placed in fast track.",
-            "Cross-selling Opportunity: Consider offering other products."
+            "Proses Persetujuan Standar: Pengajuan dapat diproses sesuai dengan prosedur standar tanpa memerlukan langkah tambahan.",
+            "Pertimbangkan Penawaran Khusus: Peminjam berkualitas baik, bisa diberikan penawaran khusus seperti suku bunga lebih rendah atau manfaat lainnya.",
+            "Dokumentasi Minimum: Dokumen standar yang diajukan sudah cukup untuk memenuhi persyaratan persetujuan.",
+            "Proses Cepat: Permohonan dapat diproses melalui jalur cepat karena profil peminjam yang memenuhi syarat.",
+            "Peluang Cross-Selling: Pertimbangkan untuk menawarkan produk keuangan lainnya yang sesuai dengan kebutuhan peminjam."
         ]
     
     # FIX: Use a different approach to render recommendations
