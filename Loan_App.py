@@ -251,21 +251,21 @@ def create_prediction_pdf(risk_data, input_data):
     
     if risk_data['risk_prediction'] == 1:
         recommendations = [
-            "Tinjau Jumlah Pinjaman: Pertimbangkan untuk mengurangi jumlah pinjaman yang diminta guna menyesuaikan dengan kemampuan bayar peminjam.",
-            "Minta Jaminan Tambahan: Untuk mengurangi risiko kredit, pertimbangkan meminta agunan tambahan.",
-            "Verifikasi Dokumen Tambahan: Lakukan pemeriksaan lebih lanjut terhadap dokumen yang diajukan guna memastikan keabsahan dan kelayakan kredit.",
-            "Review Riwayat Kredit Lengkap: Periksa secara menyeluruh seluruh riwayat kredit peminjam guna menilai risiko dengan lebih akurat.",
-            "Pertimbangkan Pendapatan Pasangan Jika Ada: Evaluasi pendapatan pasangan peminjam untuk menentukan kapasitas pembayaran yang lebih stabil."
+            "**Tinjau Ulang Jumlah Pinjaman**: Pertimbangkan untuk mengurangi jumlah",
+            "**Minta Jaminan Tambahan**: Untuk mengurangi risiko",
+            "**Verifikasi Dokumen Ekstra**: Lakukan pemeriksaan tambahan.",
+            "**Riwayat Kredit Lengkap**: Periksa riwayat kredit yang lengkap.",
+            "**Pertimbangan Pendapatan Pasangan Jika Ada**: Untuk menilai kemampuan bayar"
         ]
     else:
         recommendations = [
-            "Proses Persetujuan Standar: Pengajuan dapat diproses sesuai dengan prosedur standar tanpa memerlukan langkah tambahan.",
-            "Pertimbangkan Penawaran Khusus: Peminjam berkualitas baik, bisa diberikan penawaran khusus seperti suku bunga lebih rendah atau manfaat lainnya.",
-            "Dokumentasi Minimum: Dokumen standar yang diajukan sudah cukup untuk memenuhi persyaratan persetujuan.",
-            "Proses Cepat: Permohonan dapat diproses melalui jalur cepat karena profil peminjam yang memenuhi syarat.",
-            "Peluang Cross-Selling: Pertimbangkan untuk menawarkan produk keuangan lainnya yang sesuai dengan kebutuhan peminjam."
+            "**Proses Approval Standar**: Dapat diproses dengan prosedur standar.",
+            "**Pertimbangkan Penawaran Khusus**: Debitur berkualitas baik.",
+            "**Minimum Dokumentasi**: Cukup dengan dokumen standar.",
+            "**Fast-Track Processing**: Dapat dimasukkan dalam jalur cepat.",
+            "**Cross-selling Opportunity**: Pertimbangkan penawaran produk lain."
         ]
-    
+
     # FIX: Use a different approach to render recommendations
     y_position = pdf.get_y()
     for i, rec in enumerate(recommendations):
