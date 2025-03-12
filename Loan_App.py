@@ -176,7 +176,12 @@ if __name__ == "__main__":
         st.stop()
 
     # APP TABS Create tabs for better organization
-    tab1, tab2, tab3 = st.tabs(["Informasi Calon Debitur", "Stability Metrics", "CrediBot"])
+    tab1, tab2, tab3 = st.tabs([
+        "Informasi Calon Debitur", 
+        "Stability Metrics", 
+        "CrediBot",
+        "Dashboard"
+    ])
 
     # Initialize session state for form data
     if 'form_data' not in st.session_state:
@@ -321,6 +326,15 @@ if __name__ == "__main__":
         else:
             # If prediction exists, pass the risk data to the chatbot
             chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
+
+    # DASHBOARD LOOKER TAB 4
+    with tab4:
+        st.subheader("Dashboard")
+        st.markdown("Lihat analisis lebih lanjut di Looker Dashboard:")
+        
+        # Replace the URL with your actual Looker dashboard link
+        looker_url = "https://your-looker-dashboard-url.com"
+        st.markdown(f"[🔗 Buka Dashboard Looker]({looker_url})", unsafe_allow_html=True)
 
     # PREDICTION BUTTON Button to make prediction
     if st.button("Prediksi Resiko"):
