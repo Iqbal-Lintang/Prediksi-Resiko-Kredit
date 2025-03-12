@@ -217,21 +217,52 @@ if __name__ == "__main__":
             
         # FINANCIAL INFORMATION TAB 1    
         with col2:
-           
-            # INCOME
+        
             st.subheader("Informasi Finansial")
-            income = st.slider(
+
+            #INCOME 
+            if "income" not in st.session_state:
+                st.session_state.income = st.session_state.form_data.get('Income', 5000000)
+            
+            # Two-way binding function
+            def update_income(value):
+                st.session_state.income = value
+            
+            # Income input field
+            income_field = st.number_input(
                 "Income (Rupee India)", 
                 min_value=1000, 
                 max_value=15000000, 
-                value=st.session_state.form_data.get('Income', 5000000),
-                step=1000  # Adjust step size as needed
+                value=st.session_state.income,
+                step=1000,
+                on_change=update_income, 
+                args=(st.session_state.income,)
             )
-            # INCOME SEGMENT (EDITABLE DEPENDIGN ON MARKET CONDITION)
-            st.markdown(f"**Selected Income:** ₹{income:,}")
-            if income < 5000000:
+            
+            # Income slider
+            income_slider = st.slider(
+                "Select Income", 
+                min_value=1000, 
+                max_value=15000000, 
+                value=st.session_state.income,
+                step=1000,
+                on_change=update_income,
+                args=(st.session_state.income,)
+            )
+            
+            # Ensure both inputs stay synchronized
+            if income_field != st.session_state.income:
+                st.session_state.income = income_field
+            if income_slider != st.session_state.income:
+                st.session_state.income = income_slider
+            
+            # Display selected income
+            st.markdown(f"**Selected Income:** ₹{st.session_state.income:,}")
+            
+            # Income segment classification
+            if st.session_state.income < 5000000:
                 income_segment = "low"
-            elif income < 10000000:
+            elif st.session_state.income < 10000000:
                 income_segment = "medium"
             else:
                 income_segment = "high"
@@ -638,7 +669,7 @@ if __name__ == "__main__":
                     st.subheader("Stabilitas Finansial")
                 
                     # Financial Stability Index
-                    financial_stability_pct = min(financial_stability / 30000000, 1.0) * 100
+                    financial_stability_pct = min(financial_stability / 7500000, 1.0) * 100
                     st.markdown(f"**Financial Stability Index:** {financial_stability_pct:.1f}%")
                     st.progress(financial_stability_pct / 100)
                     st.markdown("<p style='font-size:12px; font-style:italic;'>Menunjukkan seberapa stabil kondisi finansial debitur dibandingkan standar maksimum.</p>", unsafe_allow_html=True)
