@@ -217,6 +217,7 @@ if __name__ == "__main__":
             
         # FINANCIAL INFORMATION TAB 1    
         with col2:
+           
             # INCOME
             st.subheader("Informasi Finansial")
             income = st.slider(
@@ -226,10 +227,11 @@ if __name__ == "__main__":
                 value=st.session_state.form_data.get('Income', 5000000),
                 step=1000  # Adjust step size as needed
             )
+            # INCOME SEGMENT (EDITABLE DEPENDIGN ON MARKET CONDITION)
             st.markdown(f"**Selected Income:** ₹{income:,}")
-            if income < 2500000:
+            if income < 5000000:
                 income_segment = "low"
-            elif income < 7500000:
+            elif income < 10000000:
                 income_segment = "medium"
             else:
                 income_segment = "high"
