@@ -217,29 +217,32 @@ if __name__ == "__main__":
             
         # FINANCIAL INFORMATION TAB 1    
         with col2:
+            # INCOME
             st.subheader("Informasi Finansial")
-
             income = st.slider(
                 "Income (Rupee India)", 
-                min_value=1, 
+                min_value=1000, 
                 max_value=15000000, 
                 value=st.session_state.form_data.get('Income', 5000000),
-                step=10000  # Adjust step size as needed
+                step=1000  # Adjust step size as needed
             )
-            
-            # Determine income segment based on income
+            st.markdown(f"**Selected Income:** ₹{income:,}")
             if income < 2500000:
                 income_segment = "low"
             elif income < 7500000:
                 income_segment = "medium"
             else:
                 income_segment = "high"
-                
+            
+            st.markdown(f"**Income Segment:** {income_segment.capitalize()}")
+
+            # HOUSE OWNERSHIP
             house_ownership_options = ["owned", "rented", "norent_noown"]
             house_ownership = st.selectbox("House_Ownership", house_ownership_options,
                                         index=house_ownership_options.index(st.session_state.form_data.get('House_Ownership', 'owned'))
                                         if st.session_state.form_data.get('House_Ownership') in house_ownership_options else 0)
             
+            # CAR OWNERSHIP
             car_ownership_options = ["yes", "no"]
             car_ownership = st.selectbox("Car_Ownership", car_ownership_options,
                                         index=car_ownership_options.index(st.session_state.form_data.get('Car_Ownership', 'yes'))
