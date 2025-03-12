@@ -263,9 +263,15 @@ def create_prediction_pdf(risk_data, input_data):
             "Cross-selling Opportunity: Consider offering other products."
         ]
     
-    for rec in recommendations:
+    # FIX: Use a different approach to render recommendations
+    y_position = pdf.get_y()
+    for i, rec in enumerate(recommendations):
+        pdf.set_xy(10, y_position + (i * 8))
         pdf.cell(10, 8, '-', 0, 0, 'L')
         pdf.multi_cell(180, 8, rec, 0, 'L')
+    
+    # Move cursor below the recommendations
+    pdf.set_y(y_position + (len(recommendations) * 8) + 5)
     
     # Footer
     pdf.set_y(-30)
@@ -273,7 +279,7 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(0, 10, 'This is an automated risk assessment report. Further review by a loan officer is recommended.', 0, 1, 'C')
     pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
     
-    # Return PDF as bytes - FIXED THIS LINE
+    # Return PDF as bytes
     pdf_output = pdf.output(dest='S')
     
     # Check the type of pdf_output and handle accordingly
@@ -282,7 +288,6 @@ def create_prediction_pdf(risk_data, input_data):
     elif isinstance(pdf_output, bytes) or isinstance(pdf_output, bytearray):
         return pdf_output
     else:
-        # If it's some other type, convert to string and then to bytes
         return str(pdf_output).encode('latin1')
 
 def get_download_link(risk_data, input_data):
@@ -800,7 +805,7 @@ if __name__ == "__main__":
                 2. **Minta Jaminan Tambahan**: Untuk mengurangi risiko.
                 3. **Verifikasi Dokumen Ekstra**: Lakukan pemeriksaan tambahan.
                 4. **Riwayat Kredit Lengkap**: Periksa riwayat kredit yang lengkap.
-                5. **Pertimbangan Pendapatan Pasangan**: Untuk menilai kemampuan bayar.
+                5. **Pertimbangan Pendapatan Pasangan Jika Ada**: Untuk menilai kemampuan bayar.
                 """)
             else:
                 st.success("""
