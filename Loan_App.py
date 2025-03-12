@@ -296,46 +296,7 @@ if __name__ == "__main__":
                                                 
             current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=100, 
                                             value=st.session_state.form_data.get('CURRENT_JOB_YRS', 5))
-    
-    # STABILITY METRICS TAB 2
-    with tab2:
-        st.subheader("Calculated Stability Metrics")
-        st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
-        
-        # Calculate job stability as a float value
-        job_stability = round(current_job_yrs / (age - 18), 8) if age > 18 else 0
-        
-        # Calculate home stability as a float value
-        home_stability = round(current_house_yrs / age, 8) if age > 0 else 0
-        
-        # For financial stability, using income as proxy
-        financial_stability = float(income / 2)
-        
-        # Display calculated metrics
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Job Stability", f"{job_stability:.4f}")
-        col2.metric("Home Stability", f"{home_stability:.4f}")
-        col3.metric("Financial Stability", f"{financial_stability:.2f}")
 
-    # CREDIBOT LLM CHATBOT TAB 3
-    with tab3:
-        # If no prediction has been made yet, show a simple chat interface
-        if "risk_data" not in st.session_state:
-            st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
-            chatbot_with_context(key_suffix="tab4")
-        else:
-            # If prediction exists, pass the risk data to the chatbot
-            chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
-
-    # DASHBOARD LOOKER TAB 4
-    with tab4:
-        st.subheader("Dashboard")
-        
-        # Replace this with your Looker embed URL
-        looker_embed_url = "https://lookerstudio.google.com/embed/reporting/0B_U5RNpwhcE6QXg4SXFBVGUwMjg/page/6zXD"
-    
-        # Display the embedded Looker dashboard
-        st.components.v1.iframe(looker_embed_url, height=600, scrolling=True)
 
     # PREDICTION BUTTON Button to make prediction
     if st.button("Prediksi Resiko"):
@@ -701,7 +662,45 @@ if __name__ == "__main__":
             st.error(f"Error making prediction: {e}")
             st.error("If this error persists, please check the model compatibility or contact support.")
     
+    # STABILITY METRICS TAB 2
+    with tab2:
+        st.subheader("Calculated Stability Metrics")
+        st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
+        
+        # Calculate job stability as a float value
+        job_stability = round(current_job_yrs / (age - 18), 8) if age > 18 else 0
+        
+        # Calculate home stability as a float value
+        home_stability = round(current_house_yrs / age, 8) if age > 0 else 0
+        
+        # For financial stability, using income as proxy
+        financial_stability = float(income / 2)
+        
+        # Display calculated metrics
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Job Stability", f"{job_stability:.4f}")
+        col2.metric("Home Stability", f"{home_stability:.4f}")
+        col3.metric("Financial Stability", f"{financial_stability:.2f}")
 
+    # CREDIBOT LLM CHATBOT TAB 3
+    with tab3:
+        # If no prediction has been made yet, show a simple chat interface
+        if "risk_data" not in st.session_state:
+            st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
+            chatbot_with_context(key_suffix="tab4")
+        else:
+            # If prediction exists, pass the risk data to the chatbot
+            chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
+
+    # DASHBOARD LOOKER TAB 4
+    with tab4:
+        st.subheader("Dashboard")
+        
+        # Replace this with your Looker embed URL
+        looker_embed_url = "https://lookerstudio.google.com/embed/reporting/0B_U5RNpwhcE6QXg4SXFBVGUwMjg/page/6zXD"
+    
+        # Display the embedded Looker dashboard
+        st.components.v1.iframe(looker_embed_url, height=600, scrolling=True)
 
     # FOOTER Add footer
     st.markdown("---")
