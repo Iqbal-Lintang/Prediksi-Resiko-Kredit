@@ -341,7 +341,7 @@ if __name__ == "__main__":
         st.components.v1.iframe(looker_embed_url, height=600, scrolling=True)
 
     # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
-    st.markdown("<br><hr style='border: 3px solid #bbb;'><br>", unsafe_allow_html=True)
+    st.markdown("<hr style='border: 1px solid #bbb;'><br>", unsafe_allow_html=True)
 
     # PREDICTION BUTTON Button to make prediction
     if st.button("Prediksi Resiko"):
