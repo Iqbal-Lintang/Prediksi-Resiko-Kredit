@@ -630,22 +630,23 @@ if __name__ == "__main__":
                     financial_stability_pct = min(financial_stability / 15000000, 1.0) * 100
                     st.markdown(f"**Financial Stability Index:** {financial_stability_pct:.1f}%")
                     st.progress(financial_stability_pct / 100)
-                    st.markdown("<p style='font-size:10px; font-style:italic;'>Menunjukkan seberapa stabil kondisi finansial debitur dibandingkan standar maksimum.</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='font-size:12px; font-style:italic;'>Menunjukkan seberapa stabil kondisi finansial debitur dibandingkan standar maksimum.</p>", unsafe_allow_html=True)
 
                 
                     # Income to Age Ratio
                     income_age_ratio = income / age if age > 0 else 0
                     st.markdown(f"**Income to Age Ratio:** {income_age_ratio:,.0f}")
-                    st.caption("Mengukur potensi penghasilan Anda relatif terhadap usia. Nilai lebih tinggi berarti daya penghasilan yang lebih kuat.")
+                    st.markdown("<p style='font-size:12px; font-style:italic;'>Mengukur potensi penghasilan debitur relatif terhadap usia. Nilai tinggi berarti daya penghasilan lebih kuat.</p>", unsafe_allow_html=True)
                 
                 with col2:
                     st.subheader("Stabilitas Pekerjaan & Tempat Tinggal")
                 
-                    # Job Stability
-                    job_stability_pct = min(job_stability * 100, 100)
-                    st.markdown(f"**Job Stability:** {job_stability:.4f}")
-                    st.progress(job_stability_pct / 100)
-                    st.caption("Merepresentasikan seberapa stabil pekerjaan Anda berdasarkan faktor seperti lama bekerja dan jenis kontrak.")
+                    # Calculate Employment Stability Index (ESI)
+                    employment_stability_index = (years_at_current_job / total_work_experience) * 100 if total_work_experience > 0 else 0
+                    st.markdown(f"**Employment Stability Index:** {employment_stability_index:.1f}%")
+                    st.progress(min(employment_stability_index, 100) / 100)
+                    st.markdown("<p style='font-size:12px; font-style:italic;'>Menunjukkan stabilitas pekerjaan berdasarkan lama bekerja di tempat saat ini dibandingkan dengan total pengalaman kerja.</p>", unsafe_allow_html=True)
+
                 
                     # Home Stability
                     home_stability_pct = min(home_stability * 100, 100)
