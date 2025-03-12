@@ -274,7 +274,16 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
     
     # Return PDF as bytes - FIXED THIS LINE
-    return bytes(pdf.output(dest='S'), 'latin1')
+    pdf_output = pdf.output(dest='S')
+    
+    # Check the type of pdf_output and handle accordingly
+    if isinstance(pdf_output, str):
+        return pdf_output.encode('latin1')
+    elif isinstance(pdf_output, bytes) or isinstance(pdf_output, bytearray):
+        return pdf_output
+    else:
+        # If it's some other type, convert to string and then to bytes
+        return str(pdf_output).encode('latin1')
 
 def get_download_link(risk_data, input_data):
     """
