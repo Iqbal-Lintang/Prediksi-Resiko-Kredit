@@ -21,7 +21,7 @@ from typing import Dict, Any, Optional
 
 # TITLE Set page title and configuration
 st.set_page_config(
-    page_title="Loan Risk Prediction Model",
+    page_title="Lendora - AI Lending Tech",
     page_icon="https://i.imgur.com/HQ6nTcZ.png",
     layout="wide"
 )
@@ -34,7 +34,7 @@ col1, col2 = st.columns([1, 5])
 with col1:
     st.image(logo_url, width=100)
 with col2:
-    st.title("Aplikasi Prediksi Resiko Debitur")
+    st.title("Lendora – AI Powered Lending Intelligence")
 
 # LOAD MODEL FROM GOOGLE DRIVE Function to load model from Google Drive (same as original)
 @st.cache_resource
