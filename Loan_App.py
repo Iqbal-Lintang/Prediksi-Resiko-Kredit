@@ -517,42 +517,6 @@ if __name__ == "__main__":
             'income_segment': [income_segment],
             'Age': [age]
         })
-
-        # DOWNLOAD REPORT BUTTON
-        st.subheader("Download Report")
-        st.markdown("Download a detailed PDF report of this risk assessment:")
-            
-        # Create a dictionary of all input parameters for the PDF
-        full_input_data = {
-                'Age': age,
-                'Marital Status': marital_status,
-                'Profession': profession,
-                'Experience': experience,
-                'Income': income,
-                'House Ownership': house_ownership,
-                'Car Ownership': car_ownership,
-                'State': state,
-                'City': city,
-                'Current House Years': current_house_yrs,
-                'Current Job Years': current_job_yrs,
-                'Income Segment': income_segment,
-                'Age Group': age_group,
-                'Home Stability': home_stability,
-                'Job Stability': job_stability,
-                'Financial Stability': financial_stability
-            }
-            
-        # Generate and display download button
-        download_button = get_download_link(st.session_state.risk_data, full_input_data)
-        st.markdown(download_button, unsafe_allow_html=True)
-            
-        # Add instructions for using the report
-        st.info("""
-            **Report Usage Instructions:**
-            - The PDF report contains all input data and risk assessment results
-            - Ideal for sharing with loan officers or keeping for your records
-            - Report includes detailed recommendations based on risk assessment
-            """)
         
         # DEBUGGING COLLAPSIBLE INPUT Display the input data in a collapsible section for debugging
         with st.expander("Lihat Input Data"):
@@ -679,6 +643,42 @@ if __name__ == "__main__":
                 'home_stability': home_stability,
                 'job_stability': job_stability
             }
+
+            # DOWNLOAD REPORT BUTTON
+        st.subheader("Download Report")
+        st.markdown("Download a detailed PDF report of this risk assessment:")
+            
+        # Create a dictionary of all input parameters for the PDF
+        full_input_data = {
+                'Age': age,
+                'Marital Status': marital_status,
+                'Profession': profession,
+                'Experience': experience,
+                'Income': income,
+                'House Ownership': house_ownership,
+                'Car Ownership': car_ownership,
+                'State': state,
+                'City': city,
+                'Current House Years': current_house_yrs,
+                'Current Job Years': current_job_yrs,
+                'Income Segment': income_segment,
+                'Age Group': age_group,
+                'Home Stability': home_stability,
+                'Job Stability': job_stability,
+                'Financial Stability': financial_stability
+            }
+            
+        # Generate and display download button
+        download_button = get_download_link(st.session_state.risk_data, full_input_data)
+        st.markdown(download_button, unsafe_allow_html=True)
+            
+        # Add instructions for using the report
+        st.info("""
+            **Report Usage Instructions:**
+            - The PDF report contains all input data and risk assessment results
+            - Ideal for sharing with loan officers or keeping for your records
+            - Report includes detailed recommendations based on risk assessment
+            """)
             
             # RISK EXPLANATION Risk explanation message
             if risk_prediction == 1:
