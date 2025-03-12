@@ -519,8 +519,8 @@ if __name__ == "__main__":
         })
 
         # DOWNLOAD REPORT BUTTON
-            st.subheader("Download Report")
-            st.markdown("Download a detailed PDF report of this risk assessment:")
+        st.subheader("Download Report")
+        st.markdown("Download a detailed PDF report of this risk assessment:")
             
             # Create a dictionary of all input parameters for the PDF
             full_input_data = {
