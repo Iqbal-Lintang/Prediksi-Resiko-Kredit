@@ -619,7 +619,7 @@ if __name__ == "__main__":
                 5. **Cross-selling Opportunity**: Pertimbangkan penawaran produk lain.
                 """)
             
-            # Advanced metrics section
+            # ADVANCED METRICS Advanced metrics section
             with st.expander("Metrik Lanjutan", expanded=True):
                 col1, col2 = st.columns(2)
                 
@@ -652,17 +652,17 @@ if __name__ == "__main__":
                     home_stability_pct = min(home_stability * 100, 100)
                     st.markdown(f"**Home Stability:** {home_stability:.4f}")
                     st.progress(home_stability_pct / 100)
-                    st.caption("Mengukur stabilitas tempat tinggal Anda, misalnya durasi menetap dan kepemilikan rumah.")
+                    st.caption("Mengukur stabilitas tempat tinggal Debitur, misalnya durasi menetap dan kepemilikan rumah.")
                 
                     # Experience Level
-                    experience_pct = min(experience / 20, 1.0) * 100
+                    experience_pct = min(experience / 25, 1.0) * 100
                     st.markdown(f"**Experience Level:** {experience_pct:.1f}%")
                     st.progress(experience_pct / 100)
-                    st.caption("Menunjukkan seberapa banyak pengalaman kerja Anda dibandingkan dengan standar maksimal 20 tahun.")
+                    st.caption("Menunjukkan seberapa banyak pengalaman kerja Debitur dibandingkan dengan standar maksimal 25 tahun.")
                 
 
             
-            # Chatbot recommendation
+            # CHATBOT RECOMMENDATION Chatbot recommendation
             st.info("""
             📱 Gunakan asisten AI kami di tab CrediBot untuk informasi lebih lanjut tentang hasil analisis ini 
             dan rekomendasi khusus untuk kasus Anda.
@@ -674,7 +674,7 @@ if __name__ == "__main__":
     
 
 
-    # Add footer
+    # FOOTER Add footer
     st.markdown("---")
     st.markdown(
         """
@@ -686,7 +686,7 @@ if __name__ == "__main__":
         unsafe_allow_html=True
     )
 
-    # Add "About" section
+    # ABOUT Add "About" section
     with st.expander("About This App"):
         st.write("""
         
@@ -699,9 +699,3 @@ if __name__ == "__main__":
         Model ini dilatih menggunakan data historis dari India dengan mata uang INR.
         Prediksi harus digunakan sebagai alat bantu, bukan penentu keputusan final.
         """)
-        
-        st.markdown("""
-        <div style='text-align: center; margin-top: 20px;'>
-            <img src="https://i.imgur.com/HQ6nTcZ.png" width="100">
-        </div>
-        """, unsafe_allow_html=True)
