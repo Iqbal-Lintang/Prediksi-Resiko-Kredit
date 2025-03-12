@@ -148,26 +148,22 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
         # Save response to session history
         st.session_state[message_key].append({"role": "assistant", "content": answer})
 
-# MAIN APP EXECUTE START Main application execution
-if __name__ == "__main__":
-    # Try to load the model
-    try:
-        # Show a message while loading
-        with st.spinner("Loading model... This may take a moment."):
-            # First try the direct link method if configured in secrets
-            direct_model = load_model_from_direct_link()
-            
-            # If direct link didn't work, use Google Drive method
-            if direct_model is None:
-                model = load_model_from_gdrive()
-            else:
-                model = direct_model
+    # MAIN APP EXECUTE START Main application execution
+    if __name__ == "__main__":
+        # Try to load the model
+        try:
+            # Show a message while loading
+            with st.spinner("Loading model... This may take a moment."):
+                # First try the direct link method if configured in secrets
+                direct_model = load_model_from_direct_link()
                 
-        success_placeholder = st.empty()
-        success_placeholder.success("Model Sukses Dimasukan!")
-        # Wait for 10 seconds, then clear the message
-        time.sleep(10)
-        success_placeholder.empty()  # Removes the success message
+                # If direct link didn't work, use Google Drive method
+                if direct_model is None:
+                    model = load_model_from_gdrive()
+                else:
+                    model = direct_model
+            
+            st.success("Model Sukses Dimasukan!")
         
     except Exception as e:
         st.error(f"Error loading model: {e}")
