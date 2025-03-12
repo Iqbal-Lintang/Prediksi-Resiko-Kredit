@@ -627,10 +627,11 @@ if __name__ == "__main__":
                     st.subheader("Stabilitas Finansial")
                 
                     # Financial Stability Index
-                    financial_stability_pct = min(financial_stability / 10000000, 1.0) * 100
+                    financial_stability_pct = min(financial_stability / 15000000, 1.0) * 100
                     st.markdown(f"**Financial Stability Index:** {financial_stability_pct:.1f}%")
                     st.progress(financial_stability_pct / 100)
-                    st.caption("Menunjukkan seberapa stabil kondisi finansial Anda dibandingkan standar maksimum yang diharapkan.")
+                    st.markdown("<p style='font-size:10px; font-style:italic;'>Menunjukkan seberapa stabil kondisi finansial debitur dibandingkan standar maksimum.</p>", unsafe_allow_html=True)
+
                 
                     # Income to Age Ratio
                     income_age_ratio = income / age if age > 0 else 0
