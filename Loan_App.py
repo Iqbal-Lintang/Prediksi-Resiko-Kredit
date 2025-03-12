@@ -273,8 +273,8 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(0, 10, 'This is an automated risk assessment report. Further review by a loan officer is recommended.', 0, 1, 'C')
     pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
     
-    # Return PDF as bytes
-    return pdf.output(dest='S').encode('latin1')
+    # Return PDF as bytes - FIXED THIS LINE
+    return bytes(pdf.output(dest='S'), 'latin1')
 
 def get_download_link(risk_data, input_data):
     """
