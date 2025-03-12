@@ -23,12 +23,12 @@ import time
 # TITLE Set page title and configuration
 st.set_page_config(
     page_title="Lendora - AI Lending Tech",
-    page_icon="https://i.imgur.com/HQ6nTcZ.png",
+    page_icon="https://i.imgur.com/8RKgXU5.png",
     layout="wide"
 )
 
 # LOGO FAVICON Define logo URL
-logo_url = "https://i.imgur.com/HQ6nTcZ.png"
+logo_url = "https://i.imgur.com/8RKgXU5.png"
 
 # LOGO AND TITLE Display logo and title in a row
 col1, col2 = st.columns([1, 5])
