@@ -182,6 +182,7 @@ def create_prediction_pdf(risk_data, input_data):
             pdf.image(img_file, x=10, y=10, w=30)  # Adjust width as needed
     except:
         # If logo loading fails, leave space but continue
+        pdf.set_font('Arial', 'B', 12)
         pdf.cell(30, 15, 'LOGO', 1, 0, 'C')
     
     # Add header and title
