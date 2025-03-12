@@ -522,8 +522,8 @@ if __name__ == "__main__":
         st.subheader("Download Report")
         st.markdown("Download a detailed PDF report of this risk assessment:")
             
-            # Create a dictionary of all input parameters for the PDF
-            full_input_data = {
+        # Create a dictionary of all input parameters for the PDF
+        full_input_data = {
                 'Age': age,
                 'Marital Status': marital_status,
                 'Profession': profession,
@@ -542,9 +542,9 @@ if __name__ == "__main__":
                 'Financial Stability': financial_stability
             }
             
-            # Generate and display download button
-            download_button = get_download_link(st.session_state.risk_data, full_input_data)
-            st.markdown(download_button, unsafe_allow_html=True)
+        # Generate and display download button
+        download_button = get_download_link(st.session_state.risk_data, full_input_data)
+        st.markdown(download_button, unsafe_allow_html=True)
             
             # Add instructions for using the report
             st.info("""
