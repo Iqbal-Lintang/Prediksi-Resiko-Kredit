@@ -495,9 +495,9 @@ if __name__ == "__main__":
             }
             
             # RISK EXPLANATION Risk explanation message
-             if risk_prediction == 1:
+            if risk_prediction == 1:
                  risk_factors_message = "Faktor Resiko Utama:\n- " + "\n- ".join(risk_factors)
-             else:
+            else:
                  risk_factors_message = "Tidak Ada Resiko Signifikan Yang Teridentifikasi."
 
             # DISPLAY RESULT Display the results
