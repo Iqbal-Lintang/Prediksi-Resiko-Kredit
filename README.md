@@ -19,7 +19,7 @@ Configurable and easy to integrate with financial applications
 
 🛠️ Installation
 Clone this repository:
-git clone https://github.com/your-username/Prediksi-Resiko-Kredit.git
+git clone https://github.com/Iqbal-Lintang/Prediksi-Resiko-Kredit.git
 
 Install dependencies:
 pip install -r requirements.txt
