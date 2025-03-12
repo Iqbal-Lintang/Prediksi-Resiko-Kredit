@@ -340,6 +340,9 @@ if __name__ == "__main__":
         # Display the embedded Looker dashboard
         st.components.v1.iframe(looker_embed_url, height=600, scrolling=True)
 
+    # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
+    st.markdown("<br><hr style='border: 3px solid #bbb;'><br>", unsafe_allow_html=True)
+
     # PREDICTION BUTTON Button to make prediction
     if st.button("Prediksi Resiko"):
         # Create a DataFrame with all the required columns - using EXACT column names from the model
