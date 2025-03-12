@@ -645,11 +645,11 @@ if __name__ == "__main__":
             }
 
             # DOWNLOAD REPORT BUTTON
-        st.subheader("Download Report")
-        st.markdown("Download a detailed PDF report of this risk assessment:")
+            st.subheader("Download Report")
+            st.markdown("Download a detailed PDF report of this risk assessment:")
             
         # Create a dictionary of all input parameters for the PDF
-        full_input_data = {
+            full_input_data = {
                 'Age': age,
                 'Marital Status': marital_status,
                 'Profession': profession,
@@ -669,16 +669,16 @@ if __name__ == "__main__":
             }
             
         # Generate and display download button
-        download_button = get_download_link(st.session_state.risk_data, full_input_data)
-        st.markdown(download_button, unsafe_allow_html=True)
+            download_button = get_download_link(st.session_state.risk_data, full_input_data)
+            st.markdown(download_button, unsafe_allow_html=True)
             
         # Add instructions for using the report
-        st.info("""
-            **Report Usage Instructions:**
-            - The PDF report contains all input data and risk assessment results
-            - Ideal for sharing with loan officers or keeping for your records
-            - Report includes detailed recommendations based on risk assessment
-            """)
+            st.info("""
+                **Report Usage Instructions:**
+                - The PDF report contains all input data and risk assessment results
+                - Ideal for sharing with loan officers or keeping for your records
+                - Report includes detailed recommendations based on risk assessment
+                """)
             
             # RISK EXPLANATION Risk explanation message
             if risk_prediction == 1:
