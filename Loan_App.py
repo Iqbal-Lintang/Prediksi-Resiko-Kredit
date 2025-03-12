@@ -659,15 +659,15 @@ if __name__ == "__main__":
                  risk_factors_message = "Faktor Resiko Utama:\n- " + "\n- ".join(risk_factors)
             else:
                  risk_factors_message = "Tidak Ada Resiko Signifikan Yang Teridentifikasi."
-
-            # DISPLAY RESULT Display the results
-            st.metric("Probabilitas Resiko", f"{adjusted_risk_probability:.2%}", delta=None, delta_color="off")
             
             # Display result
             st.header("Hasil Prediksi")
             
+            # DISPLAY RESULT Display the results
+            st.metric("Probabilitas Resiko", f"{adjusted_risk_probability:.2%}", delta=None, delta_color="off")
+            
             # Create columns for the result display
-            result_col1, result_col2 = st.columns(2)
+            result_col1 = st.columns(2)
             
             with result_col1:
                 if risk_prediction == 1:
