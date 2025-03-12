@@ -11,4 +11,4 @@ anthropic
 reportlab
 pillow
 pytesseract
-FPDF
+fpdf2
