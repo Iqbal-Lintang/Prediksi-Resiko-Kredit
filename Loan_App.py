@@ -175,6 +175,8 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(190, 10, 'Loan Risk Assessment Report', 0, 1, 'C')
     pdf.set_font('Arial', 'I', 10)
     pdf.cell(190, 10, f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 0, 1, 'C')
+    pdf.cell(0, 10, 'This is an automated risk assessment report. Further review by a loan officer is recommended.', 0, 1, 'C')
+    pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
     pdf.line(10, 30, 200, 30)
     pdf.ln(10)
     
@@ -273,12 +275,6 @@ def create_prediction_pdf(risk_data, input_data):
     
     # Move cursor below the recommendations
     pdf.set_y(y_position + (len(recommendations) * 8) + 5)
-    
-    # Footer
-    pdf.set_y(-30)
-    pdf.set_font('Arial', 'I', 8)
-    pdf.cell(0, 10, 'This is an automated risk assessment report. Further review by a loan officer is recommended.', 0, 1, 'C')
-    pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
     
     # Return PDF as bytes
     pdf_output = pdf.output(dest='S')
