@@ -221,48 +221,23 @@ if __name__ == "__main__":
             st.subheader("Informasi Finansial")
 
             #INCOME 
-            if "income" not in st.session_state:
-                st.session_state.income = st.session_state.form_data.get('Income', 5000000)
-            
-            # Two-way binding function
-            def update_income(value):
-                st.session_state.income = value
-            
-            # Income input field
-            income_field = st.number_input(
+            st.subheader("Informasi Finansial")
+
+            income = st.slider(
                 "Income (Rupee India)", 
                 min_value=1000, 
                 max_value=15000000, 
-                value=st.session_state.income,
-                step=1000,
-                on_change=update_income, 
-                args=(st.session_state.income,)
+                value=st.session_state.form_data.get('Income', 5000000),
+                step=1000  # Adjust step size as needed
             )
             
-            # Income slider
-            income_slider = st.slider(
-                "Select Income", 
-                min_value=1000, 
-                max_value=15000000, 
-                value=st.session_state.income,
-                step=1000,
-                on_change=update_income,
-                args=(st.session_state.income,)
-            )
+            # Display income with comma separator
+            st.markdown(f"**Selected Income:** ₹{income:,}")
             
-            # Ensure both inputs stay synchronized
-            if income_field != st.session_state.income:
-                st.session_state.income = income_field
-            if income_slider != st.session_state.income:
-                st.session_state.income = income_slider
-            
-            # Display selected income
-            st.markdown(f"**Selected Income:** ₹{st.session_state.income:,}")
-            
-            # Income segment classification
-            if st.session_state.income < 5000000:
+            # Determine income segment based on income
+            if income < 2500000:
                 income_segment = "low"
-            elif st.session_state.income < 10000000:
+            elif income < 7500000:
                 income_segment = "medium"
             else:
                 income_segment = "high"
