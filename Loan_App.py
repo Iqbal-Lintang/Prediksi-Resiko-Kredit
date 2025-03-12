@@ -165,13 +165,12 @@ def create_prediction_pdf(risk_data, input_data):
     Returns:
     bytes: PDF file as bytes that can be downloaded
     """
-    # Create PDF object - set margins to control spacing better
+    # Create PDF object
     pdf = FPDF(orientation='P', unit='mm', format='A4')
     pdf.set_auto_page_break(auto=True, margin=30)  # Ensure proper page breaks
     pdf.add_page()
-    
+
     # Add logo at top left
-    # Replace with your actual Imgur URL
     logo_url = "https://i.imgur.com/8RKgXU5.png"
     try:
         # Add logo from URL - requires urllib and io modules
@@ -185,9 +184,9 @@ def create_prediction_pdf(risk_data, input_data):
         # If logo loading fails, leave space but continue
         pdf.cell(30, 15, 'LOGO', 1, 0, 'C')
     
-    # Add header and title - adjusted for logo
+    # Add header and title
     pdf.set_font('Arial', 'B', 16)
-    pdf.cell(160, 10, 'Loan Risk Assessment Report', 0, 1, 'C')
+    pdf.cell(190, 10, 'Loan Risk Assessment Report', 0, 1, 'C')
     pdf.set_font('Arial', 'I', 10)
     pdf.cell(190, 10, f'Generated on: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}', 0, 1, 'C')
     pdf.line(10, 30, 200, 30)
@@ -257,15 +256,6 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(40, 8, f"{risk_data['home_stability']:.4f}", 0, 1, 'L')
     pdf.ln(5)
     
-    # Recommendations - Calculate remaining space
-    current_y = pdf.get_y()
-    available_space = pdf.h - current_y - 30  # 30mm buffer for footer
-    needed_space = len(recommendations) * 8 + 15  # Estimate space needed
-    
-    # Only add page if needed
-    if needed_space > available_space:
-        pdf.add_page()
-    
     # Recommendations
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(190, 10, 'Recommendations', 0, 1, 'L')
@@ -288,13 +278,18 @@ def create_prediction_pdf(risk_data, input_data):
             "Cross-selling Opportunity: Consider offering other products."
         ]
     
-    # Better way to render recommendations
-    for rec in recommendations:
+    # FIX: Use a different approach to render recommendations
+    y_position = pdf.get_y()
+    for i, rec in enumerate(recommendations):
+        pdf.set_xy(10, y_position + (i * 8))
         pdf.cell(10, 8, '-', 0, 0, 'L')
         pdf.multi_cell(180, 8, rec, 0, 'L')
     
-    # Footer - always on first page
-    pdf.set_y(-25)  # Position at 25mm from bottom
+    # Move cursor below the recommendations
+    pdf.set_y(y_position + (len(recommendations) * 8) + 5)
+    
+    # Footer
+    pdf.set_y(-30)
     pdf.set_font('Arial', 'I', 8)
     pdf.cell(0, 10, 'This is an automated risk assessment report. Further review by a loan officer is recommended.', 0, 1, 'C')
     pdf.cell(0, 10, 'CONFIDENTIAL - FOR INTERNAL USE ONLY', 0, 1, 'C')
@@ -309,6 +304,31 @@ def create_prediction_pdf(risk_data, input_data):
         return pdf_output
     else:
         return str(pdf_output).encode('latin1')
+
+def get_download_link(risk_data, input_data):
+    """
+    Generate a download link for the PDF report
+    
+    Parameters:
+    risk_data (dict): Dictionary containing risk assessment results
+    input_data (dict): Dictionary containing all input parameters used for prediction
+    
+    Returns:
+    str: HTML link for downloading the PDF
+    """
+    # Generate PDF
+    pdf_bytes = create_prediction_pdf(risk_data, input_data)
+    
+    # Encode PDF to base64
+    b64 = base64.b64encode(pdf_bytes).decode()
+    
+    # Generate file name with datetime
+    file_name = f"loan_risk_assessment_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+    
+    # Create download link
+    href = f'<a href="data:application/pdf;base64,{b64}" download="{file_name}" class="download-button">Download PDF Report</a>'
+    
+    return href
     
 # MAIN APP EXECUTE START Main application execution
 if __name__ == "__main__":
