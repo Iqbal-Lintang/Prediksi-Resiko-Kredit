@@ -504,7 +504,7 @@ if __name__ == "__main__":
         looker_embed_url = "https://lookerstudio.google.com/embed/reporting/b0bd4eb6-c98c-49b6-ac91-51a4a00895aa/page/cMy9E"
     
         # Display the embedded Looker dashboard
-        st.components.v1.iframe(looker_embed_url, height=770, scrolling=True)
+        st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
 
     # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
     st.markdown("<hr style='border: 1px solid #bbb;'><br>", unsafe_allow_html=True)
