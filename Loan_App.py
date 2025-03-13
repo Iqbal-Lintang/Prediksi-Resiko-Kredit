@@ -79,20 +79,25 @@ def load_model_from_direct_link():
         st.error(f"Error with direct download: {e}")
         raise e
 
-# CREDIBOT CONTEXT AWARE LLM CHATBOT Context-aware chatbot function (same as original)
+# Lora AI CONTEXT AWARE LLM CHATBOT Context-aware chatbot function (same as original)
 def chatbot_with_context(risk_data=None, key_suffix="default"):
-    st.header("CrediBot - Asisten Virtual")
-
-    # 6.1 Initialize conversation in session state with a unique key for each instance
+    st.header("Lora AI - Asisten Virtual")
+    
+    # Define custom avatars
+    lora_avatar = "👩🏻‍💼" # You can use emoji or path to image
+    user_avatar = "🧑🏻‍💼" # You can use emoji or path to image
+    
+    # Initialize conversation in session state with a unique key for each instance
     message_key = f"messages_{key_suffix}"
     if message_key not in st.session_state:
         st.session_state[message_key] = [
-            {"role": "assistant", "content": "Halo! Saya CrediBot, asisten virtual Anda. Apa yang ingin Anda ketahui tentang calon debitur?"}
+            {"role": "assistant", "content": "Halo! Saya Lora AI, asisten virtual Anda. Apa yang ingin Anda ketahui tentang calon debitur?"}
         ]
-
-    # Display chat history
+    
+    # Display chat history with custom avatars
     for message in st.session_state[message_key]:
-        with st.chat_message(message["role"]):
+        avatar = lora_avatar if message["role"] == "assistant" else user_avatar
+        with st.chat_message(message["role"], avatar=avatar):
             st.markdown(message["content"])
 
     # User input - add a unique key to prevent duplicate widget ID
@@ -137,7 +142,7 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
                     model="claude-3-haiku-20240307",
                     max_tokens=500,
                     temperature=0.9,
-                    system="Anda adalah asisten pinjaman dari aplikasi prediksi resiko calon debitur yang memberikan saran tentang penilaian risiko kredit menggunakan dataset dari India dan mata uang Rupee India INR.",
+                    system="Anda adalah asisten pinjaman bernama Lora AI dari aplikasi bernama Lendora yang memprediksi resiko calon debitur yang memberikan saran tentang penilaian risiko kredit menggunakan dataset dari India dan mata uang Rupee India INR.",
                     messages=[{"role": "user", "content": f"{context}\n{prompt}"}]
                 )
                 answer = response.content[0].text
@@ -345,7 +350,7 @@ if __name__ == "__main__":
     tab1, tab2, tab3, tab4 = st.tabs([
         "Informasi Calon Debitur", 
         "Metriks Stabilitas", 
-        "CrediBot",
+        "Lora AI",
         "Dashboard"
     ])
 
@@ -485,7 +490,7 @@ if __name__ == "__main__":
         col3.metric("Financial Stability", f"{financial_stability:.2f}")
 
     
-    # CREDIBOT LLM CHATBOT TAB 3
+    # Lora AI LLM CHATBOT TAB 3
     with tab3:
         # If no prediction has been made yet, show a simple chat interface
         if "risk_data" not in st.session_state:
@@ -643,7 +648,7 @@ if __name__ == "__main__":
             elif age >= 55:
                 risk_factors.append("Usia lanjut mendekati usia pensiun")
 
-            # STORE INFO FOR CREDIBOT Store risk information in session state for the chatbot to use
+            # STORE INFO FOR Lora AI Store risk information in session state for the chatbot to use
             st.session_state.risk_data = {
                 'Age': age,
                 'Income': income,
@@ -897,8 +902,13 @@ if __name__ == "__main__":
             
             # CHATBOT RECOMMENDATION Chatbot recommendation
             st.info("""
-            📱 Gunakan asisten AI kami di tab CrediBot untuk informasi lebih lanjut tentang hasil analisis ini 
+            📱 Gunakan asisten AI kami di tab Lora AI untuk informasi lebih lanjut tentang hasil analisis ini 
             dan rekomendasi khusus untuk kasus Anda.
+            """)
+
+            # DASHBOARD RECOMENDATION
+            st.info("""
+            📊 Gunakan tab Dashboard di Lendora untuk mendapatkan informasi tentang riwayat kondisi pasar kredit.
             """)
         
         except Exception as e:
@@ -927,8 +937,8 @@ if __name__ == "__main__":
         Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.
         2. **Analisis Risiko Kredit**
         Klik tombol "Prediksi Risiko" untuk mendapatkan hasil analisis berdasarkan model prediktif.
-        3. **Gunakan Asisten CrediBot**
-        Ajukan pertanyaan kepada CrediBot untuk mendapatkan wawasan tambahan atau klarifikasi.
+        3. **Gunakan Asisten Lora AI**
+        Ajukan pertanyaan kepada Lora AI untuk mendapatkan wawasan tambahan atau klarifikasi.
         4. **Dashboard Interaktif**
         Tinjau tren, analisis, dan data historis melalui dashboard visual.
         5. **Download Laporan**
