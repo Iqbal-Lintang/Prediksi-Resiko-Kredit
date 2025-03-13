@@ -819,7 +819,7 @@ if __name__ == "__main__":
                 """)
                 
             # DOWNLOAD REPORT BUTTON
-            st.subheader("Download Laporan")
+            st.subheader("Download Laporan Resiko")
             
         # Create a dictionary of all input parameters for the PDF
             full_input_data = {
