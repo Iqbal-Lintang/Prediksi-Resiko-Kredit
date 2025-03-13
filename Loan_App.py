@@ -923,15 +923,15 @@ if __name__ == "__main__":
         st.write("""
         
         #### Penggunaan:
-        1. Verifikasi & Lengkapi Data
+        1. **Verifikasi & Lengkapi Data**
         Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.
-        2. Analisis Risiko Kredit
+        2. **Analisis Risiko Kredit**
         Klik tombol "Prediksi Risiko" untuk mendapatkan hasil analisis berdasarkan model prediktif.
-        3. Gunakan Asisten CrediBot
+        3. **Gunakan Asisten CrediBot**
         Ajukan pertanyaan kepada CrediBot untuk mendapatkan wawasan tambahan atau klarifikasi.
-        4. Dashboard Interaktif
+        4. **Dashboard Interaktif**
         Tinjau tren, analisis, dan data historis melalui dashboard visual.
-        5. Unduh Laporan
+        5. **Download Laporan**
         Simpan hasil analisis dalam format PDF atau CSV untuk dokumentasi lebih lanjut.
         
         #### Catatan:
