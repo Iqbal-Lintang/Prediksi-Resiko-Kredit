@@ -309,7 +309,7 @@ def get_download_link(risk_data, input_data):
     file_name = f"loan_risk_assessment_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
     
     # Create download link
-    href = f'<a href="data:application/pdf;base64,{b64}" download="{file_name}" class="download-button">Download PDF Report</a>'
+    href = f'<a href="data:application/pdf;base64,{b64}" download="{file_name}" class="download-button">Download Laporan Hasil Prediksi Resiko</a>'
     
     return href
     
@@ -819,8 +819,7 @@ if __name__ == "__main__":
                 """)
                 
             # DOWNLOAD REPORT BUTTON
-            st.subheader("Download Report")
-            st.markdown("Download a detailed PDF report of this risk assessment:")
+            st.subheader("Download Laporan")
             
         # Create a dictionary of all input parameters for the PDF
             full_input_data = {
@@ -848,10 +847,10 @@ if __name__ == "__main__":
             
         # Add instructions for using the report
             st.info("""
-                **Report Usage Instructions:**
-                - The PDF report contains all input data and risk assessment results
-                - Ideal for sharing with loan officers or keeping for your records
-                - Report includes detailed recommendations based on risk assessment
+                **Cara Menggunakan Laporan:**
+                - Laporan PDF berisi seluruh input dan hasil prediksi resiko kredit
+                - Laporan digunakan sebagai bukti screening awal calon debitur
+                - Kirim laporan ke Credit Analyst sebagai bukti lebih lanjut
                 """)
             
             # ADVANCED METRICS Advanced metrics section
