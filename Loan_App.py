@@ -25,7 +25,7 @@ from datetime import datetime
 
 # TITLE Set page title and configuration
 st.set_page_config(
-    page_title="Lendora - AI Lending Tech",
+    page_title="Lendora - AI Powered Risk Assessment",
     page_icon="https://i.imgur.com/8RKgXU5.png",
     layout="wide"
 )
