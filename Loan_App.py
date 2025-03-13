@@ -135,8 +135,8 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
             try:
                 response = client.messages.create(
                     model="claude-3-haiku-20240307",
-                    max_tokens=400,
-                    temperature=0.8,
+                    max_tokens=500,
+                    temperature=0.9,
                     system="Anda adalah asisten pinjaman dari aplikasi prediksi resiko calon debitur yang memberikan saran tentang penilaian risiko kredit menggunakan dataset dari India dan mata uang Rupee India INR.",
                     messages=[{"role": "user", "content": f"{context}\n{prompt}"}]
                 )
@@ -585,15 +585,15 @@ if __name__ == "__main__":
             risk_adjustment = 0
             
             # INCOME BASED RISK ADJUSTMENT & PENALTIES Define income-based risk adjustments
-            if income < 1000000:
+            if income < 2500000:
                 risk_adjustment += 0.10
-            elif 1000000 <= income < 2500000:
-                risk_adjustment += 0.05
             elif 2500000 <= income < 5000000:
-                risk_adjustment += 0.02
+                risk_adjustment += 0.05
             elif 5000000 <= income < 7500000:
+                risk_adjustment += 0.02
+            elif 7500000 <= income < 10000000:
                 risk_adjustment += 0
-            elif income >= 7500000:
+            elif income >= 10000000:
                 risk_adjustment -= 0.05
             
             # JOB AND FINANCIAL STABILITIES RISK ADJUSTMENTS Job and financial stability
@@ -626,7 +626,7 @@ if __name__ == "__main__":
             # KEY RISK FACTORS Identify key risk factors
             risk_factors = []
             
-            if income < 1000000:
+            if income < 2500000:
                 risk_factors.append("Penghasilan rendah")
             if job_stability < 0.1:
                 risk_factors.append("Pekerjaan tidak stabil")
