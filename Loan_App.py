@@ -344,7 +344,7 @@ if __name__ == "__main__":
     # APP TABS Create tabs for better organization
     tab1, tab2, tab3, tab4 = st.tabs([
         "Informasi Calon Debitur", 
-        "Stability Metrics", 
+        "Metriks Stabilitas", 
         "CrediBot",
         "Dashboard"
     ])
@@ -466,7 +466,7 @@ if __name__ == "__main__":
     
     # STABILITY METRICS TAB 2
     with tab2:
-        st.subheader("Calculated Stability Metrics")
+        st.subheader("Analisa Metriks Stabilitas")
         st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
         
         # Calculate job stability as a float value
