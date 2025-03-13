@@ -817,6 +817,40 @@ if __name__ == "__main__":
                 4. **Fast-Track Processing**: Dapat dimasukkan dalam jalur cepat.
                 5. **Cross-selling Opportunity**: Pertimbangkan penawaran produk lain.
                 """)
+           # DOWNLOAD REPORT BUTTON
+            st.subheader("Download Laporan Resiko")
+            
+        # Create a dictionary of all input parameters for the PDF
+            full_input_data = {
+                'Age': age,
+                'Marital Status': marital_status,
+                'Profession': profession,
+                'Experience': experience,
+                'Income': income,
+                'House Ownership': house_ownership,
+                'Car Ownership': car_ownership,
+                'State': state,
+                'City': city,
+                'Current House Years': current_house_yrs,
+                'Current Job Years': current_job_yrs,
+                'Income Segment': income_segment,
+                'Age Group': age_group,
+                'Home Stability': home_stability,
+                'Job Stability': job_stability,
+                'Financial Stability': financial_stability
+            }
+            
+        # Generate and display download button
+            download_button = get_download_link(st.session_state.risk_data, full_input_data)
+            st.markdown(download_button, unsafe_allow_html=True)
+            
+        # Add instructions for using the report
+            st.info("""
+                **Cara Menggunakan Laporan:**
+                - Laporan PDF berisi seluruh input dan hasil prediksi resiko kredit
+                - Laporan digunakan sebagai bukti screening awal calon debitur
+                - Kirim laporan ke Credit Analyst sebagai bukti lebih lanjut
+                """)
             
             # ADVANCED METRICS Advanced metrics section
             with st.expander("Metrik Lanjutan", expanded=True):
@@ -870,42 +904,6 @@ if __name__ == "__main__":
         except Exception as e:
             st.error(f"Error making prediction: {e}")
             st.error("If this error persists, please check the model compatibility or contact support.")
-
-            
-            # DOWNLOAD REPORT BUTTON
-            st.subheader("Download Laporan Resiko")
-            
-        # Create a dictionary of all input parameters for the PDF
-            full_input_data = {
-                'Age': age,
-                'Marital Status': marital_status,
-                'Profession': profession,
-                'Experience': experience,
-                'Income': income,
-                'House Ownership': house_ownership,
-                'Car Ownership': car_ownership,
-                'State': state,
-                'City': city,
-                'Current House Years': current_house_yrs,
-                'Current Job Years': current_job_yrs,
-                'Income Segment': income_segment,
-                'Age Group': age_group,
-                'Home Stability': home_stability,
-                'Job Stability': job_stability,
-                'Financial Stability': financial_stability
-            }
-            
-        # Generate and display download button
-            download_button = get_download_link(st.session_state.risk_data, full_input_data)
-            st.markdown(download_button, unsafe_allow_html=True)
-            
-        # Add instructions for using the report
-            st.info("""
-                **Cara Menggunakan Laporan:**
-                - Laporan PDF berisi seluruh input dan hasil prediksi resiko kredit
-                - Laporan digunakan sebagai bukti screening awal calon debitur
-                - Kirim laporan ke Credit Analyst sebagai bukti lebih lanjut
-                """)
             
 
     # FOOTER Add footer
