@@ -90,12 +90,11 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
             {"role": "assistant", "content": "Halo! Saya Lora AI, asisten virtual Anda. Apa yang ingin Anda ketahui tentang calon debitur?"}
         ]
     
-    # Display chat history with custom avatars
+    # Display chat history
     for message in st.session_state[message_key]:
-        avatar = lora_avatar if message["role"] == "assistant" else user_avatar
-        with st.chat_message(message["role"], avatar=avatar):
+        with st.chat_message(message["role"]):
             st.markdown(message["content"])
-
+            
     # User input - add a unique key to prevent duplicate widget ID
     prompt = st.chat_input("Ketik pesan Anda di sini...", key=f"chat_input_{key_suffix}")
 
