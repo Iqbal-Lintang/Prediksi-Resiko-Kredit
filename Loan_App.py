@@ -501,7 +501,7 @@ if __name__ == "__main__":
         st.subheader("Dashboard")
         
         # Replace this with your Looker embed URL
-        looker_embed_url = "https://lookerstudio.google.com/embed/reporting/"
+        looker_embed_url = "https://lookerstudio.google.com/embed/reporting/0324a838-5c13-4b2f-83fc-006455f50bad/page/GTQAF"
     
         # Display the embedded Looker dashboard
         st.components.v1.iframe(looker_embed_url, height=770, scrolling=True)
