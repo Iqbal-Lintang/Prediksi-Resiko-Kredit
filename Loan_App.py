@@ -923,11 +923,19 @@ if __name__ == "__main__":
         st.write("""
         
         #### Penggunaan:
-        1. Verifikasi dan lengkapi data pada tab Informasi Calon Debitur
-        2. Klik "Prediksi Resiko" untuk mendapatkan hasil analisis
-        3. Gunakan asisten CrediBot untuk informasi tambahan
+        1. Verifikasi & Lengkapi Data
+        Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.
+        2. Analisis Risiko Kredit
+        Klik tombol "Prediksi Risiko" untuk mendapatkan hasil analisis berdasarkan model prediktif.
+        3. Gunakan Asisten CrediBot
+        Ajukan pertanyaan kepada CrediBot untuk mendapatkan wawasan tambahan atau klarifikasi.
+        4. Dashboard Interaktif
+        Tinjau tren, analisis, dan data historis melalui dashboard visual.
+        5. Unduh Laporan
+        Simpan hasil analisis dalam format PDF atau CSV untuk dokumentasi lebih lanjut.
         
         #### Catatan:
-        Model ini dilatih menggunakan data historis dari India dengan mata uang INR.
-        Prediksi harus digunakan sebagai alat bantu, bukan penentu keputusan final.
+        Model ini dilatih menggunakan data historis.
+        Hasil prediksi bersifat sebagai referensi, bukan satu-satunya faktor dalam pengambilan keputusan.
+        Disarankan untuk menggunakan hasil analisis bersama dengan pertimbangan manual dan kebijakan kredit internal.
         """)
