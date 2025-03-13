@@ -83,11 +83,7 @@ def load_model_from_direct_link():
 def chatbot_with_context(risk_data=None, key_suffix="default"):
     st.header("Lora AI - Asisten Virtual")
     
-    # Define custom avatars
-    lora_avatar = "👩🏻‍💼" # You can use emoji or path to image
-    user_avatar = "🧑🏻‍💼" # You can use emoji or path to image
-    
-    # Initialize conversation in session state with a unique key for each instance
+    # 6.1 Initialize conversation in session state with a unique key for each instance
     message_key = f"messages_{key_suffix}"
     if message_key not in st.session_state:
         st.session_state[message_key] = [
