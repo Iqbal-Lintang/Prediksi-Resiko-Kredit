@@ -39,7 +39,7 @@ with col1:
     st.image(logo_url, width=100)
 with col2:
     # Title
-    st.title("Lendora – AI Powered Lending Intelligence")
+    st.title("Lendora – AI Powered Risk Assessment")
 
 # LOAD MODEL FROM GOOGLE DRIVE Function to load model from Google Drive (same as original)
 @st.cache_resource
