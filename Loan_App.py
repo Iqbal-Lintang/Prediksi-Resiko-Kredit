@@ -343,7 +343,7 @@ if __name__ == "__main__":
         
     # APP TABS Create tabs for better organization
     tab1, tab2, tab3, tab4 = st.tabs([
-        "Informasi Calon Debitur", 
+        "Informasi Debitur", 
         "Metriks Stabilitas", 
         "Lora AI",
         "Dashboard"
