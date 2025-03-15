@@ -317,7 +317,7 @@ def get_download_link(risk_data, input_data):
 
 # Add this function to your app to enable OCR capabilities
 # Add this function to your app for OCR capabilities without debug messages
-def extract_form_data_clean(image):
+def extract_form_data(image):
     """
     Extract data from a standardized OCR form image
     
@@ -327,6 +327,12 @@ def extract_form_data_clean(image):
     Returns:
     dict: Dictionary with extracted form fields
     """
+    
+    # Check if image is None
+    if image is None:
+        st.error("No image provided")
+        return {}
+        
     # Convert image to OpenCV format
     try:
         if isinstance(image, Image.Image):
@@ -334,23 +340,41 @@ def extract_form_data_clean(image):
             img_array = np.array(image.convert('RGB'))
             img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         else:
+            # Display file info
+            
             # Handle uploaded file
             file_content = image.read()
             
             if len(file_content) == 0:
+                st.error("Uploaded file is empty")
                 return {}
                 
+            # Try to display the image before processing
+            try:
+                # Create a copy of the bytes for display
+                image_copy = io.BytesIO(file_content)
+                st.image(image_copy, caption="Uploaded Image", use_column_width=True)
+            except Exception as e:
+                st.warning(f"Could not preview image: {str(e)}")
+            
+            # Reset file pointer
+            image.seek(0)
+            file_content = image.read()
+            
             # Decode image
             img_bytes = np.asarray(bytearray(file_content), dtype=np.uint8)
             img = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
             
             # Check if image was successfully decoded
             if img is None:
+                st.error("Failed to decode image. Please check the file format.")
+                st.write("Debug: Make sure the file is an actual image (JPG, PNG, etc.)")
                 return {}
                 
             # Reset file pointer to beginning for potential reuse
             image.seek(0)
     except Exception as e:
+        st.error(f"Error processing image: {str(e)}")
         return {}
     
     # Preprocess image to improve OCR accuracy
@@ -538,7 +562,6 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
         )
     
     return corrected_data
-    
     
 # MAIN APP EXECUTE START Main application execution
 if __name__ == "__main__":
