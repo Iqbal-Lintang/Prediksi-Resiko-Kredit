@@ -775,7 +775,7 @@ if __name__ == "__main__":
     # OCR
     # OCR
     # OCR
-     with tab5:
+    with tab5:
         st.header("OCR Form Scanner")
         st.markdown("""
         ### Upload Formulir Standar
