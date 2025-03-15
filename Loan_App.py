@@ -771,6 +771,7 @@ if __name__ == "__main__":
     # OCR
     # OCR
     # OCR
+    # OCR
     with tab5:
         st.header("OCR Form Scanner")
         st.markdown("""
@@ -785,30 +786,37 @@ if __name__ == "__main__":
             st.session_state.extracted_data = {}
         if 'form_data' not in st.session_state:
             st.session_state.form_data = {}
+        if 'active_tab' not in st.session_state:
+            st.session_state.active_tab = "OCR"  # Set default active tab
         
-        # Process button callback function - defined outside the button
+        # Process button callback function
         def process_form():
-            if uploaded_file is not None:
-                # Extract data from the image
-                st.session_state.extracted_data = extract_form_data(uploaded_file)
-                st.session_state.ocr_processed = True
+            # Extract data from the image
+            st.session_state.extracted_data = extract_form_data(uploaded_file)
+            st.session_state.ocr_processed = True
+            # Explicitly set active tab to prevent switching
+            st.session_state.active_tab = "OCR"
         
-        # Confirm button callback function - defined outside the button
+        # Confirm button callback function
         def confirm_data():
-            # We'll use the session state to store the validated data
-            # This will be populated by the form inputs
+            # Save the form data but don't change tabs
             st.session_state.data_ready_for_prediction = True
             st.session_state.data_confirmed = True
+            # Explicitly set active tab to prevent switching
+            st.session_state.active_tab = "OCR"
         
-        # Reset button callback function - defined outside the button
+        # Reset button callback function
         def reset_form():
             st.session_state.ocr_processed = False
             st.session_state.data_confirmed = False
             st.session_state.extracted_data = {}
+            # Explicitly set active tab to prevent switching
+            st.session_state.active_tab = "OCR"
         
         # File uploader for OCR form
         uploaded_file = st.file_uploader("Upload formulir standar (PDF, JPG, atau PNG)", 
-                                         type=["pdf", "jpg", "jpeg", "png"])
+                                         type=["pdf", "jpg", "jpeg", "png"],
+                                         key="ocr_file_uploader")
         
         # Process button
         if uploaded_file is not None:
@@ -823,7 +831,7 @@ if __name__ == "__main__":
                     
                     # Only show Process button if not yet processed
                     if not st.session_state.ocr_processed:
-                        process_button = st.button("Process Form", on_click=process_form)
+                        st.button("Process Form", on_click=process_form, key="process_form_button")
                     
                     # If already processed, show the validation form and confirm button
                     if st.session_state.ocr_processed:
@@ -852,7 +860,6 @@ if __name__ == "__main__":
                         ]
                         
                         # Display and validate the extracted data
-                        # The function will update form values in the session state
                         corrected_data = display_and_validate_extracted_data(
                             st.session_state.extracted_data, state_options, city_options, profession_options
                         )
@@ -862,7 +869,7 @@ if __name__ == "__main__":
                         
                         # Only show confirm button if not yet confirmed
                         if not st.session_state.get('data_confirmed', False):
-                            st.button("Confirm and Use This Data", on_click=confirm_data)
+                            st.button("Confirm and Use This Data", on_click=confirm_data, key="confirm_data_button")
                         else:
                             st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
                             
@@ -874,7 +881,7 @@ if __name__ == "__main__":
                             st.info("Please click on the 'Informasi Debitur' tab to continue with your application.")
                             
                             # Option to reset
-                            st.button("Reset Form Scanner", on_click=reset_form)
+                            st.button("Reset Form Scanner", on_click=reset_form, key="reset_form_button")
                 
                 except Exception as e:
                     st.error(f"Error processing the image: {e}")
