@@ -614,6 +614,7 @@ if __name__ == "__main__":
     if 'form_data' not in st.session_state:
         st.session_state.form_data = {}
 
+    # INFORMASI DEBITUR
     with tab1:
         # Create 3 columns for better layout
         col1, col2, col3 = st.columns(3)
@@ -827,43 +828,18 @@ if __name__ == "__main__":
                             
                             # Save to session state for use in other tabs
                             if st.button("Confirm and Use This Data"):
-                                # Save the complete form data to session state
-                                st.session_state.form_data = corrected_data
-                                
-                                # Set a flag to indicate data is ready for use in the other tab
-                                st.session_state.data_ready_for_prediction = True
-                                
-                                st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
-                                
-                                # Show what was saved
-                                with st.expander("View saved data"):
-                                    st.json(corrected_data)    
-                                
-                                # Add prediction code here
-                                try:
-                                    # Example of making a prediction (replace with your actual model code)
-                                    if 'model' in st.session_state:
-                                        # Prepare data for prediction (may need formatting)
-                                        prediction_input = prepare_data_for_prediction(corrected_data)
-                                        
-                                        # Make prediction
-                                        prediction_result = st.session_state.model.predict(prediction_input)
-                                        
-                                        # Save prediction to session state
-                                        st.session_state.prediction_result = prediction_result
-                                        
-                                        # Display prediction result
-                                        st.success(f"Prediction result: {prediction_result}")
-                                    else:
-                                        st.warning("Model not loaded. Please check the 'Model' tab first.")
-                                except Exception as e:
-                                    st.error(f"Error generating prediction: {str(e)}")
-                                
-                                st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
-                                
-                                # Show what was saved
-                                with st.expander("View saved data"):
-                                    st.json(corrected_data)
+                            # Save the complete form data to session state
+                            st.session_state.form_data = corrected_data
+                            
+                            # Set a flag to indicate data is ready for use in the other tab
+                            st.session_state.data_ready_for_prediction = True
+                            
+                            # Show success message
+                            st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
+                            
+                            # Show what was saved
+                            with st.expander("View saved data"):
+                                st.json(corrected_data)
                 
                 except Exception as e:
                     st.error(f"Error processing the image: {e}")
