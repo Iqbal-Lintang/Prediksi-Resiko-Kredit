@@ -433,24 +433,12 @@ def extract_form_data(image):
 
 # Add this function to display the extracted data and allow corrections
 def display_and_validate_extracted_data(extracted_data, state_options, city_options, profession_options):
-    """
-    Display the extracted form data and allow the user to validate/correct it
-    
-    Parameters:
-    extracted_data: dict - Dictionary with extracted form fields
-    state_options: list - Valid state options from the app
-    city_options: list - Valid city options from the app
-    profession_options: list - Valid profession options from the app
-    
-    Returns:
-    dict: Dictionary with corrected form data
-    """
     st.subheader("Extracted Form Data")
     st.info("Please verify the extracted data below and make corrections if needed")
     
     corrected_data = {}
     
-    # Create 3 columns for better layout, matching your existing UI
+    # Create 3 columns for better layout
     col1, col2, col3 = st.columns(3)
     
     # Personal Information
@@ -458,25 +446,28 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
         st.markdown("#### Informasi Pribadi")
         corrected_data['Age'] = st.number_input(
             "Age", min_value=17, max_value=120, 
-            value=extracted_data.get('Age', 35)
+            value=extracted_data.get('Age', 35),
+            key="input_age"  # Add unique key
         )
         
         marital_options = ["married", "single"]
         marital_index = 0 if extracted_data.get('Married/Single') == "married" else 1
         corrected_data['Married/Single'] = st.selectbox(
-            "Married/Single", marital_options, index=marital_index
+            "Married/Single", marital_options, index=marital_index,
+            key="input_marital"  # Add unique key
         )
         
-        # Find the closest match for profession in the profession_options
         prof_value = extracted_data.get('Profession', 'other')
         prof_index = profession_options.index(prof_value) if prof_value in profession_options else 19
         corrected_data['Profession'] = st.selectbox(
-            "Profession", profession_options, index=prof_index
+            "Profession", profession_options, index=prof_index,
+            key="input_profession"  # Add unique key
         )
         
         corrected_data['Experience'] = st.number_input(
             "Experience", min_value=0, max_value=100, 
-            value=extracted_data.get('Experience', 5)
+            value=extracted_data.get('Experience', 5),
+            key="input_experience"  # Add unique key
         )
     
     # Financial Information
@@ -486,52 +477,56 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
             "Income (Rupee India)", 
             min_value=1000, max_value=15000000, 
             value=extracted_data.get('Income', 5000000),
-            step=1000
+            step=1000,
+            key="input_income"  # Add unique key
         )
         
-        # Display income with comma separator
         st.markdown(f"**Selected Income:** ₹{corrected_data['Income']:,}")
         
         house_ownership_options = ["owned", "rented", "norent_noown"]
         house_val = extracted_data.get('House_Ownership', 'owned')
         house_index = house_ownership_options.index(house_val) if house_val in house_ownership_options else 0
         corrected_data['House_Ownership'] = st.selectbox(
-            "House_Ownership", house_ownership_options, index=house_index
+            "House_Ownership", house_ownership_options, index=house_index,
+            key="input_house_ownership"  # Add unique key
         )
         
         car_ownership_options = ["yes", "no"]
         car_val = extracted_data.get('Car_Ownership', 'yes')
         car_index = car_ownership_options.index(car_val) if car_val in car_ownership_options else 0
         corrected_data['Car_Ownership'] = st.selectbox(
-            "Car_Ownership", car_ownership_options, index=car_index
+            "Car_Ownership", car_ownership_options, index=car_index,
+            key="input_car_ownership"  # Add unique key
         )
     
     # Location Information
     with col3:
         st.markdown("#### Informasi Tempat Tinggal")
         
-        # Handle STATE, finding the closest match
         state_val = extracted_data.get('STATE', 'madhya_pradesh')
         state_index = state_options.index(state_val) if state_val in state_options else 0
         corrected_data['STATE'] = st.selectbox(
-            "STATE", state_options, index=state_index
+            "STATE", state_options, index=state_index,
+            key="input_state"  # Add unique key
         )
         
-        # Handle CITY, finding the closest match
         city_val = extracted_data.get('CITY', 'mumbai')
         city_index = city_options.index(city_val) if city_val in city_options else 0
         corrected_data['CITY'] = st.selectbox(
-            "CITY", city_options, index=city_index
+            "CITY", city_options, index=city_index,
+            key="input_city"  # Add unique key
         )
         
         corrected_data['CURRENT_HOUSE_YRS'] = st.number_input(
             "Current House Years", min_value=1, max_value=120, 
-            value=extracted_data.get('CURRENT_HOUSE_YRS', 10)
+            value=extracted_data.get('CURRENT_HOUSE_YRS', 10),
+            key="input_house_years"  # Add unique key
         )
         
         corrected_data['CURRENT_JOB_YRS'] = st.number_input(
             "Current Job Years", min_value=0, max_value=100, 
-            value=extracted_data.get('CURRENT_JOB_YRS', 5)
+            value=extracted_data.get('CURRENT_JOB_YRS', 5),
+            key="input_job_years"  # Add unique key
         )
     
     return corrected_data
