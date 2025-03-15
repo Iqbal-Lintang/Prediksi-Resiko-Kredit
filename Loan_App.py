@@ -769,6 +769,7 @@ if __name__ == "__main__":
         st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
 
     # OCR
+    # OCR
     with tab5:
         st.header("OCR Form Scanner")
         st.markdown("""
@@ -850,7 +851,7 @@ if __name__ == "__main__":
                             st.session_state.form_data = corrected_data
                             st.session_state.data_ready_for_prediction = True
                             st.session_state.data_confirmed = True
-                            # Using the newer rerun method
+                            # Using the newer rerun method without changing tabs
                             st.rerun()
                         
                         # Only show confirm button if not yet confirmed
@@ -863,6 +864,9 @@ if __name__ == "__main__":
                             with st.expander("View saved data"):
                                 st.json(st.session_state.form_data)
                             
+                            # Add instructions for manual navigation
+                            st.info("Please click on the 'Informasi Debitur' tab to continue with your application.")
+                            
                             # Option to reset
                             if st.button("Reset Form Scanner"):
                                 st.session_state.ocr_processed = False
@@ -872,36 +876,6 @@ if __name__ == "__main__":
                 except Exception as e:
                     st.error(f"Error processing the image: {e}")
                     st.info("Make sure the image is clear and contains the standardized form format.")
-        
-        # Display sample format
-        with st.expander("Format Standar Formulir"):
-            st.markdown("""
-            ### Format Standar Formulir OCR
-            
-            Formulir harus mengikuti format ini:
-            ```
-            Standardized OCR Form
-            Informasi Pribadi (Personal Information)
-            Age: [nilai]
-            Married/Single: [nilai]
-            Profession: [nilai]
-            Experience (Years): [nilai]
-            
-            Informasi Finansial (Financial Information)
-            Income (Rupee India): [nilai]
-            House Ownership: [nilai]
-            Car Ownership: [nilai]
-            
-            Informasi Tempat Tinggal (Residence Information)
-            State: [nilai]
-            City: [nilai]
-            Current House Years: [nilai]
-            Current Job Years: [nilai]
-            ```
-            """)
-            
-            # Show sample image of the form
-            st.info("Formulir harus memiliki kualitas gambar yang baik dan kontras tinggi untuk meningkatkan akurasi OCR.")
 
     # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
     st.markdown("<hr style='border: 1px solid #bbb;'><br>", unsafe_allow_html=True)
