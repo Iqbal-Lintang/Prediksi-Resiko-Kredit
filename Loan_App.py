@@ -827,7 +827,17 @@ if __name__ == "__main__":
                             
                             # Save to session state for use in other tabs
                             if st.button("Confirm and Use This Data"):
+                                # Save the complete form data to session state
                                 st.session_state.form_data = corrected_data
+                                
+                                # Set a flag to indicate data is ready for use in the other tab
+                                st.session_state.data_ready_for_prediction = True
+                                
+                                st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
+                                
+                                # Show what was saved
+                                with st.expander("View saved data"):
+                                    st.json(corrected_data)    
                                 
                                 # Add prediction code here
                                 try:
