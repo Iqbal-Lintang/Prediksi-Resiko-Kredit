@@ -827,7 +827,7 @@ if __name__ == "__main__":
                             )
                             
                             # Save to session state for use in other tabs
-                            if st.button("Confirm and Use This Data"):
+                    if st.button("Confirm and Use This Data"):
                             # Save the complete form data to session state
                             st.session_state.form_data = corrected_data
                             
