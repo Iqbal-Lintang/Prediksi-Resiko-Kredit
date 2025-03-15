@@ -768,66 +768,67 @@ if __name__ == "__main__":
         # Display the embedded Looker dashboard
         st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
 
-    # Add this to the tab5 section
+    # OCR
     with tab5:
-        st.header("OCR Form Scanner")
-        st.markdown("""
-        ### Upload Formulir Standar
-        Upload formulir standar yang telah diisi untuk mengekstrak data secara otomatis.
-        """)
-        
-        # File uploader for OCR form
-        uploaded_file = st.file_uploader("Upload formulir standar (PDF, JPG, atau PNG)", 
-                                         type=["pdf", "jpg", "jpeg", "png"])
-        
-        if uploaded_file is not None:
-            # Check if the file is a PDF
-            if uploaded_file.name.lower().endswith('.pdf'):
-                st.error("PDF processing requires additional libraries. Please upload an image format (JPG, PNG).")
-                # Note: PDF processing would require additional libraries like pdf2image or PyMuPDF
-            else:
-                try:
-                    # Display the uploaded image
-                    image = Image.open(uploaded_file)
-                    st.image(image, caption="Uploaded Form", use_column_width=True)
-                    
-                    # Process the image with OCR when the button is clicked
-                    if st.button("Process Form"):
-                        with st.spinner("Extracting data from form..."):
-                            # Extract data from the image
-                            extracted_data = extract_form_data(uploaded_file)
-                            
-                            # Define option lists for validation
-                            state_options = [
-                                "madhya_pradesh", "maharashtra", "kerala", "odisha", "tamil_nadu",
-                                "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
-                                "west_bengal", "haryana", "puducherry", "karnataka",
-                                "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
-                                "uttarakhand", "jharkhand", "delhi", "chandigarh"
-                            ]
-                            
-                            city_options = [
-                                "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
-                                "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
-                                "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
-                                "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
-                            ]
-                            
-                            profession_options = [
-                                "mechanical_engineer", "software_developer", "technical_writer", 
-                                "civil_servant", "librarian", "economist", "flight_attendant", 
-                                "architect", "designer", "physician", "financial_analyst", 
-                                "air_traffic_controller", "police_officer", "artist", "engineer",
-                                "lawyer", "consultant", "teacher", "doctor", "other"
-                            ]
-                            
-                            # Display and validate the extracted data
-                            corrected_data = display_and_validate_extracted_data(
-                                extracted_data, state_options, city_options, profession_options
-                            )
-                            
-                            # Save to session state for use in other tabs
-                    if st.button("Confirm and Use This Data"):
+    st.header("OCR Form Scanner")
+    st.markdown("""
+    ### Upload Formulir Standar
+    Upload formulir standar yang telah diisi untuk mengekstrak data secara otomatis.
+    """)
+    
+    # File uploader for OCR form
+    uploaded_file = st.file_uploader("Upload formulir standar (PDF, JPG, atau PNG)", 
+                                     type=["pdf", "jpg", "jpeg", "png"])
+    
+    if uploaded_file is not None:
+        # Check if the file is a PDF
+        if uploaded_file.name.lower().endswith('.pdf'):
+            st.error("PDF processing requires additional libraries. Please upload an image format (JPG, PNG).")
+            # Note: PDF processing would require additional libraries like pdf2image or PyMuPDF
+        else:
+            try:
+                # Display the uploaded image
+                image = Image.open(uploaded_file)
+                st.image(image, caption="Uploaded Form", use_column_width=True)
+                
+                # Process the image with OCR when the button is clicked
+                if st.button("Process Form"):
+                    with st.spinner("Extracting data from form..."):
+                        # Extract data from the image
+                        extracted_data = extract_form_data(uploaded_file)
+                        
+                        # Define option lists for validation
+                        state_options = [
+                            "madhya_pradesh", "maharashtra", "kerala", "odisha", "tamil_nadu",
+                            "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
+                            "west_bengal", "haryana", "puducherry", "karnataka",
+                            "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
+                            "uttarakhand", "jharkhand", "delhi", "chandigarh"
+                        ]
+                        
+                        city_options = [
+                            "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
+                            "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
+                            "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
+                            "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
+                        ]
+                        
+                        profession_options = [
+                            "mechanical_engineer", "software_developer", "technical_writer", 
+                            "civil_servant", "librarian", "economist", "flight_attendant", 
+                            "architect", "designer", "physician", "financial_analyst", 
+                            "air_traffic_controller", "police_officer", "artist", "engineer",
+                            "lawyer", "consultant", "teacher", "doctor", "other"
+                        ]
+                        
+                        # Display and validate the extracted data
+                        corrected_data = display_and_validate_extracted_data(
+                            extracted_data, state_options, city_options, profession_options
+                        )
+                        
+                        # MOVE THE CONFIRM BUTTON INSIDE THIS SCOPE
+                        # Only show the confirm button after data is processed
+                        if st.button("Confirm and Use This Data", key="confirm_button"):
                             # Save the complete form data to session state
                             st.session_state.form_data = corrected_data
                             
@@ -840,10 +841,10 @@ if __name__ == "__main__":
                             # Show what was saved
                             with st.expander("View saved data"):
                                 st.json(corrected_data)
-                
-                except Exception as e:
-                    st.error(f"Error processing the image: {e}")
-                    st.info("Make sure the image is clear and contains the standardized form format.")
+            
+            except Exception as e:
+                st.error(f"Error processing the image: {e}")
+                st.info("Make sure the image is clear and contains the standardized form format.")
         
         # Display sample format
         with st.expander("Format Standar Formulir"):
