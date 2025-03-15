@@ -317,33 +317,74 @@ def get_download_link(risk_data, input_data):
 
 # Add this function to your app to enable OCR capabilities
 def extract_form_data(image):
+    """
+    Extract data from a standardized OCR form image
+    
+    Parameters:
+    image: PIL Image or uploaded file
+    
+    Returns:
+    dict: Dictionary with extracted form fields
+    """
+    # First, implement debug logging
+    st.write("Debug: Starting image processing")
+    
+    # Check if image is None
+    if image is None:
+        st.error("No image provided")
+        return {}
+        
     # Convert image to OpenCV format
-    if isinstance(image, Image.Image):
-        # Convert PIL Image to OpenCV format
-        img_array = np.array(image.convert('RGB'))
-        img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
-    else:
-        # Handle uploaded file
-        try:
-            # Add check to ensure file has content
+    try:
+        if isinstance(image, Image.Image):
+            st.write("Debug: Processing PIL Image")
+            # Convert PIL Image to OpenCV format
+            img_array = np.array(image.convert('RGB'))
+            img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+        else:
+            st.write("Debug: Processing file upload")
+            # Display file info
+            st.write(f"Debug: File type: {type(image)}")
+            
+            # Handle uploaded file
             file_content = image.read()
+            st.write(f"Debug: File size: {len(file_content)} bytes")
+            
             if len(file_content) == 0:
                 st.error("Uploaded file is empty")
                 return {}
+                
+            # Try to display the image before processing
+            try:
+                # Create a copy of the bytes for display
+                image_copy = io.BytesIO(file_content)
+                st.image(image_copy, caption="Uploaded Image", use_column_width=True)
+            except Exception as e:
+                st.warning(f"Could not preview image: {str(e)}")
             
+            # Reset file pointer
+            image.seek(0)
+            file_content = image.read()
+            
+            # Decode image
             img_bytes = np.asarray(bytearray(file_content), dtype=np.uint8)
             img = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
             
             # Check if image was successfully decoded
             if img is None:
                 st.error("Failed to decode image. Please check the file format.")
+                st.write("Debug: Make sure the file is an actual image (JPG, PNG, etc.)")
                 return {}
                 
             # Reset file pointer to beginning for potential reuse
             image.seek(0)
-        except Exception as e:
-            st.error(f"Error processing image: {str(e)}")
-            return {}
+    except Exception as e:
+        st.error(f"Error processing image: {str(e)}")
+        st.write(f"Debug: Exception details: {type(e).__name__}")
+        return {}
+    
+    st.write("Debug: Image processed successfully")
+    st.write(f"Debug: Image dimensions: {img.shape}")
     
     # Preprocess image to improve OCR accuracy
     # Convert to grayscale
