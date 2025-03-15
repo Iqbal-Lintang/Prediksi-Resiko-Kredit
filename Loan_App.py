@@ -316,7 +316,8 @@ def get_download_link(risk_data, input_data):
 # OCR FUNCTION
 
 # Add this function to your app to enable OCR capabilities
-def extract_form_data(image):
+# Add this function to your app for OCR capabilities without debug messages
+def extract_form_data_clean(image):
     """
     Extract data from a standardized OCR form image
     
@@ -326,65 +327,31 @@ def extract_form_data(image):
     Returns:
     dict: Dictionary with extracted form fields
     """
-    # First, implement debug logging
-    st.write("Debug: Starting image processing")
-    
-    # Check if image is None
-    if image is None:
-        st.error("No image provided")
-        return {}
-        
     # Convert image to OpenCV format
     try:
         if isinstance(image, Image.Image):
-            st.write("Debug: Processing PIL Image")
             # Convert PIL Image to OpenCV format
             img_array = np.array(image.convert('RGB'))
             img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         else:
-            st.write("Debug: Processing file upload")
-            # Display file info
-            st.write(f"Debug: File type: {type(image)}")
-            
             # Handle uploaded file
             file_content = image.read()
-            st.write(f"Debug: File size: {len(file_content)} bytes")
             
             if len(file_content) == 0:
-                st.error("Uploaded file is empty")
                 return {}
                 
-            # Try to display the image before processing
-            try:
-                # Create a copy of the bytes for display
-                image_copy = io.BytesIO(file_content)
-                st.image(image_copy, caption="Uploaded Image", use_column_width=True)
-            except Exception as e:
-                st.warning(f"Could not preview image: {str(e)}")
-            
-            # Reset file pointer
-            image.seek(0)
-            file_content = image.read()
-            
             # Decode image
             img_bytes = np.asarray(bytearray(file_content), dtype=np.uint8)
             img = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
             
             # Check if image was successfully decoded
             if img is None:
-                st.error("Failed to decode image. Please check the file format.")
-                st.write("Debug: Make sure the file is an actual image (JPG, PNG, etc.)")
                 return {}
                 
             # Reset file pointer to beginning for potential reuse
             image.seek(0)
     except Exception as e:
-        st.error(f"Error processing image: {str(e)}")
-        st.write(f"Debug: Exception details: {type(e).__name__}")
         return {}
-    
-    st.write("Debug: Image processed successfully")
-    st.write(f"Debug: Image dimensions: {img.shape}")
     
     # Preprocess image to improve OCR accuracy
     # Convert to grayscale
@@ -772,6 +739,7 @@ if __name__ == "__main__":
     # OCR
     # OCR
     # OCR
+    # OCR
     with tab5:
         st.header("OCR Form Scanner")
         st.markdown("""
@@ -784,34 +752,6 @@ if __name__ == "__main__":
             st.session_state.ocr_processed = False
         if 'extracted_data' not in st.session_state:
             st.session_state.extracted_data = {}
-        if 'form_data' not in st.session_state:
-            st.session_state.form_data = {}
-        if 'active_tab' not in st.session_state:
-            st.session_state.active_tab = "OCR"  # Set default active tab
-        
-        # Process button callback function
-        def process_form():
-            # Extract data from the image
-            st.session_state.extracted_data = extract_form_data(uploaded_file)
-            st.session_state.ocr_processed = True
-            # Explicitly set active tab to prevent switching
-            st.session_state.active_tab = "OCR"
-        
-        # Confirm button callback function
-        def confirm_data():
-            # Save the form data but don't change tabs
-            st.session_state.data_ready_for_prediction = True
-            st.session_state.data_confirmed = True
-            # Explicitly set active tab to prevent switching
-            st.session_state.active_tab = "OCR"
-        
-        # Reset button callback function
-        def reset_form():
-            st.session_state.ocr_processed = False
-            st.session_state.data_confirmed = False
-            st.session_state.extracted_data = {}
-            # Explicitly set active tab to prevent switching
-            st.session_state.active_tab = "OCR"
         
         # File uploader for OCR form
         uploaded_file = st.file_uploader("Upload formulir standar (PDF, JPG, atau PNG)", 
@@ -827,11 +767,18 @@ if __name__ == "__main__":
                 try:
                     # Display the uploaded image
                     image = Image.open(uploaded_file)
-                    st.image(image, caption="Uploaded Form", use_column_width=True)
+                    st.image(image, caption="Uploaded Form", use_container_width=True)
+                    
+                    # Process button callback function
+                    def process_form():
+                        # Extract data from the image - remove debug messages
+                        extracted_data = extract_form_data_clean(uploaded_file)
+                        st.session_state.extracted_data = extracted_data
+                        st.session_state.ocr_processed = True
                     
                     # Only show Process button if not yet processed
                     if not st.session_state.ocr_processed:
-                        st.button("Process Form", on_click=process_form, key="process_form_button")
+                        st.button("Process Form", key="process_form_button", on_click=process_form)
                     
                     # If already processed, show the validation form and confirm button
                     if st.session_state.ocr_processed:
@@ -864,12 +811,23 @@ if __name__ == "__main__":
                             st.session_state.extracted_data, state_options, city_options, profession_options
                         )
                         
-                        # Store the corrected data in session state
-                        st.session_state.form_data = corrected_data
+                        # Confirm button callback function
+                        def confirm_data():
+                            # Save to session state for use in other tabs
+                            st.session_state.form_data = corrected_data
+                            st.session_state.data_ready_for_prediction = True
+                            st.session_state.data_confirmed = True
+                            # Don't navigate anywhere
+                        
+                        # Reset form function
+                        def reset_form():
+                            st.session_state.ocr_processed = False
+                            st.session_state.data_confirmed = False
+                            st.session_state.extracted_data = {}
                         
                         # Only show confirm button if not yet confirmed
                         if not st.session_state.get('data_confirmed', False):
-                            st.button("Confirm and Use This Data", on_click=confirm_data, key="confirm_data_button")
+                            st.button("Confirm and Use This Data", key="confirm_data_button", on_click=confirm_data)
                         else:
                             st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
                             
@@ -881,7 +839,7 @@ if __name__ == "__main__":
                             st.info("Please click on the 'Informasi Debitur' tab to continue with your application.")
                             
                             # Option to reset
-                            st.button("Reset Form Scanner", on_click=reset_form, key="reset_form_button")
+                            st.button("Reset Form Scanner", key="reset_form_button", on_click=reset_form)
                 
                 except Exception as e:
                     st.error(f"Error processing the image: {e}")
