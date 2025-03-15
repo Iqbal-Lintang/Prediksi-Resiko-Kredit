@@ -806,8 +806,8 @@ if __name__ == "__main__":
                             # Store in session state
                             st.session_state.extracted_data = extracted_data
                             st.session_state.ocr_processed = True
-                            # Force a rerun to update the UI
-                            st.experimental_rerun()
+                            # Using the newer rerun method
+                            st.rerun()
                     
                     # Only show Process button if not yet processed
                     if not st.session_state.ocr_processed:
@@ -850,8 +850,8 @@ if __name__ == "__main__":
                             st.session_state.form_data = corrected_data
                             st.session_state.data_ready_for_prediction = True
                             st.session_state.data_confirmed = True
-                            # Force a rerun to update the UI
-                            st.experimental_rerun()
+                            # Using the newer rerun method
+                            st.rerun()
                         
                         # Only show confirm button if not yet confirmed
                         if not st.session_state.get('data_confirmed', False):
@@ -867,7 +867,7 @@ if __name__ == "__main__":
                             if st.button("Reset Form Scanner"):
                                 st.session_state.ocr_processed = False
                                 st.session_state.data_confirmed = False
-                                st.experimental_rerun()
+                                st.rerun()
                 
                 except Exception as e:
                     st.error(f"Error processing the image: {e}")
