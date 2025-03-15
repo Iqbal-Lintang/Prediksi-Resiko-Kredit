@@ -770,6 +770,7 @@ if __name__ == "__main__":
 
     # OCR
     # OCR
+    # OCR
     with tab5:
         st.header("OCR Form Scanner")
         st.markdown("""
@@ -781,6 +782,28 @@ if __name__ == "__main__":
         if 'ocr_processed' not in st.session_state:
             st.session_state.ocr_processed = False
         if 'extracted_data' not in st.session_state:
+            st.session_state.extracted_data = {}
+        if 'form_data' not in st.session_state:
+            st.session_state.form_data = {}
+        
+        # Process button callback function - defined outside the button
+        def process_form():
+            if uploaded_file is not None:
+                # Extract data from the image
+                st.session_state.extracted_data = extract_form_data(uploaded_file)
+                st.session_state.ocr_processed = True
+        
+        # Confirm button callback function - defined outside the button
+        def confirm_data():
+            # We'll use the session state to store the validated data
+            # This will be populated by the form inputs
+            st.session_state.data_ready_for_prediction = True
+            st.session_state.data_confirmed = True
+        
+        # Reset button callback function - defined outside the button
+        def reset_form():
+            st.session_state.ocr_processed = False
+            st.session_state.data_confirmed = False
             st.session_state.extracted_data = {}
         
         # File uploader for OCR form
@@ -798,21 +821,9 @@ if __name__ == "__main__":
                     image = Image.open(uploaded_file)
                     st.image(image, caption="Uploaded Form", use_column_width=True)
                     
-                    # Process button callback function
-                    def process_form():
-                        with st.spinner("Extracting data from form..."):
-                            # Extract data from the image
-                            extracted_data = extract_form_data(uploaded_file)
-                            
-                            # Store in session state
-                            st.session_state.extracted_data = extracted_data
-                            st.session_state.ocr_processed = True
-                            # Using the newer rerun method
-                            st.rerun()
-                    
                     # Only show Process button if not yet processed
                     if not st.session_state.ocr_processed:
-                        st.button("Process Form", on_click=process_form)
+                        process_button = st.button("Process Form", on_click=process_form)
                     
                     # If already processed, show the validation form and confirm button
                     if st.session_state.ocr_processed:
@@ -841,18 +852,13 @@ if __name__ == "__main__":
                         ]
                         
                         # Display and validate the extracted data
+                        # The function will update form values in the session state
                         corrected_data = display_and_validate_extracted_data(
                             st.session_state.extracted_data, state_options, city_options, profession_options
                         )
                         
-                        # Confirm button callback function
-                        def confirm_data():
-                            # Save to session state for use in other tabs
-                            st.session_state.form_data = corrected_data
-                            st.session_state.data_ready_for_prediction = True
-                            st.session_state.data_confirmed = True
-                            # Using the newer rerun method without changing tabs
-                            st.rerun()
+                        # Store the corrected data in session state
+                        st.session_state.form_data = corrected_data
                         
                         # Only show confirm button if not yet confirmed
                         if not st.session_state.get('data_confirmed', False):
@@ -868,10 +874,7 @@ if __name__ == "__main__":
                             st.info("Please click on the 'Informasi Debitur' tab to continue with your application.")
                             
                             # Option to reset
-                            if st.button("Reset Form Scanner"):
-                                st.session_state.ocr_processed = False
-                                st.session_state.data_confirmed = False
-                                st.rerun()
+                            st.button("Reset Form Scanner", on_click=reset_form)
                 
                 except Exception as e:
                     st.error(f"Error processing the image: {e}")
