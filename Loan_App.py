@@ -313,19 +313,10 @@ def get_download_link(risk_data, input_data):
     
     return href
 
-# OCR
+# OCR FUNCTION
 
 # Add this function to your app to enable OCR capabilities
 def extract_form_data(image):
-    """
-    Extract data from a standardized OCR form image
-    
-    Parameters:
-    image: PIL Image or uploaded file
-    
-    Returns:
-    dict: Dictionary with extracted form fields
-    """
     # Convert image to OpenCV format
     if isinstance(image, Image.Image):
         # Convert PIL Image to OpenCV format
@@ -333,10 +324,26 @@ def extract_form_data(image):
         img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
     else:
         # Handle uploaded file
-        img_bytes = np.asarray(bytearray(image.read()), dtype=np.uint8)
-        img = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
-        # Reset file pointer to beginning for potential reuse
-        image.seek(0)
+        try:
+            # Add check to ensure file has content
+            file_content = image.read()
+            if len(file_content) == 0:
+                st.error("Uploaded file is empty")
+                return {}
+            
+            img_bytes = np.asarray(bytearray(file_content), dtype=np.uint8)
+            img = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
+            
+            # Check if image was successfully decoded
+            if img is None:
+                st.error("Failed to decode image. Please check the file format.")
+                return {}
+                
+            # Reset file pointer to beginning for potential reuse
+            image.seek(0)
+        except Exception as e:
+            st.error(f"Error processing image: {str(e)}")
+            return {}
     
     # Preprocess image to improve OCR accuracy
     # Convert to grayscale
