@@ -312,6 +312,223 @@ def get_download_link(risk_data, input_data):
     href = f'<a href="data:application/pdf;base64,{b64}" download="{file_name}" class="download-button">Download Laporan Hasil Prediksi Resiko</a>'
     
     return href
+
+# OCR
+
+# Add this function to your app to enable OCR capabilities
+def extract_form_data(image):
+    """
+    Extract data from a standardized OCR form image
+    
+    Parameters:
+    image: PIL Image or uploaded file
+    
+    Returns:
+    dict: Dictionary with extracted form fields
+    """
+    # Convert image to OpenCV format
+    if isinstance(image, Image.Image):
+        # Convert PIL Image to OpenCV format
+        img_array = np.array(image.convert('RGB'))
+        img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
+    else:
+        # Handle uploaded file
+        img_bytes = np.asarray(bytearray(image.read()), dtype=np.uint8)
+        img = cv2.imdecode(img_bytes, cv2.IMREAD_COLOR)
+        # Reset file pointer to beginning for potential reuse
+        image.seek(0)
+    
+    # Preprocess image to improve OCR accuracy
+    # Convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    # Apply thresholding to get binary image
+    _, binary = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+    
+    # Run OCR on the processed image
+    text = pytesseract.image_to_string(binary, lang='eng')
+    
+    # Create a dictionary to store the extracted data
+    form_data = {}
+    
+    # Extract key-value pairs from the OCR text
+    # Using regex patterns to find specific fields
+    age_match = re.search(r'Age:\s*(\d+)', text)
+    if age_match:
+        form_data['Age'] = int(age_match.group(1))
+    
+    marital_match = re.search(r'Married/Single:\s*(\w+)', text)
+    if marital_match:
+        status = marital_match.group(1).lower()
+        # Normalize to match app's expected values
+        form_data['Married/Single'] = 'married' if 'marr' in status else 'single'
+    
+    profession_match = re.search(r'Profession:\s*([^\n]+)', text)
+    if profession_match:
+        # Clean up profession text and normalize it
+        profession = profession_match.group(1).strip().lower().replace(' ', '_')
+        form_data['Profession'] = profession
+    
+    experience_match = re.search(r'Experience.*?:\s*(\d+)', text)
+    if experience_match:
+        form_data['Experience'] = int(experience_match.group(1))
+    
+    # Extract income and remove non-numeric characters
+    income_match = re.search(r'Income.*?:\s*([\d,]+)', text)
+    if income_match:
+        # Remove commas and convert to integer
+        income_str = income_match.group(1).replace(',', '')
+        form_data['Income'] = int(income_str)
+    
+    # Extract house ownership
+    house_match = re.search(r'House Ownership:\s*(\w+)', text)
+    if house_match:
+        house = house_match.group(1).lower()
+        # Normalize to match app's expected values
+        if 'own' in house:
+            form_data['House_Ownership'] = 'owned'
+        elif 'rent' in house:
+            form_data['House_Ownership'] = 'rented'
+        else:
+            form_data['House_Ownership'] = 'norent_noown'
+    
+    # Extract car ownership
+    car_match = re.search(r'Car Ownership:\s*(\w+)', text)
+    if car_match:
+        car = car_match.group(1).lower()
+        # Normalize to match app's expected values
+        form_data['Car_Ownership'] = 'yes' if 'yes' in car or 'y' in car else 'no'
+    
+    # Extract state
+    state_match = re.search(r'State:\s*([^\n]+)', text)
+    if state_match:
+        # Clean up state text and normalize it
+        state = state_match.group(1).strip().lower().replace(' ', '_')
+        form_data['STATE'] = state
+    
+    # Extract city
+    city_match = re.search(r'City:\s*([^\n]+)', text)
+    if city_match:
+        # Clean up city text and normalize it
+        city = city_match.group(1).strip().lower().replace(' ', '_')
+        form_data['CITY'] = city
+    
+    # Extract current house years
+    house_years_match = re.search(r'Current House Years:\s*(\d+)', text)
+    if house_years_match:
+        form_data['CURRENT_HOUSE_YRS'] = int(house_years_match.group(1))
+    
+    # Extract current job years
+    job_years_match = re.search(r'Current Job Years:\s*(\d+)', text)
+    if job_years_match:
+        form_data['CURRENT_JOB_YRS'] = int(job_years_match.group(1))
+    
+    return form_data
+
+# Add this function to display the extracted data and allow corrections
+def display_and_validate_extracted_data(extracted_data, state_options, city_options, profession_options):
+    """
+    Display the extracted form data and allow the user to validate/correct it
+    
+    Parameters:
+    extracted_data: dict - Dictionary with extracted form fields
+    state_options: list - Valid state options from the app
+    city_options: list - Valid city options from the app
+    profession_options: list - Valid profession options from the app
+    
+    Returns:
+    dict: Dictionary with corrected form data
+    """
+    st.subheader("Extracted Form Data")
+    st.info("Please verify the extracted data below and make corrections if needed")
+    
+    corrected_data = {}
+    
+    # Create 3 columns for better layout, matching your existing UI
+    col1, col2, col3 = st.columns(3)
+    
+    # Personal Information
+    with col1:
+        st.markdown("#### Informasi Pribadi")
+        corrected_data['Age'] = st.number_input(
+            "Age", min_value=17, max_value=120, 
+            value=extracted_data.get('Age', 35)
+        )
+        
+        marital_options = ["married", "single"]
+        marital_index = 0 if extracted_data.get('Married/Single') == "married" else 1
+        corrected_data['Married/Single'] = st.selectbox(
+            "Married/Single", marital_options, index=marital_index
+        )
+        
+        # Find the closest match for profession in the profession_options
+        prof_value = extracted_data.get('Profession', 'other')
+        prof_index = profession_options.index(prof_value) if prof_value in profession_options else 19
+        corrected_data['Profession'] = st.selectbox(
+            "Profession", profession_options, index=prof_index
+        )
+        
+        corrected_data['Experience'] = st.number_input(
+            "Experience", min_value=0, max_value=100, 
+            value=extracted_data.get('Experience', 5)
+        )
+    
+    # Financial Information
+    with col2:
+        st.markdown("#### Informasi Finansial")
+        corrected_data['Income'] = st.slider(
+            "Income (Rupee India)", 
+            min_value=1000, max_value=15000000, 
+            value=extracted_data.get('Income', 5000000),
+            step=1000
+        )
+        
+        # Display income with comma separator
+        st.markdown(f"**Selected Income:** ₹{corrected_data['Income']:,}")
+        
+        house_ownership_options = ["owned", "rented", "norent_noown"]
+        house_val = extracted_data.get('House_Ownership', 'owned')
+        house_index = house_ownership_options.index(house_val) if house_val in house_ownership_options else 0
+        corrected_data['House_Ownership'] = st.selectbox(
+            "House_Ownership", house_ownership_options, index=house_index
+        )
+        
+        car_ownership_options = ["yes", "no"]
+        car_val = extracted_data.get('Car_Ownership', 'yes')
+        car_index = car_ownership_options.index(car_val) if car_val in car_ownership_options else 0
+        corrected_data['Car_Ownership'] = st.selectbox(
+            "Car_Ownership", car_ownership_options, index=car_index
+        )
+    
+    # Location Information
+    with col3:
+        st.markdown("#### Informasi Tempat Tinggal")
+        
+        # Handle STATE, finding the closest match
+        state_val = extracted_data.get('STATE', 'madhya_pradesh')
+        state_index = state_options.index(state_val) if state_val in state_options else 0
+        corrected_data['STATE'] = st.selectbox(
+            "STATE", state_options, index=state_index
+        )
+        
+        # Handle CITY, finding the closest match
+        city_val = extracted_data.get('CITY', 'mumbai')
+        city_index = city_options.index(city_val) if city_val in city_options else 0
+        corrected_data['CITY'] = st.selectbox(
+            "CITY", city_options, index=city_index
+        )
+        
+        corrected_data['CURRENT_HOUSE_YRS'] = st.number_input(
+            "Current House Years", min_value=1, max_value=120, 
+            value=extracted_data.get('CURRENT_HOUSE_YRS', 10)
+        )
+        
+        corrected_data['CURRENT_JOB_YRS'] = st.number_input(
+            "Current Job Years", min_value=0, max_value=100, 
+            value=extracted_data.get('CURRENT_JOB_YRS', 5)
+        )
+    
+    return corrected_data
+    
     
 # MAIN APP EXECUTE START Main application execution
 if __name__ == "__main__":
@@ -342,11 +559,12 @@ if __name__ == "__main__":
         """)
         
     # APP TABS Create tabs for better organization
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "Informasi Debitur", 
         "Metriks Stabilitas", 
         "Lora AI",
-        "Dashboard"
+        "Dashboard",
+        "OCR Form"
     ])
 
     # Initialize session state for form data
@@ -505,6 +723,107 @@ if __name__ == "__main__":
     
         # Display the embedded Looker dashboard
         st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
+
+    # Add this to the tab5 section
+    with tab5:
+        st.header("OCR Form Scanner")
+        st.markdown("""
+        ### Upload Formulir Standar
+        Upload formulir standar yang telah diisi untuk mengekstrak data secara otomatis.
+        """)
+        
+        # File uploader for OCR form
+        uploaded_file = st.file_uploader("Upload formulir standar (PDF, JPG, atau PNG)", 
+                                         type=["pdf", "jpg", "jpeg", "png"])
+        
+        if uploaded_file is not None:
+            # Check if the file is a PDF
+            if uploaded_file.name.lower().endswith('.pdf'):
+                st.error("PDF processing requires additional libraries. Please upload an image format (JPG, PNG).")
+                # Note: PDF processing would require additional libraries like pdf2image or PyMuPDF
+            else:
+                try:
+                    # Display the uploaded image
+                    image = Image.open(uploaded_file)
+                    st.image(image, caption="Uploaded Form", use_column_width=True)
+                    
+                    # Process the image with OCR when the button is clicked
+                    if st.button("Process Form"):
+                        with st.spinner("Extracting data from form..."):
+                            # Extract data from the image
+                            extracted_data = extract_form_data(uploaded_file)
+                            
+                            # Define option lists for validation
+                            state_options = [
+                                "madhya_pradesh", "maharashtra", "kerala", "odisha", "tamil_nadu",
+                                "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
+                                "west_bengal", "haryana", "puducherry", "karnataka",
+                                "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
+                                "uttarakhand", "jharkhand", "delhi", "chandigarh"
+                            ]
+                            
+                            city_options = [
+                                "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
+                                "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
+                                "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
+                                "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
+                            ]
+                            
+                            profession_options = [
+                                "mechanical_engineer", "software_developer", "technical_writer", 
+                                "civil_servant", "librarian", "economist", "flight_attendant", 
+                                "architect", "designer", "physician", "financial_analyst", 
+                                "air_traffic_controller", "police_officer", "artist", "engineer",
+                                "lawyer", "consultant", "teacher", "doctor", "other"
+                            ]
+                            
+                            # Display and validate the extracted data
+                            corrected_data = display_and_validate_extracted_data(
+                                extracted_data, state_options, city_options, profession_options
+                            )
+                            
+                            # Save to session state for use in other tabs
+                            if st.button("Confirm and Use This Data"):
+                                st.session_state.form_data = corrected_data
+                                st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
+                                
+                                # Show what was saved
+                                with st.expander("View saved data"):
+                                    st.json(corrected_data)
+                
+                except Exception as e:
+                    st.error(f"Error processing the image: {e}")
+                    st.info("Make sure the image is clear and contains the standardized form format.")
+        
+        # Display sample format
+        with st.expander("Format Standar Formulir"):
+            st.markdown("""
+            ### Format Standar Formulir OCR
+            
+            Formulir harus mengikuti format ini:
+            ```
+            Standardized OCR Form
+            Informasi Pribadi (Personal Information)
+            Age: [nilai]
+            Married/Single: [nilai]
+            Profession: [nilai]
+            Experience (Years): [nilai]
+            
+            Informasi Finansial (Financial Information)
+            Income (Rupee India): [nilai]
+            House Ownership: [nilai]
+            Car Ownership: [nilai]
+            
+            Informasi Tempat Tinggal (Residence Information)
+            State: [nilai]
+            City: [nilai]
+            Current House Years: [nilai]
+            Current Job Years: [nilai]
+            ```
+            """)
+            
+            # Show sample image of the form
+            st.info("Formulir harus memiliki kualitas gambar yang baik dan kontras tinggi untuk meningkatkan akurasi OCR.")
 
     # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
     st.markdown("<hr style='border: 1px solid #bbb;'><br>", unsafe_allow_html=True)
