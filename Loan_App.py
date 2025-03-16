@@ -862,7 +862,7 @@ if __name__ == "__main__":
     # TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER 
     
     with tab4:
-        st.info("Gunakan dashboard ini untuk menganalisis tren pasar kredit secara mendalam, termasuk pola pinjaman, tingkat risiko, dan perilaku pelanggan berdasarkan data historis dan real-time.")
+        st.info("Gunakan dashboard ini untuk menganalisis tren pasar kredit secara mendalam, termasuk penghasilan, tingkat risiko, dan kepemilikan aset berdasarkan data historis dan real-time.")
         st.subheader("Dashboard")
         
         # Replace this with your Looker embed URL
