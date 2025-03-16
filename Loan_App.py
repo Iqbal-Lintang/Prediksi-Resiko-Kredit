@@ -1278,6 +1278,10 @@ if __name__ == "__main__":
                     st.caption("Menunjukkan seberapa banyak pengalaman kerja Debitur dibandingkan dengan standar maksimal 25 tahun.")
                 
 
+            # DATALENSE OCR RECOMENDATION
+            st.info("""
+            🔎 Gunakan tab DataLens OCR untuk scan form otomatis.
+            """)
             
             # CHATBOT RECOMMENDATION Chatbot recommendation
             st.info("""
