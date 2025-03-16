@@ -329,7 +329,7 @@ def extract_form_data(image):
     dict: Dictionary with extracted form fields
     """
     # First, implement debug logging
-    st.write("Debug: Starting image processing")
+    # st.write("Debug: Starting image processing")
     
     # Check if image is None
     if image is None:
@@ -344,13 +344,13 @@ def extract_form_data(image):
             img_array = np.array(image.convert('RGB'))
             img = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         else:
-            st.write("Debug: Processing file upload")
+            # st.write("Debug: Processing file upload")
             # Display file info
-            st.write(f"Debug: File type: {type(image)}")
+            # st.write(f"Debug: File type: {type(image)}")
             
             # Handle uploaded file
             file_content = image.read()
-            st.write(f"Debug: File size: {len(file_content)} bytes")
+            # st.write(f"Debug: File size: {len(file_content)} bytes")
             
             if len(file_content) == 0:
                 st.error("Uploaded file is empty")
@@ -385,8 +385,8 @@ def extract_form_data(image):
         st.write(f"Debug: Exception details: {type(e).__name__}")
         return {}
     
-    st.write("Debug: Image processed successfully")
-    st.write(f"Debug: Image dimensions: {img.shape}")
+    # st.write("Debug: Image processed successfully")
+    # st.write(f"Debug: Image dimensions: {img.shape}")
     
     # Preprocess image to improve OCR accuracy
     # Convert to grayscale
