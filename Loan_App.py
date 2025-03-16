@@ -782,6 +782,12 @@ if __name__ == "__main__":
         Upload formulir standar yang telah diisi untuk mengekstrak data secara otomatis.
         """)
         
+        # Add the banner code here - right after the markdown and before session state initialization
+        if st.session_state.get('show_process_banner', False):
+            st.warning("Form successfully processed, navigate back to OCR tab to confirm and use the data", icon="✅")
+            if st.button("Dismiss", key="dismiss_banner_tab5"):
+                st.session_state.show_process_banner = False
+                
         # Initialize session state variables if they don't exist
         if 'ocr_processed' not in st.session_state:
             st.session_state.ocr_processed = False
@@ -845,6 +851,9 @@ if __name__ == "__main__":
                         
                         # Set a flag to indicate extraction is complete
                         st.session_state.extraction_complete = True
+
+                        # Add a session state flag to show the banner
+                        st.session_state.show_process_banner = True
                         
                         # Don't use rerun inside callback
         
