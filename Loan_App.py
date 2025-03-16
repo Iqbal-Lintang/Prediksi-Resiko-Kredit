@@ -836,7 +836,7 @@ if __name__ == "__main__":
                         st.success("Data berhasil disimpan! Silahkan pindah ke tab 'Informasi Debitur' untuk melanjutkan prediksi resiko.")
                         
                         # Show what was saved
-                        with st.expander("View saved data"):
+                        with st.expander("Lihat Data Tersimpan"):
                             st.json(st.session_state.form_data)
                         
                         # Option to reset
