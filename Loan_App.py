@@ -912,25 +912,25 @@ if __name__ == "__main__":
         
         # Add a general explanation section
         with st.expander("Penjelasan Metrik Stabilitas", expanded=False):
-        st.markdown("""
-        ### Alasan di Balik Metrik Stabilitas
-        
-        Metrik stabilitas ini membantu menilai risiko kredit dengan cara yang tidak tercakup dalam penilaian kredit tradisional:
-        
-        1. **Stabilitas Pekerjaan** mengindikasikan konsistensi pendapatan dan kemungkinan lebih rendah untuk mengalami periode tanpa pendapatan.
-               
-        *Lama kerja ÷ (Usia - 18)*
-        
-        2. **Stabilitas Tempat Tinggal** menunjukkan komitmen jangka panjang dan tanggung jawab finansial yang konsisten di satu lokasi.
-        
-        *Lama tinggal ÷ Usia*
-        
-        3. **Stabilitas Finansial** mewakili kapasitas peminjam untuk membayar kembali pinjaman dan menangani kejadian finansial yang tidak terduga.
-        
-        *Pendapatan ÷ 2*
-        
-        Kombinasi dari ketiga metrik ini memberikan gambaran yang lebih lengkap tentang profil risiko peminjam.
-        """)
+            st.markdown("""
+            ### Alasan di Balik Metrik Stabilitas
+            
+            Metrik stabilitas ini membantu menilai risiko kredit dengan cara yang tidak tercakup dalam penilaian kredit tradisional:
+            
+            1. **Stabilitas Pekerjaan** mengindikasikan konsistensi pendapatan dan kemungkinan lebih rendah untuk mengalami periode tanpa pendapatan.
+                   
+            *Lama kerja ÷ (Usia - 18)*
+            
+            2. **Stabilitas Tempat Tinggal** menunjukkan komitmen jangka panjang dan tanggung jawab finansial yang konsisten di satu lokasi.
+            
+            *Lama tinggal ÷ Usia*
+            
+            3. **Stabilitas Finansial** mewakili kapasitas peminjam untuk membayar kembali pinjaman dan menangani kejadian finansial yang tidak terduga.
+            
+            *Pendapatan ÷ 2*
+            
+            Kombinasi dari ketiga metrik ini memberikan gambaran yang lebih lengkap tentang profil risiko peminjam.
+            """)
 
     
     # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS
