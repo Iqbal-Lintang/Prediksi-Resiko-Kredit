@@ -588,7 +588,7 @@ if __name__ == "__main__":
             else:
                 model = direct_model
         
-        st.success("Model Sukses Dimasukan!")
+        #st.success("Model Sukses Dimasukan!")
         
     except Exception as e:
         st.error(f"Error loading model: {e}")
