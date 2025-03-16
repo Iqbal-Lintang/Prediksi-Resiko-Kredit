@@ -616,7 +616,7 @@ if __name__ == "__main__":
 
     # INFORMASI DEBITUR
     with tab1:
-    st.info("Masukan Informasi Debitur secara manual atau gunakan feature DataLens OCR by Lendora AI untuk upload dan scan data secara otomatis")
+        st.info("Masukan Informasi Debitur secara manual atau gunakan feature DataLens OCR by Lendora AI untuk upload dan scan data secara otomatis")
         # Create 3 columns for better layout
         col1, col2, col3 = st.columns(3)
         
