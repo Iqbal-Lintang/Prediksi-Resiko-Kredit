@@ -734,7 +734,7 @@ if __name__ == "__main__":
     # TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR
     
     with tab2:
-        st.info("Gunakan DataLens OCR ini untuk scan Standardized Form secara otomatis")
+        st.info("DataLens OCR by LendoraAI dapat memindai form informasi calon debitur yang sudah terstandarisasi ([download editable form disini](https://drive.google.com/file/d/1LTMbLcpDH_XLJQlLyH9_v--bSEYDbxdP/view?usp=sharing)) secara otomatis.")
         st.header("DataLens - OCR Form Scanner LendoraAI")
                 
         # Initialize session state variables if they don't exist
