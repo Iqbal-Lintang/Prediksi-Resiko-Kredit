@@ -794,6 +794,7 @@ if __name__ == "__main__":
         
        # Process button
         # Process button
+        # Process button
         if uploaded_file is not None:
             # Check if the file is a PDF
             if uploaded_file.name.lower().endswith('.pdf'):
@@ -802,22 +803,13 @@ if __name__ == "__main__":
                 try:
                     # Display the uploaded image
                     image = Image.open(uploaded_file)
-                    st.image(image, caption="Uploaded Form", use_column_width=True)
+                    st.image(image, caption="Uploaded Form", use_container_width=True)  # Fixed deprecated parameter
                     
-                    # Combined process and confirm function
-                    def process_and_confirm():
-                        with st.spinner("Extracting data from form..."):
-                            # Extract data from the image
-                            extracted_data = extract_form_data(uploaded_file)
-                            
-                            # Store extracted data in session state
-                            st.session_state.extracted_data = extracted_data
-                            
-                            # Set a flag to indicate extraction is complete
-                            st.session_state.extraction_complete = True
-                            
-                            # Rerun to show validation form
-                            st.rerun()
+                    # Initialize session states if not present
+                    if 'extraction_complete' not in st.session_state:
+                        st.session_state.extraction_complete = False
+                    if 'data_confirmed' not in st.session_state:
+                        st.session_state.data_confirmed = False
                     
                     # Define option lists for validation
                     state_options = [
@@ -843,27 +835,44 @@ if __name__ == "__main__":
                         "lawyer", "consultant", "teacher", "doctor", "other"
                     ]
                     
+                    # Combined process and confirm function
+                    def process_form():
+                        # Extract data from the image
+                        extracted_data = extract_form_data(uploaded_file)
+                        
+                        # Store extracted data in session state
+                        st.session_state.extracted_data = extracted_data
+                        
+                        # Set a flag to indicate extraction is complete
+                        st.session_state.extraction_complete = True
+                        
+                        # Don't use rerun inside callback
+        
+                    def confirm_data(corrected_data):
+                        # Save to session state for use in other tabs
+                        st.session_state.form_data = corrected_data
+                        st.session_state.data_ready_for_prediction = True
+                        st.session_state.data_confirmed = True
+                        # Don't use rerun inside callback
+                        
+                    def reset_form():
+                        st.session_state.extraction_complete = False
+                        st.session_state.data_confirmed = False
+                        # Don't use rerun inside callback
+                    
                     # Show the initial process button if extraction not yet done
-                    if not st.session_state.get('extraction_complete', False):
-                        st.button("Process Form", on_click=process_and_confirm)
+                    if not st.session_state.extraction_complete:
+                        st.button("Process Form", on_click=process_form)
                     # Show validation form if extraction is complete but not confirmed
-                    elif not st.session_state.get('data_confirmed', False):
+                    elif not st.session_state.data_confirmed:
                         # Display validation form inside the current tab context
                         corrected_data = display_and_validate_extracted_data(
                             st.session_state.extracted_data, state_options, city_options, profession_options
                         )
                         
-                        # Confirm button function
-                        def confirm_data():
-                            # Save to session state for use in other tabs
-                            st.session_state.form_data = corrected_data
-                            st.session_state.data_ready_for_prediction = True
-                            st.session_state.data_confirmed = True
-                            # Using the newer rerun method
-                            st.rerun()
-                        
-                        # Show confirm button
-                        st.button("Confirm and Use This Data", on_click=confirm_data)
+                        # Show confirm button with corrected data passed through a lambda
+                        st.button("Confirm and Use This Data", 
+                                 on_click=lambda: confirm_data(corrected_data))
                     # Show success message if data is confirmed
                     else:
                         st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
@@ -873,10 +882,7 @@ if __name__ == "__main__":
                             st.json(st.session_state.form_data)
                         
                         # Option to reset
-                        if st.button("Reset Form Scanner"):
-                            st.session_state.extraction_complete = False
-                            st.session_state.data_confirmed = False
-                            st.rerun()
+                        st.button("Reset Form Scanner", on_click=reset_form)
                 
                 except Exception as e:
                     st.error(f"Error processing the image: {e}")
