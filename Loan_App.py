@@ -1352,19 +1352,16 @@ if __name__ == "__main__":
         <div style="text-align: center; color: #666;">
     Copyright © 2025 Iqbal Lintang. All Rights Reserved.<br>
     <a href="https://www.linkedin.com/in/iqbal-lintang-148669124" target="_blank">
-            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="30" style="vertical-align:middle;"> LinkedIn
+        <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="30" style="vertical-align:middle;"> LinkedIn
         </a>  
-
-        <a href="https://github.com/Iqbal-Lintang" target="_blank">
-            <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="30" style="vertical-align:middle;"> GitHub
+    <a href="https://github.com/Iqbal-Lintang" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="30" style="vertical-align:middle;"> GitHub
         </a>  
-
-        <a href="mailto:heylintang@gmail.com">
-            <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" width="30" style="vertical-align:middle;"> Email
+    <a href="mailto:heylintang@gmail.com">
+        <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" width="30" style="vertical-align:middle;"> Email
         </a>  
-
-        <a href="https://wa.me/62816928622" target="_blank">
-            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="30" style="vertical-align:middle;"> WhatsApp
+    <a href="https://wa.me/62816928622" target="_blank">
+        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="30" style="vertical-align:middle;"> WhatsApp
         </a>  
         </div>
         """, 
