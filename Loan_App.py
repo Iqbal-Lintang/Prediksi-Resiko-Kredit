@@ -1347,6 +1347,12 @@ if __name__ == "__main__":
     # FOOTER FOOTER
     
     st.markdown("---")
+    # Copyright Footer
+    st.markdown("""
+        <div style="text-align: center; color: #666; margin-top: 10px;">
+            Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+        </div>
+    """, unsafe_allow_html=True)
     st.markdown(
         """
         <div style="text-align: center; margin-top: 10px;">
