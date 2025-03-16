@@ -1372,6 +1372,8 @@ if __name__ == "__main__":
         """, 
         unsafe_allow_html=True
     )
+    st.write("")
+    st.write("")
 
     # ABOUT Add "About" section
     with st.expander("About This App"):
