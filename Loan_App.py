@@ -851,10 +851,9 @@ if __name__ == "__main__":
     
     # Lora AI LLM CHATBOT TAB 3
     with tab3:
-            st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
         # If no prediction has been made yet, show a simple chat interface
         if "risk_data" not in st.session_state:
-            #st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
+            st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
             chatbot_with_context(key_suffix="tab4")
         else:
             # If prediction exists, pass the risk data to the chatbot
