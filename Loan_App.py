@@ -476,7 +476,7 @@ def extract_form_data(image):
 # Add this function to display the extracted data and allow corrections
 def display_and_validate_extracted_data(extracted_data, state_options, city_options, profession_options):
     st.subheader("Extracted Form Data")
-    st.info("Please verify the extracted data below and make corrections if needed")
+    st.info("Pastikan data Anda sudah sesuai, jika belum cocokan data Anda kembali.")
     
     corrected_data = {}
     
@@ -734,7 +734,7 @@ if __name__ == "__main__":
     # OCR
     # OCR
     with tab2:
-        st.info("Gunakan DataLens OCR ini untuk...")
+        st.info("Gunakan DataLens OCR ini untuk scan Standardized Form secara otomatis")
         st.header("DataLens - OCR Form Scanner LendoraAI")
                 
         # Initialize session state variables if they don't exist
@@ -820,7 +820,7 @@ if __name__ == "__main__":
                     
                     # Show the initial process button if extraction not yet done
                     if not st.session_state.extraction_complete:
-                        st.button("Process Form", on_click=process_form)
+                        st.button("Proses Form", on_click=process_form)
                     # Show validation form if extraction is complete but not confirmed
                     elif not st.session_state.data_confirmed:
                         # Display validation form inside the current tab context
@@ -829,22 +829,22 @@ if __name__ == "__main__":
                         )
                         
                         # Show confirm button with corrected data passed through a lambda
-                        st.button("Confirm and Use This Data", 
+                        st.button("Data Sudah Benar", 
                                  on_click=lambda: confirm_data(corrected_data))
                     # Show success message if data is confirmed
                     else:
-                        st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
+                        st.success("Data berhasil disimpan! Silahkan pindah ke tab 'Informasi Debitur' untuk melanjutkan prediksi resiko.")
                         
                         # Show what was saved
                         with st.expander("View saved data"):
                             st.json(st.session_state.form_data)
                         
                         # Option to reset
-                        st.button("Reset Form Scanner", on_click=reset_form)
+                        st.button("Reset DataLens", on_click=reset_form)
                 
                 except Exception as e:
-                    st.error(f"Error processing the image: {e}")
-                    st.info("Make sure the image is clear and contains the standardized form format.")
+                    st.error(f"Eror Memproses Gambar: {e}")
+                    st.info("Pastikan gambar jelas dan menggunakan standardized form format.")
 
     
     # Lora AI LLM CHATBOT TAB 3
