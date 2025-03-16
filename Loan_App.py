@@ -1329,7 +1329,7 @@ if __name__ == "__main__":
             
             # CHATBOT RECOMMENDATION Chatbot recommendation
             st.info("""
-            📱 Gunakan asisten AI kami di tab Lora AI untuk informasi lebih lanjut tentang hasil analisis ini 
+            🤖 Gunakan Lora AI asisten virtual anda, di tab Lora AI untuk informasi lebih lanjut tentang hasil analisis ini 
             dan rekomendasi khusus untuk kasus Anda.
             """)
 
