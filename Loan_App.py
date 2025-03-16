@@ -862,6 +862,7 @@ if __name__ == "__main__":
 
     # DASHBOARD LOOKER TAB 4
     with tab4:
+        st.info("Gunakan Dashboard ini untuk...")
         st.subheader("Dashboard")
         
         # Replace this with your Looker embed URL
@@ -872,8 +873,8 @@ if __name__ == "__main__":
     
     # STABILITY METRICS TAB 5
     with tab5:
+        st.info("Gunakan Stability Metrics untuk...")
         st.subheader("Analisa Metriks Stabilitas")
-        st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
         
         # Calculate job stability as a float value
         job_stability = round(current_job_yrs / (age - 18), 8) if age > 18 else 0
