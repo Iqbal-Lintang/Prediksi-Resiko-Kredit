@@ -23,17 +23,17 @@ from fpdf import FPDF
 import base64
 from datetime import datetime
 
-# TITLE Set page title and configuration
+# APP TITLE APP TITLE APP TITLE APP TITLE PP TITLE APP TITLE APP TITLE APP TITLE
 st.set_page_config(
     page_title="Lendora - AI Powered Risk Assessment",
     page_icon="https://i.imgur.com/8RKgXU5.png",
     layout="wide"
 )
 
-# LOGO FAVICON Define logo URL
+# LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON
 logo_url = "https://i.imgur.com/8RKgXU5.png"
 
-# LOGO AND TITLE Display logo and title in a row
+# LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE
 col1, col2 = st.columns([1, 5])
 with col1:
     st.image(logo_url, width=100)
@@ -41,7 +41,7 @@ with col2:
     # Title
     st.title("Lendora – AI Powered Risk Assessment")
 
-# LOAD MODEL FROM GOOGLE DRIVE Function to load model from Google Drive (same as original)
+# LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE
 @st.cache_resource
 def load_model_from_gdrive():
     """Load model from Google Drive"""
@@ -58,7 +58,7 @@ def load_model_from_gdrive():
         st.error(f"Error downloading or loading model: {e}")
         raise e
 
-# LOAD MODEL FROM DOWNLOAD DIRECT Alternative approach using direct download (same as original)
+# LOAD MODEL FROM DOWNLOAD DIRECT LOAD MODEL FROM DOWNLOAD DIRECT LOAD MODEL FROM DOWNLOAD DIRECT LOAD MODEL FROM DOWNLOAD DIRECT LOAD MODEL FROM DOWNLOAD DIRECT
 @st.cache_resource
 def load_model_from_direct_link():
     """Load model from direct download link if available"""
@@ -79,11 +79,11 @@ def load_model_from_direct_link():
         st.error(f"Error with direct download: {e}")
         raise e
 
-# Lora AI CONTEXT AWARE LLM CHATBOT Context-aware chatbot function (same as original)
+# LORA AI CONTEXT AWARE GEN AI FUNCTION LORA AI CONTEXT AWARE GEN AI FUNCTION LORA AI CONTEXT AWARE GEN AI FUNCTION LORA AI CONTEXT AWARE GEN AI FUNCTION LORA AI CONTEXT AWARE GEN AI FUNCTION LORA AI CONTEXT AWARE GEN AI FUNCTION
 def chatbot_with_context(risk_data=None, key_suffix="default"):
     st.header("Lora AI - Asisten Virtual")
     
-    # 6.1 Initialize conversation in session state with a unique key for each instance
+    # Initialize conversation in session state with a unique key for each instance
     message_key = f"messages_{key_suffix}"
     if message_key not in st.session_state:
         st.session_state[message_key] = [
@@ -152,7 +152,7 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
         # Save response to session history
         st.session_state[message_key].append({"role": "assistant", "content": answer})
 
-# DOWNLOAD REPORT FUNCTION
+# DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION DOWNLOAD REPORT FUNCTION
 
 def create_prediction_pdf(risk_data, input_data):
     """
@@ -244,7 +244,8 @@ def create_prediction_pdf(risk_data, input_data):
     pdf.cell(40, 8, f"{risk_data['home_stability']:.4f}", 0, 1, 'L')
     pdf.ln(5)
     
-    # Recommendations
+    # BUSINESS RECOMMENDATIONS BUSINESS RECOMMENDATIONS BUSINESS RECOMMENDATIONS BUSINESS RECOMMENDATIONS BUSINESS RECOMMENDATIONS BUSINESS RECOMMENDATIONS
+    
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(190, 10, 'Rekomendasi Bisnis', 0, 1, 'L')
     pdf.set_font('Arial', '', 12)
@@ -313,11 +314,8 @@ def get_download_link(risk_data, input_data):
     
     return href
 
-# OCR FUNCTION
+# DATALENS OCR FUNCTION DATALENS OCR FUNCTION DATALENS OCR FUNCTION DATALENS OCR FUNCTION DATALENS OCR FUNCTION DATALENS OCR FUNCTION DATALENS OCR FUNCTION DATALENS OCR FUNCTION DATALENS OCR FUNCTION
 
-# Add this function to your app to enable OCR capabilities
-# Add this function to your app for OCR capabilities without debug messages
-# Add this function to your app for OCR capabilities without debug messages
 def extract_form_data(image):
     """
     Extract data from a standardized OCR form image
@@ -573,7 +571,8 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
     
     return corrected_data
     
-# MAIN APP EXECUTE START Main application execution
+# MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START 
+
 if __name__ == "__main__":
     # Try to load the model
     try:
@@ -614,13 +613,13 @@ if __name__ == "__main__":
     if 'form_data' not in st.session_state:
         st.session_state.form_data = {}
 
-    # INFORMASI DEBITUR
+    # TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR 
     with tab1:
         st.info("Masukan Informasi Debitur secara manual atau gunakan feature DataLens OCR by Lendora AI untuk upload dan scan data secara otomatis")
         # Create 3 columns for better layout
         col1, col2, col3 = st.columns(3)
         
-        # PERSONAL INFORMATION TAB 1
+        # PERSONAL INFORMATION COL 1 PERSONAL INFORMATION COL 1 PERSONAL INFORMATION COL 1 PERSONAL INFORMATION COL 1
         with col1:
             st.subheader("Informasi Pribadi")
             age = st.number_input("Age", min_value=17, max_value=120, 
@@ -649,7 +648,8 @@ if __name__ == "__main__":
             experience = st.number_input("Experience", min_value=0, max_value=100, 
                                         value=st.session_state.form_data.get('Experience', 5))
             
-        # FINANCIAL INFORMATION TAB 1    
+        # FINANCIAL INFORMATION COL 2 FINANCIAL INFORMATION COL 2 FINANCIAL INFORMATION COL 2 FINANCIAL INFORMATION COL 2 
+        
         with col2:    
             st.subheader("Informasi Finansial")
 
@@ -687,7 +687,8 @@ if __name__ == "__main__":
                                         index=car_ownership_options.index(st.session_state.form_data.get('Car_Ownership', 'yes'))
                                         if st.session_state.form_data.get('Car_Ownership') in car_ownership_options else 0)
             
-        # LOCATION INFORMATION TAB 1    
+        # LOCATION INFORMATION COL 3 LOCATION INFORMATION COL 3 LOCATION INFORMATION COL 3 LOCATION INFORMATION COL 3 
+        
         with col3:
             st.subheader("Informasi Tempat Tinggal")
             
@@ -727,12 +728,8 @@ if __name__ == "__main__":
                                             value=st.session_state.form_data.get('CURRENT_JOB_YRS', 5))
             
 
-    # OCR
-    # OCR
-    # OCR
-    # OCR
-    # OCR
-    # OCR
+    # TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR TAB 2 DATALENS OCR
+
     with tab2:
         st.info("Gunakan DataLens OCR ini untuk scan Standardized Form secara otomatis")
         st.header("DataLens - OCR Form Scanner LendoraAI")
@@ -747,8 +744,6 @@ if __name__ == "__main__":
         uploaded_file = st.file_uploader("Upload formulir standar (PDF, JPG, atau PNG)", 
                                          type=["pdf", "jpg", "jpeg", "png"])
         
-       # Process button
-        # Process button
         # Process button
         if uploaded_file is not None:
             # Check if the file is a PDF
@@ -847,7 +842,8 @@ if __name__ == "__main__":
                     st.info("Pastikan gambar jelas dan menggunakan standardized form format.")
 
     
-    # Lora AI LLM CHATBOT TAB 3
+    # TAB 3 LORA AI CONTECT AWARE GENAI TAB 3 LORA AI CONTECT AWARE GENAI TAB 3 LORA AI CONTECT AWARE GENAI TAB 3 LORA AI CONTECT AWARE GENAI TAB 3 LORA AI CONTECT AWARE GENAI TAB 3 LORA AI CONTECT AWARE GENAI
+    
     with tab3:
         # If no prediction has been made yet, show a simple chat interface
         if "risk_data" not in st.session_state:
@@ -858,7 +854,9 @@ if __name__ == "__main__":
             chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
             
 
-    # DASHBOARD LOOKER TAB 4
+    # TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER
+    # TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER TAB 4 DASHBOARD LOOKER 
+    
     with tab4:
         st.info("Gunakan Dashboard ini untuk...")
         st.subheader("Dashboard")
@@ -869,7 +867,9 @@ if __name__ == "__main__":
         # Display the embedded Looker dashboard
         st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
     
-    # STABILITY METRICS TAB 5
+    # TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS  TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS
+    # TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS  TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS TAB 5 STABILITY METRICS
+    
     with tab5:
         st.info("Gunakan Stability Metrics untuk...")
         st.subheader("Analisa Metriks Stabilitas")
@@ -890,10 +890,14 @@ if __name__ == "__main__":
         col3.metric("Financial Stability", f"{financial_stability:.2f}")
 
     
-    # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
+    # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTONBIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
+    # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTONBIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
+    
     st.markdown("<hr style='border: 1px solid #bbb;'><br>", unsafe_allow_html=True)
 
-    # PREDICTION BUTTON Button to make prediction
+    # PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON
+    # PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON PREDICTION BUTTON
+    
     if st.button("Prediksi Resiko"):
         # Create a DataFrame with all the required columns - using EXACT column names from the model
         input_data = pd.DataFrame({
