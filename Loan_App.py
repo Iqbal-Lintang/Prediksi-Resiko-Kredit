@@ -25,7 +25,7 @@ from datetime import datetime
 
 # APP TITLE APP TITLE APP TITLE APP TITLE PP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE 
 st.set_page_config(
-    page_title="Lendora - AI Driven Precision Risk",
+    page_title="Lendora AI",
     page_icon="https://i.imgur.com/8RKgXU5.png",
     layout="wide"
 )
@@ -39,7 +39,7 @@ with col1:
     st.image(logo_url, width=100)
 with col2:
     # Title
-    st.title("Lendora – AI Powered Risk Assessment")
+    st.title("Lendora – AI Powered Risk Intelligence")
 
 # LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE
 @st.cache_resource
