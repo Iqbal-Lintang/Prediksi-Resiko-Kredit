@@ -1349,20 +1349,19 @@ if __name__ == "__main__":
     st.markdown("---")
     st.markdown(
         """
-        <div style="text-align: center; color: #666;">
-    Copyright © 2025 Iqbal Lintang. All Rights Reserved.<br>
-    <a href="https://www.linkedin.com/in/iqbal-lintang-148669124" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="30" style="vertical-align:middle;"> LinkedIn
-        </a>  
-    <a href="https://github.com/Iqbal-Lintang" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="30" style="vertical-align:middle;"> GitHub
-        </a>  
-    <a href="mailto:heylintang@gmail.com">
-        <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" width="30" style="vertical-align:middle;"> Email
-        </a>  
-    <a href="https://wa.me/62816928622" target="_blank">
-        <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="30" style="vertical-align:middle;"> WhatsApp
-        </a>  
+        <div style="text-align: center; margin-top: 10px;">
+        <a href="https://www.linkedin.com/in/iqbal-lintang-148669124" target="_blank" style="margin: 0 10px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="40">
+        </a>
+        <a href="https://github.com/Iqbal-Lintang" target="_blank" style="margin: 0 10px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="40">
+        </a>
+        <a href="mailto:heylintang@gmail.com" style="margin: 0 10px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" width="40">
+        </a>
+        <a href="https://wa.me/62816928622" target="_blank" style="margin: 0 10px;">
+            <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="40">
+        </a>
         </div>
         """, 
         unsafe_allow_html=True
@@ -1389,10 +1388,4 @@ if __name__ == "__main__":
             - Model ini dilatih menggunakan data historis.  
             - Hasil prediksi bersifat sebagai referensi, bukan satu-satunya faktor dalam pengambilan keputusan.  
             - Disarankan untuk menggunakan hasil analisis bersama dengan pertimbangan manual dan kebijakan kredit internal.  
-    
-            #### Contact:  
-            - [LinkedIn](https://www.linkedin.com/in/iqbal-lintang-148669124)  
-            - [GitHub](https://github.com/Iqbal-Lintang)  
-            - **Email:** heylintang@gmail.com  
-            - [WhatsApp](https://wa.me/62816928622)  
         """)
