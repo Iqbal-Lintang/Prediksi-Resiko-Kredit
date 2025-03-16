@@ -25,7 +25,7 @@ from datetime import datetime
 
 # APP TITLE APP TITLE APP TITLE APP TITLE PP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE 
 st.set_page_config(
-    page_title="Lendora - AI Powered Risk Assessment",
+    page_title="Lendora - AI Driven Precision Risk",
     page_icon="https://i.imgur.com/8RKgXU5.png",
     layout="wide"
 )
