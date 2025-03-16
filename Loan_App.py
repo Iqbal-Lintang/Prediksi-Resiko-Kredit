@@ -360,9 +360,8 @@ def extract_form_data(image):
             try:
                 # Create a copy of the bytes for display
                 image_copy = io.BytesIO(file_content)
-                st.image(image_copy, caption="Uploaded Image", use_column_width=True)
+                st.image(image_copy, caption="Uploaded Image", use_container_width=True)
             except Exception as e:
-                st.warning(f"Could not preview image: {str(e)}")
             
             # Reset file pointer
             image.seek(0)
