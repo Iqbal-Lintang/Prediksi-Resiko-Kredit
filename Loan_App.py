@@ -137,9 +137,7 @@ def chatbot_with_context(risk_data=None, key_suffix="default"):
                     model="claude-3-haiku-20240307",
                     max_tokens=500,
                     temperature=0.9,
-                    system="Anda adalah asisten pinjaman bernama Lora AI dari aplikasi bernama Lendora yang memprediksi resiko calon debitur yang memberikan saran 
-                    tentang penilaian risiko kredit menggunakan dataset dari India dan mata uang Rupee India INR. Penghasilan rendah dibawah INR2500000, 
-                    menengah antara INR2500000-7500000 dan tinggi diatas INR7500000",
+                    system="Anda adalah asisten pinjaman bernama Lora AI dari aplikasi bernama Lendora yang memprediksi resiko calon debitur yang memberikan saran tentang penilaian risiko kredit menggunakan dataset dari India dan mata uang Rupee India INR. Penghasilan rendah dibawah INR2500000, menengah antara INR2500000-7500000 dan tinggi diatas INR7500000",
                     messages=[{"role": "user", "content": f"{context}\n{prompt}"}]
                 )
                 answer = response.content[0].text
