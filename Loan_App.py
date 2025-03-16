@@ -604,7 +604,7 @@ if __name__ == "__main__":
     # APP TABS Create tabs for better organization
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "Informasi Debitur", 
-        "DataLens", 
+        "DataLens OCR", 
         "Lora AI",
         "Dashboard",
         "Stability Metrics"
@@ -615,6 +615,7 @@ if __name__ == "__main__":
         st.session_state.form_data = {}
 
     # INFORMASI DEBITUR
+    st.info("Masukan Informasi Debitur secara manual atau gunakan feature DataLens OCR by Lendora AI untuk upload dan scan data secara otomatis")
     with tab1:
         # Create 3 columns for better layout
         col1, col2, col3 = st.columns(3)
@@ -733,11 +734,8 @@ if __name__ == "__main__":
     # OCR
     # OCR
     with tab2:
-        st.header("OCR Form Scanner")
-        st.markdown("""
-        ### Upload Formulir Standar
-        Upload formulir standar yang telah diisi untuk mengekstrak data secara otomatis.
-        """)
+        st.info("Gunakan DataLens OCR ini untuk...")
+        st.header("DataLens - OCR Form Scanner LendoraAI")
                 
         # Initialize session state variables if they don't exist
         if 'ocr_processed' not in st.session_state:
