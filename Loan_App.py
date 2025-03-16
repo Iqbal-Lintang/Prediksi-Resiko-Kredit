@@ -699,7 +699,7 @@ if __name__ == "__main__":
                 "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
                 "west_bengal", "haryana", "puducherry", "karnataka",
                 "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
-                "uttarakhand", "jharkhand", "delhi", "chandigarh"
+                "uttarakhand", "jharkhand", "delhi", "chandigarh", "other"
             ]
             
             # Find index of state from form data or default to 0
@@ -713,7 +713,7 @@ if __name__ == "__main__":
                 "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
                 "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
                 "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
-                "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
+                "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi", "other"
             ]
             
             # Find index of city from form data or default to 0
@@ -770,14 +770,14 @@ if __name__ == "__main__":
                         "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
                         "west_bengal", "haryana", "puducherry", "karnataka",
                         "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
-                        "uttarakhand", "jharkhand", "delhi", "chandigarh"
+                        "uttarakhand", "jharkhand", "delhi", "chandigarh", "other"
                     ]
                     
                     city_options = [
                         "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
                         "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
                         "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
-                        "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
+                        "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi", "other"
                     ]
                     
                     profession_options = [
