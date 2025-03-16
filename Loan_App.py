@@ -913,7 +913,6 @@ if __name__ == "__main__":
         # Add a general explanation section
         with st.expander("Penjelasan Metrik Stabilitas", expanded=False):
             st.markdown("""
-            ### Alasan di Balik Metrik Stabilitas
             
             Metrik stabilitas ini membantu menilai risiko kredit dengan cara yang tidak tercakup dalam penilaian kredit tradisional:
             
