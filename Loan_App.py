@@ -1281,7 +1281,7 @@ if __name__ == "__main__":
                 """)
             
             # ADVANCED METRICS Advanced metrics section
-            with st.expander("Metrik Lanjutan", expanded=True):
+            with st.expander("Metrik Lanjutan", expanded=False):
                 col1, col2 = st.columns(2)
                 
                 with col1:
