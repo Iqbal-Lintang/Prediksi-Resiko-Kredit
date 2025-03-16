@@ -604,10 +604,10 @@ if __name__ == "__main__":
     # APP TABS Create tabs for better organization
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "Informasi Debitur", 
-        "Metriks Stabilitas", 
+        "DataLens", 
         "Lora AI",
         "Dashboard",
-        "OCR Form"
+        "Stability Metrics"
     ])
 
     # Initialize session state for form data
@@ -725,56 +725,14 @@ if __name__ == "__main__":
             current_job_yrs = st.number_input("Current Job Years", min_value=0, max_value=100, 
                                             value=st.session_state.form_data.get('CURRENT_JOB_YRS', 5))
             
-    
-    # STABILITY METRICS TAB 2
+
+    # OCR
+    # OCR
+    # OCR
+    # OCR
+    # OCR
+    # OCR
     with tab2:
-        st.subheader("Analisa Metriks Stabilitas")
-        st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
-        
-        # Calculate job stability as a float value
-        job_stability = round(current_job_yrs / (age - 18), 8) if age > 18 else 0
-        
-        # Calculate home stability as a float value
-        home_stability = round(current_house_yrs / age, 8) if age > 0 else 0
-        
-        # For financial stability, using income as proxy
-        financial_stability = float(income / 2)
-        
-        # Display calculated metrics
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Job Stability", f"{job_stability:.4f}")
-        col2.metric("Home Stability", f"{home_stability:.4f}")
-        col3.metric("Financial Stability", f"{financial_stability:.2f}")
-
-    
-    # Lora AI LLM CHATBOT TAB 3
-    with tab3:
-        # If no prediction has been made yet, show a simple chat interface
-        if "risk_data" not in st.session_state:
-            st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
-            chatbot_with_context(key_suffix="tab4")
-        else:
-            # If prediction exists, pass the risk data to the chatbot
-            chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
-            
-
-    # DASHBOARD LOOKER TAB 4
-    with tab4:
-        st.subheader("Dashboard")
-        
-        # Replace this with your Looker embed URL
-        looker_embed_url = "https://lookerstudio.google.com/embed/reporting/b0bd4eb6-c98c-49b6-ac91-51a4a00895aa/page/cMy9E"
-    
-        # Display the embedded Looker dashboard
-        st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
-
-    # OCR
-    # OCR
-    # OCR
-    # OCR
-    # OCR
-    # OCR
-    with tab5:
         st.header("OCR Form Scanner")
         st.markdown("""
         ### Upload Formulir Standar
@@ -890,6 +848,49 @@ if __name__ == "__main__":
                     st.error(f"Error processing the image: {e}")
                     st.info("Make sure the image is clear and contains the standardized form format.")
 
+    
+    # Lora AI LLM CHATBOT TAB 3
+    with tab3:
+        # If no prediction has been made yet, show a simple chat interface
+        if "risk_data" not in st.session_state:
+            st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
+            chatbot_with_context(key_suffix="tab4")
+        else:
+            # If prediction exists, pass the risk data to the chatbot
+            chatbot_with_context(st.session_state.risk_data, key_suffix="tab4_with_data")
+            
+
+    # DASHBOARD LOOKER TAB 4
+    with tab4:
+        st.subheader("Dashboard")
+        
+        # Replace this with your Looker embed URL
+        looker_embed_url = "https://lookerstudio.google.com/embed/reporting/b0bd4eb6-c98c-49b6-ac91-51a4a00895aa/page/cMy9E"
+    
+        # Display the embedded Looker dashboard
+        st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
+    
+    # STABILITY METRICS TAB 5
+    with tab5:
+        st.subheader("Analisa Metriks Stabilitas")
+        st.info("Nilai-nilai ini dihitung secara otomatis berdasarkan masukan Anda")
+        
+        # Calculate job stability as a float value
+        job_stability = round(current_job_yrs / (age - 18), 8) if age > 18 else 0
+        
+        # Calculate home stability as a float value
+        home_stability = round(current_house_yrs / age, 8) if age > 0 else 0
+        
+        # For financial stability, using income as proxy
+        financial_stability = float(income / 2)
+        
+        # Display calculated metrics
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Job Stability", f"{job_stability:.4f}")
+        col2.metric("Home Stability", f"{home_stability:.4f}")
+        col3.metric("Financial Stability", f"{financial_stability:.2f}")
+
+    
     # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON
     st.markdown("<hr style='border: 1px solid #bbb;'><br>", unsafe_allow_html=True)
 
