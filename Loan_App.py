@@ -887,11 +887,49 @@ if __name__ == "__main__":
         # For financial stability, using income as proxy
         financial_stability = float(income / 2)
         
-        # Display calculated metrics
+         # Display calculated metrics
         col1, col2, col3 = st.columns(3)
         col1.metric("Job Stability", f"{job_stability:.4f}")
+        col1.markdown("""
+        **Stabilitas Pekerjaan**:
+        Mengukur proporsi masa kerja potensial yang dihabiskan di pekerjaan saat ini. 
+        Nilai lebih tinggi menunjukkan loyalitas kerja dan aliran pendapatan yang lebih stabil.
+        
+        *Rumus: Lama bekerja di posisi saat ini ÷ (Usia - 18)*
+        """)
+        
         col2.metric("Home Stability", f"{home_stability:.4f}")
+        col2.markdown("""
+        **Stabilitas Tempat Tinggal**:
+        Mengukur proporsi hidup yang dihabiskan di tempat tinggal saat ini.
+        Nilai lebih tinggi menunjukkan akar komunitas yang kuat dan komitmen terhadap kewajiban finansial.
+        
+        *Rumus: Lama tinggal di rumah saat ini ÷ Usia*
+        """)
+        
         col3.metric("Financial Stability", f"{financial_stability:.2f}")
+        col3.markdown("""
+        **Stabilitas Finansial**:
+        Menggunakan pendapatan sebagai indikator kapasitas finansial peminjam.
+        Nilai lebih tinggi menunjukkan kemampuan lebih baik untuk menangani pengeluaran tak terduga.
+        
+        *Rumus: Pendapatan ÷ 2*
+        """)
+        
+        # Add a general explanation section
+        st.markdown("""
+        ### Alasan di Balik Metrik Stabilitas
+        
+        Metrik stabilitas ini membantu menilai risiko kredit dengan cara yang tidak tercakup dalam penilaian kredit tradisional:
+        
+        1. **Stabilitas Pekerjaan** mengindikasikan konsistensi pendapatan dan kemungkinan lebih rendah untuk mengalami periode tanpa pendapatan.
+        
+        2. **Stabilitas Tempat Tinggal** menunjukkan komitmen jangka panjang dan tanggung jawab finansial yang konsisten di satu lokasi.
+        
+        3. **Stabilitas Finansial** mewakili kapasitas peminjam untuk membayar kembali pinjaman dan menangani kejadian finansial yang tidak terduga.
+        
+        Kombinasi dari ketiga metrik ini memberikan gambaran yang lebih lengkap tentang profil risiko peminjam.
+        """)
 
     
     # BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS AND PREDICTION BUTTON BIG DIVIDER BETWEEN TABS
