@@ -793,6 +793,7 @@ if __name__ == "__main__":
                                          type=["pdf", "jpg", "jpeg", "png"])
         
        # Process button
+        # Process button
         if uploaded_file is not None:
             # Check if the file is a PDF
             if uploaded_file.name.lower().endswith('.pdf'):
@@ -809,56 +810,61 @@ if __name__ == "__main__":
                             # Extract data from the image
                             extracted_data = extract_form_data(uploaded_file)
                             
-                            # Define option lists for validation
-                            state_options = [
-                                "madhya_pradesh", "maharashtra", "kerala", "odisha", "tamil_nadu",
-                                "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
-                                "west_bengal", "haryana", "puducherry", "karnataka",
-                                "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
-                                "uttarakhand", "jharkhand", "delhi", "chandigarh"
-                            ]
+                            # Store extracted data in session state
+                            st.session_state.extracted_data = extracted_data
                             
-                            city_options = [
-                                "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
-                                "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
-                                "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
-                                "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
-                            ]
+                            # Set a flag to indicate extraction is complete
+                            st.session_state.extraction_complete = True
                             
-                            profession_options = [
-                                "mechanical_engineer", "software_developer", "technical_writer", 
-                                "civil_servant", "librarian", "economist", "flight_attendant", 
-                                "architect", "designer", "physician", "financial_analyst", 
-                                "air_traffic_controller", "police_officer", "artist", "engineer",
-                                "lawyer", "consultant", "teacher", "doctor", "other"
-                            ]
-                            
-                            # Display and validate the extracted data
-                            corrected_data = display_and_validate_extracted_data(
-                                extracted_data, state_options, city_options, profession_options
-                            )
-                            
+                            # Rerun to show validation form
+                            st.rerun()
+                    
+                    # Define option lists for validation
+                    state_options = [
+                        "madhya_pradesh", "maharashtra", "kerala", "odisha", "tamil_nadu",
+                        "gujarat", "rajasthan", "telangana", "bihar", "andhra_pradesh",
+                        "west_bengal", "haryana", "puducherry", "karnataka",
+                        "uttar_pradesh", "himachal_pradesh", "punjab", "tripura",
+                        "uttarakhand", "jharkhand", "delhi", "chandigarh"
+                    ]
+                    
+                    city_options = [
+                        "mumbai", "delhi_city", "bangalore", "hyderabad", "chennai", 
+                        "kolkata", "jaipur", "pune", "ahmedabad", "lucknow", "new_delhi", 
+                        "patna", "bhopal", "indore", "thane", "nagpur", "ghaziabad",
+                        "agra", "vadodara", "meerut", "rajkot", "amritsar", "varanasi"
+                    ]
+                    
+                    profession_options = [
+                        "mechanical_engineer", "software_developer", "technical_writer", 
+                        "civil_servant", "librarian", "economist", "flight_attendant", 
+                        "architect", "designer", "physician", "financial_analyst", 
+                        "air_traffic_controller", "police_officer", "artist", "engineer",
+                        "lawyer", "consultant", "teacher", "doctor", "other"
+                    ]
+                    
+                    # Show the initial process button if extraction not yet done
+                    if not st.session_state.get('extraction_complete', False):
+                        st.button("Process Form", on_click=process_and_confirm)
+                    # Show validation form if extraction is complete but not confirmed
+                    elif not st.session_state.get('data_confirmed', False):
+                        # Display validation form inside the current tab context
+                        corrected_data = display_and_validate_extracted_data(
+                            st.session_state.extracted_data, state_options, city_options, profession_options
+                        )
+                        
+                        # Confirm button function
+                        def confirm_data():
                             # Save to session state for use in other tabs
                             st.session_state.form_data = corrected_data
                             st.session_state.data_ready_for_prediction = True
                             st.session_state.data_confirmed = True
-                            
-                            # Show success message
-                            st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
-                            
-                            # Show what was saved
-                            with st.expander("View saved data"):
-                                st.json(st.session_state.form_data)
-                            
-                            # Option to reset
-                            if st.button("Reset Form Scanner"):
-                                st.session_state.ocr_processed = False
-                                st.session_state.data_confirmed = False
-                                st.rerun()
-                    
-                    # Show the combined button if not already processed and confirmed
-                    if not st.session_state.get('data_confirmed', False):
-                        st.button("Process and Confirm Form", on_click=process_and_confirm)
+                            # Using the newer rerun method
+                            st.rerun()
+                        
+                        # Show confirm button
+                        st.button("Confirm and Use This Data", on_click=confirm_data)
+                    # Show success message if data is confirmed
                     else:
                         st.success("Data successfully extracted and saved! You can now go to the 'Informasi Debitur' tab to continue.")
                         
@@ -868,7 +874,7 @@ if __name__ == "__main__":
                         
                         # Option to reset
                         if st.button("Reset Form Scanner"):
-                            st.session_state.ocr_processed = False
+                            st.session_state.extraction_complete = False
                             st.session_state.data_confirmed = False
                             st.rerun()
                 
