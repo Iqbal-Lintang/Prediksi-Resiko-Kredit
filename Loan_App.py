@@ -1366,15 +1366,22 @@ if __name__ == "__main__":
         Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.
         2. **Analisis Risiko Kredit**
         Klik tombol "Prediksi Risiko" untuk mendapatkan hasil analisis berdasarkan model prediktif.
-        3. **Gunakan Asisten Lora AI**
+        3. **DataLens OCR**
+        Upload dan scan form secara otomatis.
+        4. **Gunakan Asisten Lora AI**
         Ajukan pertanyaan kepada Lora AI untuk mendapatkan wawasan tambahan atau klarifikasi.
-        4. **Dashboard Interaktif**
+        5. **Dashboard Interaktif**
         Tinjau tren, analisis, dan data historis melalui dashboard visual.
-        5. **Download Laporan**
+        6. **Download Laporan**
         Simpan hasil analisis dalam format PDF atau CSV untuk dokumentasi lebih lanjut.
         
-        #### Catatan:
+       #### Catatan:
         Model ini dilatih menggunakan data historis.
         Hasil prediksi bersifat sebagai referensi, bukan satu-satunya faktor dalam pengambilan keputusan.
         Disarankan untuk menggunakan hasil analisis bersama dengan pertimbangan manual dan kebijakan kredit internal.
-        """)
+        
+        Contact:  
+        [LinkedIn](https://www.linkedin.com/in/iqbal-lintang-148669124)  
+        [GitHub](https://github.com/Iqbal-Lintang)  
+        Email: heylintang@gmail.com  
+        [WhatsApp](https://wa.me/62816928622)  
