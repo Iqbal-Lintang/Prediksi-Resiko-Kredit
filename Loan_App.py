@@ -364,8 +364,8 @@ def extract_form_data(image):
             except Exception as e:
             
             # Reset file pointer
-            image.seek(0)
-            file_content = image.read()
+                image.seek(0)
+                file_content = image.read()
             
             # Decode image
             img_bytes = np.asarray(bytearray(file_content), dtype=np.uint8)
