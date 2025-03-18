@@ -670,6 +670,9 @@ if __name__ == "__main__":
     if 'form_data' not in st.session_state:
         st.session_state.form_data = {}
 
+    # Store in session state for persistence
+    st.session_state.form_data = input_data.copy()
+        
     # Save to Google Sheets
     sheet_success = save_to_gsheets(input_data)
     if sheet_success:
