@@ -1412,10 +1412,6 @@ if __name__ == "__main__":
             st.error("If this error persists, please check the model compatibility or contact support.")
 
 
-    # Add a section to download the data
-    st.subheader("Download Application Data")
-    add_download_button()
-
     # FOOTER FOOTER
     # FOOTER FOOTER
     
