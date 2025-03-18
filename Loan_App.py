@@ -1460,7 +1460,7 @@ if st.session_state.logged_in:
         dev_tabs = st.tabs(["Version History", "API Access"])
         
         with dev_tabs[0]:
-            st.subheader(Version History")
+            st.subheader("Version History")
             st.markdown("""
             ## Lendora AI Version History
         
