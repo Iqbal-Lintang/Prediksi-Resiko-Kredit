@@ -1392,6 +1392,32 @@ if st.session_state.logged_in:
             except Exception as e:
                 st.error(f"Error making prediction: {e}")
                 st.error("If this error persists, please check the model compatibility or contact support.")
+
+                st.write("")
+                st.write("")
+                    
+                # ABOUT Add "About" section
+            with st.expander("About This App"):
+                st.markdown("""
+                                #### Penggunaan:
+                                1. **Verifikasi & Lengkapi Data**  
+                                   Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.  
+                                2. **Analisis Risiko Kredit**  
+                                   Klik tombol "Prediksi Risiko" untuk mendapatkan hasil analisis berdasarkan model prediktif.  
+                                3. **DataLens OCR**  
+                                   Upload dan scan form secara otomatis.  
+                                4. **Gunakan Asisten Lora AI**  
+                                   Ajukan pertanyaan kepada Lora AI untuk mendapatkan wawasan tambahan atau klarifikasi.  
+                                5. **Dashboard Interaktif**  
+                                   Tinjau tren, analisis, dan data historis melalui dashboard visual.  
+                                6. **Download Laporan**  
+                                   Simpan hasil analisis dalam format PDF atau CSV untuk dokumentasi lebih lanjut.  
+                        
+                                #### Catatan:
+                                - Model ini dilatih menggunakan data historis.  
+                                - Hasil prediksi bersifat sebagai referensi, bukan satu-satunya faktor dalam pengambilan keputusan.  
+                                - Disarankan untuk menggunakan hasil analisis bersama dengan pertimbangan manual dan kebijakan kredit internal.  
+                            """)
     
     
 else:
@@ -1427,28 +1453,3 @@ else:
             """, 
             unsafe_allow_html=True
         )
-    st.write("")
-    st.write("")
-    
-        # ABOUT Add "About" section
-    with st.expander("About This App"):
-        st.markdown("""
-                #### Penggunaan:
-                1. **Verifikasi & Lengkapi Data**  
-                   Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.  
-                2. **Analisis Risiko Kredit**  
-                   Klik tombol "Prediksi Risiko" untuk mendapatkan hasil analisis berdasarkan model prediktif.  
-                3. **DataLens OCR**  
-                   Upload dan scan form secara otomatis.  
-                4. **Gunakan Asisten Lora AI**  
-                   Ajukan pertanyaan kepada Lora AI untuk mendapatkan wawasan tambahan atau klarifikasi.  
-                5. **Dashboard Interaktif**  
-                   Tinjau tren, analisis, dan data historis melalui dashboard visual.  
-                6. **Download Laporan**  
-                   Simpan hasil analisis dalam format PDF atau CSV untuk dokumentasi lebih lanjut.  
-        
-                #### Catatan:
-                - Model ini dilatih menggunakan data historis.  
-                - Hasil prediksi bersifat sebagai referensi, bukan satu-satunya faktor dalam pengambilan keputusan.  
-                - Disarankan untuk menggunakan hasil analisis bersama dengan pertimbangan manual dan kebijakan kredit internal.  
-            """)
