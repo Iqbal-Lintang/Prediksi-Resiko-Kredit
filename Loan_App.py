@@ -1424,8 +1424,8 @@ if st.session_state.logged_in:
         )
             
         # ABOUT Add "About" section
-    with st.expander("About This App"):
-    st.markdown("""
+        with st.expander("About This App"):
+        st.markdown("""
                                 #### Penggunaan:
                                 1. **Verifikasi & Lengkapi Data**  
                                    Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.  
