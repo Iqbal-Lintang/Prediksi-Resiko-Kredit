@@ -570,25 +570,6 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
         )
     
     return corrected_data
-# File path for the CSV
-CSV_FILE = "loan_applications.csv"
-
-# Function to save data to CSV
-def save_to_csv(data):
-    try:
-        # Convert data to DataFrame
-        df = pd.DataFrame([data])
-        
-        # Check if file exists to determine if we need to write headers
-        file_exists = os.path.isfile(CSV_FILE)
-        
-        # Save to CSV (append mode)
-        df.to_csv(CSV_FILE, mode='a', header=not file_exists, index=False)
-        
-        return True
-    except Exception as e:
-        st.error(f"Error saving data: {e}")
-        return False
 
 # File path for the CSV
 CSV_FILE = "loan_applications.csv"
@@ -609,7 +590,6 @@ def save_to_csv(data):
     except Exception as e:
         st.error(f"Error saving data: {e}")
         return False
-
 
 def process_form_data(input_data):
     # Reset form data in session state
@@ -644,6 +624,30 @@ def add_download_button():
             )
     else:
         st.info("No data available for download yet.")
+
+def add_loan_applications_download_button():
+    # File path for the CSV
+    csv_file = "loan_applications.csv"
+    
+    # Check if the file exists before creating download button
+    if os.path.exists(csv_file):
+        with open(csv_file, "rb") as file:
+            data = file.read()
+            
+        st.download_button(
+            label="Download Loan Applications Data",
+            data=data,
+            file_name="loan_applications.csv",
+            mime="text/csv",
+            key="download_loan_data",
+            help="Click to download all loan application records as CSV file"
+        )
+    else:
+        st.info("No loan application data available for download yet.")
+
+# Call this function where you want the download button to appear
+# For example:
+# add_loan_applications_download_button()
     
 # MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START 
 
@@ -1443,6 +1447,8 @@ if __name__ == "__main__":
     )
     st.write("")
     st.write("")
+
+    add_loan_applications_download_button()
 
     # ABOUT Add "About" section
     with st.expander("About This App"):
