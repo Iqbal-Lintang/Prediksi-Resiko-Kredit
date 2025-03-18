@@ -581,17 +581,25 @@ def setup_gsheets():
     scope = ['https://spreadsheets.google.com/feeds',
              'https://www.googleapis.com/auth/drive']
     
-    # Load credentials from the service account file
     try:
-        credentials = Credentials.from_service_account_file(
-            'service_account.json',
-            scopes=scope
-        )
+        # Get credentials from environment variable
+        if 'GOOGLE_SERVICE_ACCOUNT' in os.environ:
+            service_account_info = json.loads(os.environ['GOOGLE_SERVICE_ACCOUNT'])
+            credentials = Credentials.from_service_account_info(
+                service_account_info,
+                scopes=scope
+            )
+        else:
+            # Fall back to file if environment variable is not set
+            credentials = Credentials.from_service_account_file(
+                'service_account.json',
+                scopes=scope
+            )
         
         # Create a gspread client
         client = gspread.authorize(credentials)
         
-        # Open the Google Sheet (replace with your sheet name)
+        # Open the Google Sheet
         sheet = client.open('Lendora_Data_New').worksheet('Sheet1')
         
         return sheet
