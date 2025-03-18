@@ -1017,10 +1017,10 @@ if __name__ == "__main__":
         })
 
                 
-    # Save to Google Sheets
-    sheet_success = save_to_gsheets(input_data)
-    if sheet_success:
-        st.success("Data berhasil disimpan ke Google Sheets!")   
+        # Save to Google Sheets
+        sheet_success = save_to_gsheets(input_data)
+        if sheet_success:
+            st.success("Data berhasil disimpan ke Google Sheets!")   
         
         # DEBUGGING COLLAPSIBLE INPUT Display the input data in a collapsible section for debugging
         with st.expander("Lihat Input Data"):
