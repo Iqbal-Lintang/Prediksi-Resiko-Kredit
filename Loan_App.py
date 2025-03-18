@@ -153,21 +153,19 @@ init_session()
 
 # Main app code - only shown if logged in
 if st.session_state.logged_in:
-    # LOGO AND TITLE
-    col1, col2 = st.columns([1, 5])
+    # LOGO, TITLE, AND USER INFO
+    col1, col2, col3 = st.columns([1, 4, 1])
     with col1:
         st.image("https://i.imgur.com/8RKgXU5.png", width=100)
     with col2:
         st.title("Lendora – AI Powered Risk Intelligence")
-        
-    # Add logout button in the sidebar
-    with st.sidebar:
-        if st.button("Logout"):
+    with col3:
+        # Small user info area
+        st.text(f"User: {st.session_state.username}")
+        if st.button("Logout", key="logout_button", help="Logout from application"):
             st.session_state.logged_in = False
             st.session_state.username = None
             st.rerun()
-        
-        st.write(f"Logged in as: {st.session_state.username}")
 
     # LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE
     @st.cache_resource
