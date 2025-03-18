@@ -62,7 +62,7 @@ def show_login_page():
     with col1:
         st.image("https://i.imgur.com/8RKgXU5.png", width=100)
     with col2:
-        st.title("Lendora – Login")
+        st.title("Lendora AI – Login")
     
     # Simple login form (no registration)
     username = st.text_input("Username", key="login_username")
