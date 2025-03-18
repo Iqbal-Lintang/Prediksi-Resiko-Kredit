@@ -573,7 +573,7 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
 
 def add_loan_applications_download_button():
     # For GitHub-hosted apps, you might need to use a GitHub raw URL
-    github_csv_url = "https://raw.githubusercontent.com/yourusername/yourrepo/main/loan_applications.csv"
+    github_csv_url = "https://raw.githubusercontent.com/Iqbal-Lintang/Prediksi-Resiko-Kredit/main/loan_applications.csv"
     
     import requests
     try:
