@@ -1464,32 +1464,32 @@ if st.session_state.logged_in:
             st.markdown("""
             ## Lendora AI Version History
         
-            ## **v1.0 - Model Prediksi Risiko**  
+            ### **v1.0 - Model Prediksi Risiko**  11 Maret 2025
             - Mengembangkan model awal untuk menilai kelayakan kredit menggunakan algoritma *Random Forest*.  
             - Melatih model dengan data historis pelanggan untuk mengidentifikasi pola risiko kredit.  
             - Membangun *pipeline* data untuk analisis perilaku pelanggan berdasarkan histori transaksi dan variabel ekonomi lainnya.  
         
-            ## **v2.0 - Pengembangan Metrik Stabilitas**  
+            ### **v2.0 - Pengembangan Metrik Stabilitas**  13 Maret 2025
             - Menambahkan metrik stabilitas guna meningkatkan akurasi penilaian risiko dan mengurangi bias dalam model.  
             - Melakukan validasi model dengan teknik *cross-validation* dan *feature importance analysis*.  
             - Meningkatkan transparansi model dengan menyediakan interpretasi prediksi (*explainability*) bagi tim analis.  
             
-            ## **v3.0 - Pengembangan Lora GenAI Kontekstual**  
+            ### **v3.0 - Pengembangan Lora GenAI Kontekstual**  14 Maret 2025
             - Mengintegrasikan AI Generatif berbasis *Anthropic API* (*Claude*) dengan model prediksi kredit.  
             - Mengembangkan **Lora AI**, sistem AI yang mampu menganalisis konteks pelanggan berdasarkan pola keuangan dan perilaku kredit.  
             - Menyesuaikan output prediksi dengan rekomendasi personalisasi berdasarkan profil pelanggan.  
             
-            ## **v4.0 - Pengembangan Dashboard Interaktif**  
+            ### **v4.0 - Pengembangan Dashboard Interaktif**  15 Maret 2025
             - Membangun *web app* berbasis *Streamlit* untuk visualisasi data kredit dan performa model.  
             - Menyediakan tampilan grafik dan metrik kinerja model agar mudah dipahami oleh analis dan pengambil keputusan.  
             - Menambahkan fitur **download report** dalam format PDF/CSV untuk kebutuhan dokumentasi dan audit.  
             
-            ## **v5.0 - Pengembangan DataLens OCR**  
+            ### **v5.0 - Pengembangan DataLens OCR**  16 Maret 2025
             - Mengimplementasikan teknologi **OCR** menggunakan *Tesseract* untuk ekstraksi data otomatis dari dokumen pelanggan.  
             - Mempercepat proses verifikasi data dengan mendeteksi informasi dari **KTP, slip gaji, dan laporan bank**.  
             - Meningkatkan efisiensi analisis data kredit dengan otomatisasi ekstraksi dan validasi dokumen.  
             
-            ## **v6.0 - Pengembangan RBAC untuk Admin & Devs**  
+            ### **v6.0 - Pengembangan RBAC untuk Admin & Devs**  18 Maret 2025
             - Menerapkan **Role-Based Access Control (RBAC)** untuk meningkatkan keamanan sistem.  
             - Mengatur hak akses khusus bagi **administrator, pengembang, dan analis kredit**.  
             - Memastikan bahwa hanya pengguna yang berwenang dapat **mengakses, mengedit, atau menghapus data sensitif**.  
