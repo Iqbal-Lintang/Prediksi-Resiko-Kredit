@@ -1508,7 +1508,7 @@ if st.session_state.logged_in:
             """, language="python")
             st.write("API Key: `dev_98f7a6c5d4b3e2a1`")
         st.write("")
-                    st.write("")
+        st.write("")
             
         st.markdown("---")
         # Copyright Footer
