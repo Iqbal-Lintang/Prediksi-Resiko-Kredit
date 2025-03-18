@@ -64,7 +64,7 @@ def show_login_page():
         st.title("Lendora AI – Login")
     
     # Role selection
-    role_type = st.radio("Login as:", ["admin", "developer"])
+    role_type = st.radio("Login as:", ["Risk Assessor", "Devs"])
     
     # Login form
     username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
@@ -102,7 +102,7 @@ if st.session_state.logged_in:
             st.rerun()
     
     # Content based on role
-    if st.session_state.role == "admin":
+    if st.session_state.role == "Risk Assessor":
 
         # LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE
         @st.cache_resource
@@ -1454,7 +1454,7 @@ if st.session_state.logged_in:
                                     - Disarankan untuk menggunakan hasil analisis bersama dengan pertimbangan manual dan kebijakan kredit internal.  
                                 """)
             
-    elif st.session_state.role == "developer":
+    elif st.session_state.role == "Devs":
         # Developer-specific content
         st.header("Developer Portal")
         dev_tabs = st.tabs(["API Access", "Documentation", "Test Environment"])
