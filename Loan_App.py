@@ -22,8 +22,10 @@ import time
 from fpdf import FPDF
 import base64
 from datetime import datetime
+import hashlib
+import sqlite3
 
-# APP TITLE APP TITLE APP TITLE APP TITLE PP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE 
+# Set up page configuration
 st.set_page_config(
     page_title="Lendora AI",
     page_icon="https://i.imgur.com/8RKgXU5.png",
@@ -33,13 +35,139 @@ st.set_page_config(
 # LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON# LOGO FAVICON LOGO FAVICON LOGO FAVICON 
 logo_url = "https://i.imgur.com/8RKgXU5.png"
 
-# LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE LOGO AND TITLE
-col1, col2 = st.columns([1, 5])
-with col1:
-    st.image(logo_url, width=100)
-with col2:
-    # Title
-    st.title("Lendora – AI Powered Risk Intelligence")
+# Authentication functions
+def init_db():
+    conn = sqlite3.connect('lendora_users.db')
+    c = conn.cursor()
+    c.execute('''
+    CREATE TABLE IF NOT EXISTS users
+    (username TEXT PRIMARY KEY, password_hash TEXT)
+    ''')
+    
+    # Add admin user from secrets if it doesn't exist
+    if "credentials" in st.secrets:
+        c.execute("SELECT username FROM users WHERE username = ?", (st.secrets["credentials"]["username"],))
+        if c.fetchone() is None:
+            admin_username = st.secrets["credentials"]["username"]
+            admin_password = st.secrets["credentials"]["password"]
+            c.execute("INSERT INTO users VALUES (?, ?)", 
+                     (admin_username, hash_password(admin_password)))
+    
+    conn.commit()
+    conn.close()
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def register_user(username, password):
+    conn = sqlite3.connect('lendora_users.db')
+    c = conn.cursor()
+    
+    c.execute("SELECT username FROM users WHERE username = ?", (username,))
+    if c.fetchone() is not None:
+        conn.close()
+        return False
+    
+    c.execute("INSERT INTO users VALUES (?, ?)", (username, hash_password(password)))
+    conn.commit()
+    conn.close()
+    return True
+
+def verify_user(username, password):
+    conn = sqlite3.connect('lendora_users.db')
+    c = conn.cursor()
+    c.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
+    result = c.fetchone()
+    conn.close()
+    
+    if result is not None:
+        return result[0] == hash_password(password)
+    return False
+
+def init_session():
+    if 'logged_in' not in st.session_state:
+        st.session_state.logged_in = False
+    if 'username' not in st.session_state:
+        st.session_state.username = None
+
+def show_login_page():
+    # Logo and title for login page
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        st.image("https://i.imgur.com/8RKgXU5.png", width=100)
+    with col2:
+        st.title("Lendora – Login")
+    
+    # Admin-only mode check
+    admin_only = False
+    if "settings" in st.secrets:
+        admin_only = st.secrets["settings"].get("admin_only", False)
+    
+    if admin_only:
+        username = st.text_input("Username", key="login_username")
+        password = st.text_input("Password", type="password", key="login_password")
+        
+        if st.button("Login", key="login_button"):
+            if verify_user(username, password):
+                st.session_state.logged_in = True
+                st.session_state.username = username
+                st.success("Login berhasil!")
+                st.rerun()
+            else:
+                st.error("Username atau password salah")
+    else:
+        tab1, tab2 = st.tabs(["Login", "Daftar"])
+        
+        with tab1:
+            username = st.text_input("Username", key="login_username")
+            password = st.text_input("Password", type="password", key="login_password")
+            
+            if st.button("Login", key="login_button"):
+                if verify_user(username, password):
+                    st.session_state.logged_in = True
+                    st.session_state.username = username
+                    st.success("Login berhasil!")
+                    st.rerun()
+                else:
+                    st.error("Username atau password salah")
+        
+        with tab2:
+            new_username = st.text_input("Username Baru", key="reg_username")
+            new_password = st.text_input("Password Baru", type="password", key="reg_password")
+            confirm_password = st.text_input("Konfirmasi Password", type="password", key="confirm_password")
+            
+            if st.button("Daftar", key="register_button"):
+                if new_password != confirm_password:
+                    st.error("Password tidak cocok")
+                elif not new_username or not new_password:
+                    st.error("Username dan password tidak boleh kosong")
+                else:
+                    if register_user(new_username, new_password):
+                        st.success("Pendaftaran berhasil! Silakan login.")
+                    else:
+                        st.error("Username sudah digunakan")
+
+# Initialize the database and session
+init_db()
+init_session()
+
+# Main app code - only shown if logged in
+if st.session_state.logged_in:
+    # LOGO AND TITLE
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        st.image("https://i.imgur.com/8RKgXU5.png", width=100)
+    with col2:
+        st.title("Lendora – AI Powered Risk Intelligence")
+        
+    # Add logout button in the sidebar
+    with st.sidebar:
+        if st.button("Logout"):
+            st.session_state.logged_in = False
+            st.session_state.username = None
+            st.rerun()
+        
+        st.write(f"Logged in as: {st.session_state.username}")
 
 # LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE
 @st.cache_resource
