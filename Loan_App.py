@@ -571,26 +571,6 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
     
     return corrected_data
 
-def add_loan_applications_download_button():
-    # For GitHub-hosted apps, you might need to use a GitHub raw URL
-    github_csv_url = "https://raw.githubusercontent.com/Iqbal-Lintang/Prediksi-Resiko-Kredit/main/loan_applications.csv"
-    
-    import requests
-    try:
-        # Try to fetch the file from GitHub
-        response = requests.get(github_csv_url)
-        if response.status_code == 200:
-            st.download_button(
-                label="Download Loan Applications Data",
-                data=response.content,
-                file_name="loan_applications.csv",
-                mime="text/csv",
-                key="download_loan_data"
-            )
-        else:
-            st.info("No loan application data available for download yet.")
-    except Exception as e:
-        st.error(f"Error fetching data: {e}")
     
 # MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START 
 
