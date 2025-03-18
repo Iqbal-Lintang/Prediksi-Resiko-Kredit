@@ -1455,62 +1455,51 @@ if st.session_state.logged_in:
                                 """)
             
     elif st.session_state.role == "Devs":
-        # Developer-specific content
-        st.header("Developer Portal")
-        dev_tabs = st.tabs(["API Access", "Documentation", "Test Environment"])
+        # Developers
+        st.header("Developer's Portal")
+        dev_tabs = st.tabs(["Version History", "API Access"])
         
         with dev_tabs[0]:
+            st.subheader(Version History")
+            st.markdown("""
+            ## Lendora AI Version History
+        
+            **v1.0 - Model Prediksi Risiko**  
+            - Mengembangkan model prediksi risiko awal untuk menilai kelayakan kredit.  
+            - Membangun pipeline data untuk analisis perilaku pelanggan.  
+        
+            **v2.0 - Pengembangan Metrik Stabilitas**  
+            - Menambahkan metrik stabilitas guna meningkatkan akurasi penilaian risiko.  
+            - Meningkatkan transparansi model dalam pengambilan keputusan.  
+        
+            **v3.0 - Pengembangan Lora GenAI Kontekstual**  
+            - Mengintegrasikan AI Generatif berbasis Lora untuk prediksi kredit yang lebih akurat.  
+            - Analisis kontekstual terhadap profil pelanggan dan pola keuangan.  
+        
+            **v4.0 - Pengembangan Dashboard**  
+            - Mengembangkan dashboard interaktif untuk visualisasi data kredit dan performa model.  
+            - Meningkatkan aksesibilitas bagi analis dan pengambil keputusan.  
+        
+            **v5.0 - Pengembangan DataLens OCR**  
+            - Mengimplementasikan teknologi OCR untuk ekstraksi data otomatis dari dokumen pelanggan.  
+            - Mempercepat proses verifikasi dan analisis data kredit.  
+        
+            **v6.0 - Pengembangan RBAC untuk Admin & Devs**  
+            - Menerapkan Role-Based Access Control (RBAC) guna meningkatkan keamanan sistem.  
+            - Mengatur akses dan izin khusus bagi administrator dan pengembang.  
+            """)
+        
+        with dev_tabs[1]:
             st.subheader("API Access")
             st.code("""
-# Example API endpoint
-@app.route('/api/v1/risk-score', methods=['POST'])
-def calculate_risk_score():
-    data = request.json
-    # Process data
-    return jsonify({'risk_score': score})
+        # Contoh endpoint API
+        @app.route('/api/v1/risk-score', methods=['POST'])
+        def calculate_risk_score():
+            data = request.json
+            # Proses data
+            return jsonify({'risk_score': score})
             """, language="python")
-            st.write("Your API key: `dev_98f7a6c5d4b3e2a1`")
-            
-        with dev_tabs[1]:
-            st.subheader("Documentation")
-            st.markdown("""
-            ## Lendora API Documentation
-            
-            ### Endpoints
-            - `/api/v1/risk-score` - Calculate risk score
-            - `/api/v1/customer-data` - Retrieve customer data
-            - `/api/v1/model-status` - Check model status
-            
-            ### Authentication
-            All API calls require your developer key in the header:
-            ```
-            Authorization: Bearer dev_98f7a6c5d4b3e2a1
-            ```
-            """)
-            
-        with dev_tabs[2]:
-            st.subheader("Test Environment")
-            st.write("Use this environment to test your integration")
-            test_input = st.text_area("JSON Input:", """{
-  "customer_id": "C12345",
-  "income": 50000,
-  "credit_score": 720,
-  "loan_history": [
-    {"amount": 10000, "status": "paid"},
-    {"amount": 15000, "status": "active"}
-  ]
-}""", height=200)
-            if st.button("Run Test"):
-                st.success("Test successful! Risk score: 82/100")
-                st.json({
-                    "risk_score": 82,
-                    "risk_level": "Low",
-                    "factors": [
-                        {"name": "credit_score", "impact": "positive"},
-                        {"name": "loan_history", "impact": "neutral"}
-                    ]
-                })
-                
+            st.write("Kunci API Anda: `dev_98f7a6c5d4b3e2a1`")
     
 else:
     # Show login page if not logged in
