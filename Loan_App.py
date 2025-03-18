@@ -1016,8 +1016,6 @@ if __name__ == "__main__":
             'Age': [age]
         })
 
-    # Store in session state for persistence
-    st.session_state.form_data = input_data.copy()
                 
     # Save to Google Sheets
     sheet_success = save_to_gsheets(input_data)
