@@ -1395,10 +1395,37 @@ if st.session_state.logged_in:
 
                 st.write("")
                 st.write("")
-                    
-                # ABOUT Add "About" section
-            with st.expander("About This App"):
-                st.markdown("""
+        
+    st.markdown("---")
+    # Copyright Footer
+    st.markdown("""
+            <div style="text-align: center; color: #666; margin-top: 10px;">
+                Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+            </div>
+        """, unsafe_allow_html=True)
+    st.markdown(
+            """
+            <div style="text-align: center; margin-top: 10px;">
+            <a href="https://www.linkedin.com/in/iqbal-lintang-148669124" target="_blank" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="40">
+            </a>
+            <a href="https://github.com/Iqbal-Lintang" target="_blank" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="40">
+            </a>
+            <a href="mailto:heylintang@gmail.com" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" width="40">
+            </a>
+            <a href="https://wa.me/62816928622" target="_blank" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="40">
+            </a>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
+            
+        # ABOUT Add "About" section
+    with st.expander("About This App"):
+    st.markdown("""
                                 #### Penggunaan:
                                 1. **Verifikasi & Lengkapi Data**  
                                    Pastikan semua informasi pada tab "Informasi Calon Debitur" telah diisi dengan benar.  
