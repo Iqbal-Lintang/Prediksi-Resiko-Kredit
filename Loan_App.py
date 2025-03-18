@@ -22,6 +22,8 @@ import time
 from fpdf import FPDF
 import base64
 from datetime import datetime
+import gspread
+from datetime import datetime
 
 # APP TITLE APP TITLE APP TITLE APP TITLE PP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE 
 st.set_page_config(
@@ -570,6 +572,61 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
         )
     
     return corrected_data
+
+#GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION
+
+def setup_gsheets():
+    """Set up connection to Google Sheets"""
+    # Define the scope
+    scope = ['https://spreadsheets.google.com/feeds',
+             'https://www.googleapis.com/auth/drive']
+    
+    # Load credentials from the service account file
+    try:
+        credentials = Credentials.from_service_account_file(
+            'service_account.json',
+            scopes=scope
+        )
+        
+        # Create a gspread client
+        client = gspread.authorize(credentials)
+        
+        # Open the Google Sheet (replace with your sheet name)
+        sheet = client.open('Lendora_Data_New').worksheet('Sheet1')
+        
+        return sheet
+    except Exception as e:
+        st.error(f"Error connecting to Google Sheets: {e}")
+        return None
+
+def save_to_gsheets(data):
+    """Save data to Google Sheets"""
+    sheet = setup_gsheets()
+    
+    if sheet:
+        try:
+            # Add timestamp to the data
+            data['Timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            # Get current headers from the sheet
+            headers = sheet.row_values(1)
+            
+            # If the sheet is empty, create headers first
+            if not headers:
+                headers = list(data.keys())
+                sheet.append_row(headers)
+            
+            # Create row with values in the same order as headers
+            row = [data.get(header, '') for header in headers]
+            
+            # Append the new row
+            sheet.append_row(row)
+            return True
+        except Exception as e:
+            st.error(f"Error saving to Google Sheets: {e}")
+            return False
+    return False
+    
     
 # MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START 
 
