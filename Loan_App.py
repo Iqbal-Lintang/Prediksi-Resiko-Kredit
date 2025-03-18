@@ -1394,6 +1394,10 @@ if st.session_state.logged_in:
                 st.error("If this error persists, please check the model compatibility or contact support.")
     
     
+else:
+    # Show login page if not logged in
+    show_login_page()
+
         # FOOTER FOOTER
         # FOOTER FOOTER
         
@@ -1448,6 +1452,3 @@ if st.session_state.logged_in:
                 - Hasil prediksi bersifat sebagai referensi, bukan satu-satunya faktor dalam pengambilan keputusan.  
                 - Disarankan untuk menggunakan hasil analisis bersama dengan pertimbangan manual dan kebijakan kredit internal.  
             """)
-else:
-    # Show login page if not logged in
-    show_login_page()
