@@ -570,7 +570,80 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
         )
     
     return corrected_data
+# File path for the CSV
+CSV_FILE = "loan_applications.csv"
 
+# Function to save data to CSV
+def save_to_csv(data):
+    try:
+        # Convert data to DataFrame
+        df = pd.DataFrame([data])
+        
+        # Check if file exists to determine if we need to write headers
+        file_exists = os.path.isfile(CSV_FILE)
+        
+        # Save to CSV (append mode)
+        df.to_csv(CSV_FILE, mode='a', header=not file_exists, index=False)
+        
+        return True
+    except Exception as e:
+        st.error(f"Error saving data: {e}")
+        return False
+
+# File path for the CSV
+CSV_FILE = "loan_applications.csv"
+
+# Function to save data to CSV
+def save_to_csv(data):
+    try:
+        # Convert data to DataFrame
+        df = pd.DataFrame([data])
+        
+        # Check if file exists to determine if we need to write headers
+        file_exists = os.path.isfile(CSV_FILE)
+        
+        # Save to CSV (append mode)
+        df.to_csv(CSV_FILE, mode='a', header=not file_exists, index=False)
+        
+        return True
+    except Exception as e:
+        st.error(f"Error saving data: {e}")
+        return False
+
+
+def process_form_data(input_data):
+    # Reset form data in session state
+    if 'form_data' not in st.session_state:
+        st.session_state.form_data = {}
+    
+    # Add timestamp to the data
+    input_data['timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Store in session state for persistence
+    st.session_state.form_data = input_data.copy()
+    
+    # Save to CSV
+    csv_success = save_to_csv(input_data)
+    
+    if csv_success:
+        st.success("Data saved successfully!")
+    else:
+        st.error("Failed to save data.")
+    
+    return csv_success
+
+# Add a download button somewhere in your app UI
+def add_download_button():
+    if os.path.exists(CSV_FILE):
+        with open(CSV_FILE, "rb") as file:
+            st.download_button(
+                label="Download All Data (CSV)",
+                data=file,
+                file_name="loan_applications.csv",
+                mime="text/csv"
+            )
+    else:
+        st.info("No data available for download yet.")
     
 # MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START 
 
@@ -1337,7 +1410,11 @@ if __name__ == "__main__":
         except Exception as e:
             st.error(f"Error making prediction: {e}")
             st.error("If this error persists, please check the model compatibility or contact support.")
-            
+
+
+# Add a section to download the data
+st.subheader("Download Application Data")
+add_download_button()
 
     # FOOTER FOOTER
     # FOOTER FOOTER
