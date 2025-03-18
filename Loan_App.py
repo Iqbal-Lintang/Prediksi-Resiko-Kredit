@@ -22,8 +22,6 @@ import time
 from fpdf import FPDF
 import base64
 from datetime import datetime
-import gspread
-from google.oauth2.service_account import Credentials
 
 # APP TITLE APP TITLE APP TITLE APP TITLE PP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE APP TITLE 
 st.set_page_config(
@@ -573,68 +571,6 @@ def display_and_validate_extracted_data(extracted_data, state_options, city_opti
     
     return corrected_data
 
-#GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION #GOOGLE SHEET INTEGRATION FUNCTION
-
-def setup_gsheets():
-    """Set up connection to Google Sheets"""
-    # Define the scope
-    scope = ['https://spreadsheets.google.com/feeds',
-             'https://www.googleapis.com/auth/drive']
-    
-    try:
-        # Get credentials from environment variable
-        if 'GOOGLE_SERVICE_ACCOUNT' in os.environ:
-            service_account_info = json.loads(os.environ['GOOGLE_SERVICE_ACCOUNT'])
-            credentials = Credentials.from_service_account_info(
-                service_account_info,
-                scopes=scope
-            )
-        else:
-            # Fall back to file if environment variable is not set
-            credentials = Credentials.from_service_account_file(
-                'service_account.json',
-                scopes=scope
-            )
-        
-        # Create a gspread client
-        client = gspread.authorize(credentials)
-        
-        # Open the Google Sheet
-        sheet = client.open('Lendora_Data_New').worksheet('Sheet1')
-        
-        return sheet
-    except Exception as e:
-        st.error(f"Error connecting to Google Sheets: {e}")
-        return None
-
-def save_to_gsheets(data):
-    """Save data to Google Sheets"""
-    sheet = setup_gsheets()
-    
-    if sheet:
-        try:
-            # Add timestamp to the data
-            data['Timestamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            
-            # Get current headers from the sheet
-            headers = sheet.row_values(1)
-            
-            # If the sheet is empty, create headers first
-            if not headers:
-                headers = list(data.keys())
-                sheet.append_row(headers)
-            
-            # Create row with values in the same order as headers
-            row = [data.get(header, '') for header in headers]
-            
-            # Append the new row
-            sheet.append_row(row)
-            return True
-        except Exception as e:
-            st.error(f"Error saving to Google Sheets: {e}")
-            return False
-    return False
-    
     
 # MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START 
 
@@ -1025,17 +961,6 @@ if __name__ == "__main__":
         })
 
                 
-        # Save to Google Sheets
-        sheet_success = save_to_gsheets(input_data)
-        if sheet_success:
-            st.success("Data berhasil disimpan ke Google Sheets!")   
-        
-        # DEBUGGING COLLAPSIBLE INPUT Display the input data in a collapsible section for debugging
-        with st.expander("Lihat Input Data"):
-            st.dataframe(input_data)
-            st.write("Nama Column (untuk debugging):")
-            st.write(list(input_data.columns))
-        
         try:
             # Check if model has feature_names_in_ attribute and ensure columns match
             if hasattr(model, 'feature_names_in_'):
