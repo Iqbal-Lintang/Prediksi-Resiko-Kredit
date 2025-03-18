@@ -1491,13 +1491,13 @@ if st.session_state.logged_in:
             ### **v5.0 - Pengembangan DataLens OCR**  
             *16 Maret 2025*
             - Mengimplementasikan teknologi **OCR** menggunakan *Tesseract* untuk ekstraksi data otomatis dari dokumen pelanggan.  
-            - Mempercepat proses verifikasi data dengan mendeteksi informasi dari **KTP, slip gaji, dan laporan bank**.  
-            - Meningkatkan efisiensi analisis data kredit dengan otomatisasi ekstraksi dan validasi dokumen.  
+            - Mempercepat proses input data dengan mendeteksi informasi dari **form terstandarisasi**.  
+            - Meningkatkan efisiensi analisis data kredit dengan otomatisasi ekstraksi.  
             
             ### **v6.0 - Pengembangan RBAC untuk Admin & Devs**  
             *18 Maret 2025*
             - Menerapkan **Role-Based Access Control (RBAC)** untuk meningkatkan keamanan sistem.  
-            - Mengatur hak akses khusus bagi **administrator, pengembang, dan analis kredit**.  
+            - Mengatur hak akses khusus bagi **analyst dan developer**.  
             - Memastikan bahwa hanya pengguna yang berwenang dapat **mengakses, mengedit, atau menghapus data sensitif**.  
             """)
 
