@@ -668,15 +668,7 @@ if __name__ == "__main__":
 
     # Initialize session state for form data
     if 'form_data' not in st.session_state:
-        st.session_state.form_data = {}
-
-    # Store in session state for persistence
-    st.session_state.form_data = input_data.copy()
-        
-    # Save to Google Sheets
-    sheet_success = save_to_gsheets(input_data)
-    if sheet_success:
-        st.success("Data berhasil disimpan ke Google Sheets!")            
+        st.session_state.form_data = {}         
 
     # TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR  
     # TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR TAB 1 INFORMASI DEBITUR  
@@ -1023,6 +1015,14 @@ if __name__ == "__main__":
             'income_segment': [income_segment],
             'Age': [age]
         })
+
+        # Store in session state for persistence
+            st.session_state.form_data = input_data.copy()
+                
+            # Save to Google Sheets
+            sheet_success = save_to_gsheets(input_data)
+            if sheet_success:
+                st.success("Data berhasil disimpan ke Google Sheets!")   
         
         # DEBUGGING COLLAPSIBLE INPUT Display the input data in a collapsible section for debugging
         with st.expander("Lihat Input Data"):
