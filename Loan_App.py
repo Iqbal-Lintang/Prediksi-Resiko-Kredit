@@ -56,29 +56,99 @@ def init_session():
         st.session_state.role = None
 
 def show_login_page():
-    # Logo and title for login page
-    col1, col2 = st.columns([1, 5])
-    with col1:
+    # Set page layout to wide
+    st.set_page_config(layout="wide", page_title="Lendora AI")
+    
+    # Create two columns for login and info
+    left_col, right_col = st.columns([1, 1])
+    
+    # Left column - Login form
+    with left_col:
         st.image("https://i.imgur.com/8RKgXU5.png", width=100)
-    with col2:
-        st.title("Lendora AI – Login")
+        st.title("Lendora AI")
+        st.subheader("Sign In")
+        
+        # Create a card-like container for the login form
+        with st.container():
+            st.markdown("---")
+            
+            # Role selection
+            role_type = st.radio("Login as:", ["Analyst", "Devs"], horizontal=True)
+            
+            # Login form
+            username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
+            password = st.text_input("Password", type="password", key="login_password")
+            
+            col1, col2, col3 = st.columns([1, 1, 1])
+            with col2:
+                login_button = st.button("Login", key="login_button", use_container_width=True)
+            
+            if login_button:
+                if verify_user(username, password, role_type):
+                    st.session_state.logged_in = True
+                    st.session_state.username = username
+                    st.session_state.role = role_type
+                    st.success("Login berhasil!")
+                    st.rerun()
+                else:
+                    st.error("Username atau password salah")
+                    
+            st.markdown("---")
+            st.caption("© 2025 Lendora AI. All rights reserved.")
     
-    # Role selection
-    role_type = st.radio("Login as:", ["Analyst", "Devs"])
-    
-    # Login form
-    username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
-    password = st.text_input("Password", type="password", key="login_password")
-    
-    if st.button("Login", key="login_button"):
-        if verify_user(username, password, role_type):
-            st.session_state.logged_in = True
-            st.session_state.username = username
-            st.session_state.role = role_type
-            st.success("Login berhasil!")
-            st.rerun()
-        else:
-            st.error("Username atau password salah")
+    # Right column - Information about the application
+    with right_col:
+        st.markdown("### Welcome to Lendora AI")
+        
+        # Create tabs for different information sections
+        tab1, tab2, tab3 = st.tabs(["About", "Features", "Help"])
+        
+        with tab1:
+            st.markdown("""
+            **Lendora AI** is an advanced lending analytics platform that leverages artificial intelligence to help financial institutions make better lending decisions.
+            
+            Our platform provides real-time insights, risk assessments, and automated underwriting to streamline your lending process.
+            
+            With Lendora AI, you can:
+            - Reduce decision time by up to 70%
+            - Improve accuracy of risk assessments
+            - Increase lending portfolio profitability
+            """)
+            
+        with tab2:
+            st.markdown("#### Key Features")
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("""
+                - **AI-Powered Analytics**
+                - **Risk Scoring**
+                - **Fraud Detection**
+                """)
+                
+            with col2:
+                st.markdown("""
+                - **Automated Underwriting**
+                - **Portfolio Management**
+                - **Compliance Tools**
+                """)
+                
+            st.image("https://placehold.co/600x300", caption="Platform Dashboard")
+            
+        with tab3:
+            st.markdown("""
+            #### Need Help?
+            
+            If you're having trouble logging in:
+            1. Ensure your username and password are correct
+            2. Check that you've selected the right role
+            3. Contact the system administrator if issues persist
+            
+            For technical support, contact:
+            - Email: support@lendora-ai.com
+            - Phone: +62 21 5551234
+            """)
 
 # Initialize session
 init_session()
