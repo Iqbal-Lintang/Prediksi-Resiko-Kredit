@@ -36,52 +36,18 @@ st.set_page_config(
 logo_url = "https://i.imgur.com/8RKgXU5.png"
 
 # Authentication functions
-def init_db():
-    conn = sqlite3.connect('lendora_users.db')
-    c = conn.cursor()
-    c.execute('''
-    CREATE TABLE IF NOT EXISTS users
-    (username TEXT PRIMARY KEY, password_hash TEXT)
-    ''')
-    
-    # Add admin user from secrets if it doesn't exist
-    if "credentials" in st.secrets:
-        c.execute("SELECT username FROM users WHERE username = ?", (st.secrets["credentials"]["username"],))
-        if c.fetchone() is None:
-            admin_username = st.secrets["credentials"]["username"]
-            admin_password = st.secrets["credentials"]["password"]
-            c.execute("INSERT INTO users VALUES (?, ?)", 
-                     (admin_username, hash_password(admin_password)))
-    
-    conn.commit()
-    conn.close()
-
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-def register_user(username, password):
-    conn = sqlite3.connect('lendora_users.db')
-    c = conn.cursor()
-    
-    c.execute("SELECT username FROM users WHERE username = ?", (username,))
-    if c.fetchone() is not None:
-        conn.close()
-        return False
-    
-    c.execute("INSERT INTO users VALUES (?, ?)", (username, hash_password(password)))
-    conn.commit()
-    conn.close()
-    return True
-
 def verify_user(username, password):
-    conn = sqlite3.connect('lendora_users.db')
-    c = conn.cursor()
-    c.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
-    result = c.fetchone()
-    conn.close()
-    
-    if result is not None:
-        return result[0] == hash_password(password)
+    # Get users from secrets
+    if "users" in st.secrets:
+        users = st.secrets["users"]
+        # Check if username exists in secrets
+        if username in users:
+            stored_hash = users[username]
+            # Verify password
+            return stored_hash == hash_password(password)
     return False
 
 def init_session():
@@ -98,57 +64,20 @@ def show_login_page():
     with col2:
         st.title("Lendora – Login")
     
-    # Admin-only mode check
-    admin_only = False
-    if "settings" in st.secrets:
-        admin_only = st.secrets["settings"].get("admin_only", False)
+    # Simple login form (no registration)
+    username = st.text_input("Username", key="login_username")
+    password = st.text_input("Password", type="password", key="login_password")
     
-    if admin_only:
-        username = st.text_input("Username", key="login_username")
-        password = st.text_input("Password", type="password", key="login_password")
-        
-        if st.button("Login", key="login_button"):
-            if verify_user(username, password):
-                st.session_state.logged_in = True
-                st.session_state.username = username
-                st.success("Login berhasil!")
-                st.rerun()
-            else:
-                st.error("Username atau password salah")
-    else:
-        tab1, tab2 = st.tabs(["Login", "Daftar"])
-        
-        with tab1:
-            username = st.text_input("Username", key="login_username")
-            password = st.text_input("Password", type="password", key="login_password")
-            
-            if st.button("Login", key="login_button"):
-                if verify_user(username, password):
-                    st.session_state.logged_in = True
-                    st.session_state.username = username
-                    st.success("Login berhasil!")
-                    st.rerun()
-                else:
-                    st.error("Username atau password salah")
-        
-        with tab2:
-            new_username = st.text_input("Username Baru", key="reg_username")
-            new_password = st.text_input("Password Baru", type="password", key="reg_password")
-            confirm_password = st.text_input("Konfirmasi Password", type="password", key="confirm_password")
-            
-            if st.button("Daftar", key="register_button"):
-                if new_password != confirm_password:
-                    st.error("Password tidak cocok")
-                elif not new_username or not new_password:
-                    st.error("Username dan password tidak boleh kosong")
-                else:
-                    if register_user(new_username, new_password):
-                        st.success("Pendaftaran berhasil! Silakan login.")
-                    else:
-                        st.error("Username sudah digunakan")
+    if st.button("Login", key="login_button"):
+        if verify_user(username, password):
+            st.session_state.logged_in = True
+            st.session_state.username = username
+            st.success("Login berhasil!")
+            st.rerun()
+        else:
+            st.error("Username atau password salah")
 
-# Initialize the database and session
-init_db()
+# Initialize session
 init_session()
 
 # Main app code - only shown if logged in
