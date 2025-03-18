@@ -12,3 +12,5 @@ reportlab
 pillow
 pytesseract
 fpdf2
+gspread
+google-auth
