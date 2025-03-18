@@ -64,7 +64,7 @@ def show_login_page():
         st.title("Lendora AI – Login")
     
     # Role selection
-    role_type = st.radio("Login as:", ["Risk Assessor", "Devs"])
+    role_type = st.radio("Login as:", ["Analyst", "Devs"])
     
     # Login form
     username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
@@ -102,7 +102,7 @@ if st.session_state.logged_in:
             st.rerun()
     
     # Content based on role
-    if st.session_state.role == "Risk Assessor":
+    if st.session_state.role == "Analyst":
 
         # LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE LOAD MODEL FROM GOOGLE DRIVE
         @st.cache_resource
