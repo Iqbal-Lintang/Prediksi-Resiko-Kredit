@@ -1371,8 +1371,6 @@ if __name__ == "__main__":
     st.write("")
     st.write("")
 
-    add_loan_applications_download_button()
-
     # ABOUT Add "About" section
     with st.expander("About This App"):
         st.markdown("""
