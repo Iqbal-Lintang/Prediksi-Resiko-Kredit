@@ -14,3 +14,5 @@ pytesseract
 fpdf2
 gspread
 google-auth
+hashlib
+sqlite3
