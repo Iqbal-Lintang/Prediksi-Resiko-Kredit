@@ -638,26 +638,41 @@ if st.session_state.logged_in:
 
         # GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION
         def setup_google_sheets():
-            # Define the scope
-            scope = ['https://spreadsheets.google.com/feeds',
-                     'https://www.googleapis.com/auth/drive']
-            
-            # Add your credentials file path
-            creds = ServiceAccountCredentials.from_json_keyfile_name('628d830261aeb7ccb14cd4aaa943b3dac93e7448.json', scope)
-            client = gspread.authorize(creds)
-            
-            # Open the spreadsheet and sheet
-            sheet = client.open('LendoraAI_Predictions').sheet1
-            
-            return sheet
+            try:
+                # Define the scope
+                scope = ['https://spreadsheets.google.com/feeds',
+                         'https://www.googleapis.com/auth/drive']
+                
+                # Use secrets for credentials instead of file
+                if "gcp_service_account" in st.secrets:
+                    credentials_dict = st.secrets["gcp_service_account"]
+                    creds = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
+                else:
+                    # For local development with fallback to file (not recommended for production)
+                    st.warning("Using local credentials file - not recommended for production")
+                    creds = ServiceAccountCredentials.from_json_keyfile_name('628d830261aeb7ccb14cd4aaa943b3dac93e7448.json', scope)
+                
+                client = gspread.authorize(creds)
+                
+                # Open the spreadsheet and sheet
+                sheet = client.open('LendoraAI_Predictions').sheet1
+                
+                return sheet
+            except Exception as e:
+                st.error(f"Failed to setup Google Sheets: {e}")
+                return None
         
         # Function to save prediction data to Google Sheets
         def save_to_google_sheets(data):
             try:
                 sheet = setup_google_sheets()
                 
+                if sheet is None:
+                    return False
+                
                 # Check if the sheet is empty (no headers)
-                if len(sheet.get_all_values()) == 0:
+                values = sheet.get_all_values()
+                if len(values) == 0:
                     headers = list(data.keys())
                     sheet.append_row(headers)
                 
