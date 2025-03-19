@@ -207,7 +207,6 @@ if st.session_state.logged_in:
                     - Status Pernikahan: {risk_data.get('marital_status', 'Tidak tersedia')}
                     - Profesi: {risk_data.get('profession', 'Tidak tersedia')}
                     - Pengalaman: {risk_data.get('experience', 'Tidak tersedia')} tahun
-                    - Stabilitas Pekerjaan: {risk_data.get('job_stability', 0.0):.4f}
                     - Stabilitas Rumah: {risk_data.get('home_stability', 0.0):.4f}
                     - Skor risiko: {risk_data.get('risk_score', 0.0):.2%}
                     - Prediksi: {"Risiko Tinggi" if risk_data.get('risk_prediction', 0) == 1 else "Risiko Rendah"}
