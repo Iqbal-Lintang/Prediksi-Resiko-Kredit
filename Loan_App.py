@@ -1517,7 +1517,7 @@ if st.session_state.logged_in:
         # Copyright Footer
         st.markdown("""
                 <div style="text-align: center; color: #666; margin-top: 10px;">
-                    Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+                    Copyright (C) 2025 Iqbal Lintang. All Rights Reserved.
                 </div>
             """, unsafe_allow_html=True)
         st.markdown(
@@ -1692,7 +1692,7 @@ if st.session_state.logged_in:
         # Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL
         st.markdown("""
                 <div style="text-align: center; color: #666; margin-top: 10px;">
-                    Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+                    Copyright (C) 2025 Iqbal Lintang. All Rights Reserved.
                 </div>
             """, unsafe_allow_html=True)
         st.markdown(
@@ -1726,7 +1726,7 @@ else:
         # Copyright Footer
     st.markdown("""
             <div style="text-align: center; color: #666; margin-top: 10px;">
-                Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+                Copyright (C) 2025 Iqbal Lintang. All Rights Reserved.
             </div>
         """, unsafe_allow_html=True)
     st.markdown(
