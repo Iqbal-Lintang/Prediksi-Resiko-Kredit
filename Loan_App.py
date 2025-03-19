@@ -72,7 +72,7 @@ def show_login_page():
         st.markdown("### Login")
         
         # Role selection
-        role_type = st.radio(["Analyst", "Devs"])
+        role_type = st.radio("Login as:", ["Analyst", "Devs"])
         
         # Login form
         username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
