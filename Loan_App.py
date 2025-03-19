@@ -1630,7 +1630,6 @@ if st.session_state.logged_in:
                     df = pd.DataFrame(data)
                     
                     # Show data
-                    st.write("### User Input Data")
                     st.dataframe(df)
                     
                     # Download button for CSV
