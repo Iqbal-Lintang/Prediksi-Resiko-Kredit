@@ -1559,7 +1559,7 @@ if st.session_state.logged_in:
             return client
         
         # Create tabs for developer portal
-        dev_tabs = st.tabs(["Version History", "API Access", "User Input Log"])
+        dev_tabs = st.tabs(["Version History", "User Input Log", "API Access"])
         
         # VERSION HISTORY TAB
         with dev_tabs[0]:
@@ -1606,18 +1606,7 @@ if st.session_state.logged_in:
         
         # API ACCESS TAB - GOOGLE SHEETS VIEWER
         with dev_tabs[1]:
-            st.subheader("API Access")
-            
-            # API code demo
-            st.code("""
-        # API Endpoint (Dummy)
-        @app.route('/api/v1/risk-score', methods=['POST'])
-        def calculate_risk_score():
-            data = request.json
-            # Proses data
-            return jsonify({'risk_score': score})
-            """, language="python")
-            st.write("API Key: `dev_98f7a6c5d4b3e2a1`")
+            st.subheader("User Input Log")
             
             # Add Google Sheets viewer in this tab
             st.write("---")
