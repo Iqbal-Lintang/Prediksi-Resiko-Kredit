@@ -1058,11 +1058,11 @@ if st.session_state.logged_in:
                     
                     1. **Stabilitas Pekerjaan** mengindikasikan konsistensi pendapatan dan kemungkinan lebih rendah untuk mengalami periode tanpa pendapatan.
                            
-                    *Lama kerja ÷ (Usia - 18)*
+                    *Lama kerja / (Usia - 18)*
                     
                     2. **Stabilitas Tempat Tinggal** menunjukkan komitmen jangka panjang dan tanggung jawab finansial yang konsisten di satu lokasi.
                     
-                    *Lama tinggal ÷ Usia*
+                    *Lama tinggal / Usia*
                     
                     3. **Stabilitas Finansial** mewakili kapasitas peminjam untuk membayar kembali pinjaman dan menangani kejadian finansial yang tidak terduga.
                     
