@@ -1066,7 +1066,7 @@ if st.session_state.logged_in:
                     
                     3. **Stabilitas Finansial** mewakili kapasitas peminjam untuk membayar kembali pinjaman dan menangani kejadian finansial yang tidak terduga.
                     
-                    *Pendapatan ÷ 2*
+                    *Pendapatan / 2*
                     
                     Kombinasi dari ketiga metrik ini memberikan gambaran yang lebih lengkap tentang profil risiko peminjam.
                     """)
