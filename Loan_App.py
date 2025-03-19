@@ -643,7 +643,7 @@ if st.session_state.logged_in:
                      'https://www.googleapis.com/auth/drive']
             
             # Add your credentials file path
-            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+            creds = ServiceAccountCredentials.from_json_keyfile_name('lendora-8632e11cf215.json', scope)
             client = gspread.authorize(creds)
             
             # Open the spreadsheet and sheet
