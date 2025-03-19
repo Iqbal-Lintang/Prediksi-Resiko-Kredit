@@ -62,7 +62,7 @@ def init_session():
 def show_login_page():
     # Page header with logo
     st.image(logo_url, width=100)
-    st.title("Lendora AI")
+    st.title("Lendora AI – AI Powered Risk Intelligence")
     
     # Create two columns for login layout
     login_col, info_col = st.columns([1, 1])
@@ -93,8 +93,6 @@ def show_login_page():
     with info_col:
         st.markdown("### About Lendora AI")
         st.markdown("""
-        **Lendora AI – AI Powered Risk Intelligence**
-        
         Welcome to the Lendora AI platform, designed to provide intelligent risk assessment and financial analytics.
         
         **Key Features:**
