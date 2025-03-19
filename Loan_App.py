@@ -60,52 +60,29 @@ def init_session():
         st.session_state.role = None
 
 def show_login_page():
-    # Page header with logo
-    st.image(logo_url, width=100)
-    st.title("Lendora – AI Powered Risk Intelligence")
+    # Logo and title for login page
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        st.image("https://i.imgur.com/8RKgXU5.png", width=100)
+    with col2:
+        st.title("Lendora AI – Login")
     
-    # Create two columns for login layout
-    login_col, info_col = st.columns([1, 1])
+    # Role selection
+    role_type = st.radio("Login as:", ["Analyst", "Devs"])
     
-    # Login Column - Left Side
-    with login_col:
-        st.markdown("### Login")
-        st.markdown("Please enter your credentials to access the platform")
-        
-        # Role selection
-        role_type = st.radio("Login as:", ["Analyst", "Devs"])
-        
-        # Login form
-        username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
-        password = st.text_input("Password", type="password", key="login_password")
-        
-        if st.button("Login", key="login_button", use_container_width=True):
-            if verify_user(username, password, role_type):
-                st.session_state.logged_in = True
-                st.session_state.username = username
-                st.session_state.role = role_type
-                st.success("Login berhasil!")
-                st.rerun()
-            else:
-                st.error("Username atau password salah")
+    # Login form
+    username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
+    password = st.text_input("Password", type="password", key="login_password")
     
-    # Information Column - Right Side
-    with info_col:
-        st.markdown("### About Lendora AI")
-        st.markdown("""
-        
-        Welcome to the Lendora AI platform, designed to provide intelligent risk assessment and financial analytics.
-        
-        **Key Features:**
-        - Machine Learning-based risk prediction model
-        - RBAC for enhanced cybersecurity
-        - DataLense OCR by Lendora AI
-        - Auto-generated real-time reports
-        - LoraAI – Lendora’s exclusive AI technology
-        - Interactive dashboard for data visualization
-        - User input logging for deeper analysis (devs)
-        - API Access for seamless integration (devs)
-
+    if st.button("Login", key="login_button"):
+        if verify_user(username, password, role_type):
+            st.session_state.logged_in = True
+            st.session_state.username = username
+            st.session_state.role = role_type
+            st.success("Login berhasil!")
+            st.rerun()
+        else:
+            st.error("Username atau password salah")
 
 # Initialize session
 init_session()
@@ -207,6 +184,8 @@ if st.session_state.logged_in:
                     - Status Pernikahan: {risk_data.get('marital_status', 'Tidak tersedia')}
                     - Profesi: {risk_data.get('profession', 'Tidak tersedia')}
                     - Pengalaman: {risk_data.get('experience', 'Tidak tersedia')} tahun
+                    - Stabilitas Pekerjaan: {risk_data.get('job_stability', 0.0):.4f}
+                    - Stabilitas Rumah: {risk_data.get('home_stability', 0.0):.4f}
                     - Skor risiko: {risk_data.get('risk_score', 0.0):.2%}
                     - Prediksi: {"Risiko Tinggi" if risk_data.get('risk_prediction', 0) == 1 else "Risiko Rendah"}
                     - Faktor risiko utama: {risk_factors_str}
@@ -737,7 +716,7 @@ if st.session_state.logged_in:
                 2. You have the required packages installed (gdown)
                 3. Your internet connection is stable
                 
-                If you are running this locally, try installing gdown: `pip install gdown`
+                If you're running this locally, try installing gdown: `pip install gdown`
                 """)
                 
             # APP TABS Create tabs for better organization
@@ -1058,15 +1037,15 @@ if st.session_state.logged_in:
                     
                     1. **Stabilitas Pekerjaan** mengindikasikan konsistensi pendapatan dan kemungkinan lebih rendah untuk mengalami periode tanpa pendapatan.
                            
-                    *Lama kerja / (Usia - 18)*
+                    *Lama kerja ÷ (Usia - 18)*
                     
                     2. **Stabilitas Tempat Tinggal** menunjukkan komitmen jangka panjang dan tanggung jawab finansial yang konsisten di satu lokasi.
                     
-                    *Lama tinggal / Usia*
+                    *Lama tinggal ÷ Usia*
                     
                     3. **Stabilitas Finansial** mewakili kapasitas peminjam untuk membayar kembali pinjaman dan menangani kejadian finansial yang tidak terduga.
                     
-                    *Pendapatan / 2*
+                    *Pendapatan ÷ 2*
                     
                     Kombinasi dari ketiga metrik ini memberikan gambaran yang lebih lengkap tentang profil risiko peminjam.
                     """)
@@ -1492,18 +1471,18 @@ if st.session_state.logged_in:
         
                     # DATALENSE OCR RECOMENDATION
                     st.info("""
-                    Gunakan tab DataLens OCR untuk scan form otomatis.
+                    🔎 Gunakan tab DataLens OCR untuk scan form otomatis.
                     """)
                     
                     # CHATBOT RECOMMENDATION Chatbot recommendation
                     st.info("""
-                    Gunakan Lora AI asisten virtual anda, di tab Lora AI untuk informasi lebih lanjut tentang hasil analisis ini 
+                    🤖 Gunakan Lora AI asisten virtual anda, di tab Lora AI untuk informasi lebih lanjut tentang hasil analisis ini 
                     dan rekomendasi khusus untuk kasus Anda.
                     """)
         
                     # DASHBOARD RECOMENDATION
                     st.info("""
-                    Gunakan tab Dashboard di Lendora untuk mendapatkan informasi tentang riwayat kondisi pasar kredit.
+                    📊 Gunakan tab Dashboard di Lendora untuk mendapatkan informasi tentang riwayat kondisi pasar kredit.
                     """)
                 
                 except Exception as e:
@@ -1517,7 +1496,7 @@ if st.session_state.logged_in:
         # Copyright Footer
         st.markdown("""
                 <div style="text-align: center; color: #666; margin-top: 10px;">
-                    Copyright (C) 2025 Iqbal Lintang. All Rights Reserved.
+                    Copyright © 2025 Iqbal Lintang. All Rights Reserved.
                 </div>
             """, unsafe_allow_html=True)
         st.markdown(
@@ -1692,7 +1671,7 @@ if st.session_state.logged_in:
         # Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL
         st.markdown("""
                 <div style="text-align: center; color: #666; margin-top: 10px;">
-                    Copyright (C) 2025 Iqbal Lintang. All Rights Reserved.
+                    Copyright © 2025 Iqbal Lintang. All Rights Reserved.
                 </div>
             """, unsafe_allow_html=True)
         st.markdown(
@@ -1722,4 +1701,29 @@ else:
         # FOOTER FOOTER
         # FOOTER FOOTER
         
-
+    st.markdown("---")
+        # Copyright Footer
+    st.markdown("""
+            <div style="text-align: center; color: #666; margin-top: 10px;">
+                Copyright © 2025 Iqbal Lintang. All Rights Reserved.
+            </div>
+        """, unsafe_allow_html=True)
+    st.markdown(
+            """
+            <div style="text-align: center; margin-top: 10px;">
+            <a href="https://www.linkedin.com/in/iqbal-lintang-148669124" target="_blank" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/174/174857.png" width="40">
+            </a>
+            <a href="https://github.com/Iqbal-Lintang" target="_blank" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/25/25231.png" width="40">
+            </a>
+            <a href="mailto:heylintang@gmail.com" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/281/281769.png" width="40">
+            </a>
+            <a href="https://wa.me/62816928622" target="_blank" style="margin: 0 10px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="40">
+            </a>
+            </div>
+            """, 
+            unsafe_allow_html=True
+        )
