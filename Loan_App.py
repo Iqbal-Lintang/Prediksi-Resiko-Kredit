@@ -1224,7 +1224,7 @@ if st.session_state.logged_in:
                     save_success = save_to_google_sheets(sheet_data)
                     
                     if save_success:
-                        st.success("Data berhasil disimpan ke Google Sheets")
+                        st.toast("Input berhasil disimpan ke Data Base")
                     
                     # Continue with your existing code to display results...
 
