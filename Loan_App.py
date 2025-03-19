@@ -24,6 +24,8 @@ import base64
 from datetime import datetime
 import hashlib
 import sqlite3
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 # Set up page configuration
 st.set_page_config(
@@ -633,6 +635,42 @@ if st.session_state.logged_in:
                 )
             
             return corrected_data
+
+        # GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION GOOGLE SHEETS CONNECTION
+        def setup_google_sheets():
+            # Define the scope
+            scope = ['https://spreadsheets.google.com/feeds',
+                     'https://www.googleapis.com/auth/drive']
+            
+            # Add your credentials file path
+            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+            client = gspread.authorize(creds)
+            
+            # Open the spreadsheet and sheet
+            sheet = client.open('LendoraAI_Predictions').sheet1
+            
+            return sheet
+        
+        # Function to save prediction data to Google Sheets
+        def save_to_google_sheets(data):
+            try:
+                sheet = setup_google_sheets()
+                
+                # Check if the sheet is empty (no headers)
+                if len(sheet.get_all_values()) == 0:
+                    headers = list(data.keys())
+                    sheet.append_row(headers)
+                
+                # Prepare row data
+                row_data = list(data.values())
+                
+                # Append the new row
+                sheet.append_row(row_data)
+                
+                return True
+            except Exception as e:
+                st.error(f"Error saving to Google Sheets: {e}")
+                return False
         
             
         # MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START MAIN APP EXECUTE START 
@@ -1143,6 +1181,38 @@ if st.session_state.logged_in:
                         'home_stability': home_stability,
                         'job_stability': job_stability
                     }
+
+                    # After prediction is complete, save the data to Google Sheets # After prediction is complete, save the data to Google Sheets # After prediction is complete, save the data to Google Sheets # After prediction is complete, save the data to Google Sheets
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    
+                    # Create a dictionary with all the data to save
+                    sheet_data = {
+                        'Timestamp': timestamp,
+                        'Age': age,
+                        'Income': income,
+                        'Income_Segment': income_segment,
+                        'Marital_Status': marital_status,
+                        'Profession': profession,
+                        'Experience': experience,
+                        'Current_Job_Years': current_job_yrs,
+                        'House_Ownership': house_ownership,
+                        'Car_Ownership': car_ownership,
+                        'State': state,
+                        'City': city,
+                        'Current_House_Years': current_house_yrs,
+                        'Risk_Score': adjusted_risk_probability,
+                        'Risk_Prediction': "HIGH RISK" if risk_prediction == 1 else "LOW RISK",
+                        'Risk_Factors': ", ".join(risk_factors) if risk_factors else "None"
+                    }
+                    
+                    # Save to Google Sheets
+                    save_success = save_to_google_sheets(sheet_data)
+                    
+                    if save_success:
+                        st.success("Data berhasil disimpan ke Google Sheets")
+                    
+                    # Continue with your existing code to display results...
+
                     
                     # RISK EXPLANATION Risk explanation message
                     if risk_prediction == 1:
