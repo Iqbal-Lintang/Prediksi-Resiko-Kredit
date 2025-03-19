@@ -62,7 +62,7 @@ def init_session():
 def show_login_page():
     # Page header with logo
     st.image(logo_url, width=100)
-    st.title("Lendora AI – AI Powered Risk Intelligence")
+    st.title("Lendora – AI Powered Risk Intelligence")
     
     # Create two columns for login layout
     login_col, info_col = st.columns([1, 1])
