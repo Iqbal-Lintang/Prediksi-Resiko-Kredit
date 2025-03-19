@@ -26,6 +26,7 @@ import hashlib
 import sqlite3
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from io import StringIO
 
 # Set up page configuration
 st.set_page_config(
@@ -1540,10 +1541,27 @@ if st.session_state.logged_in:
                                 """)
             
     elif st.session_state.role == "Devs":
-        # Developers
-        st.header("Developer's Portal")
-        dev_tabs = st.tabs(["Version History", "API Access"])
+
+        ##DEVELOPER PORTAL
         
+        def connect_to_gsheets():
+            # Create a connection object using the secrets
+            credentials = Credentials.from_service_account_info(
+                st.secrets["gcp_service_account"],
+                scopes=[
+                    "https://www.googleapis.com/auth/spreadsheets",
+                    "https://www.googleapis.com/auth/drive",
+                ],
+            )
+            
+            # Connect to Google Sheets
+            client = gspread.authorize(credentials)
+            return client
+        
+        # Create tabs for developer portal
+        dev_tabs = st.tabs(["Version History", "API Access", "User Input Log"])
+        
+        # VERSION HISTORY TAB
         with dev_tabs[0]:
             st.subheader("Version History")
             st.markdown("""
@@ -1585,10 +1603,12 @@ if st.session_state.logged_in:
             - Mengatur hak akses khusus bagi **analyst dan developer**.  
             - Memastikan bahwa hanya pengguna yang berwenang dapat **mengakses, mengedit, atau menghapus data sensitif**.  
             """)
-
         
+        # API ACCESS TAB - GOOGLE SHEETS VIEWER
         with dev_tabs[1]:
             st.subheader("API Access")
+            
+            # API code demo
             st.code("""
         # API Endpoint (Dummy)
         @app.route('/api/v1/risk-score', methods=['POST'])
@@ -1598,11 +1618,85 @@ if st.session_state.logged_in:
             return jsonify({'risk_score': score})
             """, language="python")
             st.write("API Key: `dev_98f7a6c5d4b3e2a1`")
-        st.write("")
-        st.write("")
+            
+            # Add Google Sheets viewer in this tab
+            st.write("---")
+            st.subheader("Google Sheets Data Viewer")
+            
+            try:
+                # Connect to Google Sheets
+                client = connect_to_gsheets()
+                
+                # Input for sheet URL
+                sheet_url = st.text_input("Enter your Google Sheet URL or ID")
+                
+                if sheet_url:
+                    # Extract sheet ID from URL if full URL is provided
+                    if "spreadsheets/d/" in sheet_url:
+                        sheet_id = sheet_url.split("spreadsheets/d/")[1].split("/")[0]
+                    else:
+                        sheet_id = sheet_url
+                    
+                    try:
+                        # Open the sheet
+                        sheet = client.open_by_key(sheet_id)
+                        
+                        # Get all worksheets
+                        worksheets = sheet.worksheets()
+                        
+                        # Select worksheet
+                        worksheet_names = [ws.title for ws in worksheets]
+                        selected_worksheet = st.selectbox("Select worksheet", worksheet_names)
+                        
+                        # Get data from selected worksheet
+                        worksheet = sheet.worksheet(selected_worksheet)
+                        data = worksheet.get_all_records()
+                        
+                        # Convert to DataFrame
+                        df = pd.DataFrame(data)
+                        
+                        # Show data
+                        st.write("### Data Preview")
+                        st.dataframe(df)
+                        
+                        # Download button for CSV
+                        csv = df.to_csv(index=False)
+                        st.download_button(
+                            label="Download as CSV",
+                            data=csv,
+                            file_name=f"{selected_worksheet}.csv",
+                            mime="text/csv",
+                        )
+                        
+                    except Exception as e:
+                        st.error(f"Error accessing sheet: {str(e)}")
+                        st.write("Please check your sheet URL and make sure it's shared with the service account.")
+                else:
+                    st.info("Please enter your Google Sheet URL to continue.")
+                    
+            except Exception as e:
+                st.error(f"Error connecting to Google Sheets API: {str(e)}")
+                st.write("""
+                Make sure you have set up your secrets.toml file correctly. 
+                It should contain your Google service account credentials under the 'gcp_service_account' key.
+                """)
+        
+        # USER INPUT LOG TAB
+        with dev_tabs[2]:
+            st.subheader("User Input Log")
+            st.code("""
+        # API Endpoint (Dummy)
+        @app.route('/api/v1/risk-score', methods=['POST'])
+        def calculate_risk_score():
+            data = request.json
+            # Proses data
+            return jsonify({'risk_score': score})
+            """, language="python")
+            st.write("API Key: `dev_98f7a6c5d4b3e2a1`")
             
         st.markdown("---")
-        # Copyright Footer
+        
+        # Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL Copyright Footer DEV PORTAL
         st.markdown("""
                 <div style="text-align: center; color: #666; margin-top: 10px;">
                     Copyright © 2025 Iqbal Lintang. All Rights Reserved.
