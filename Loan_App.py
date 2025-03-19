@@ -60,29 +60,55 @@ def init_session():
         st.session_state.role = None
 
 def show_login_page():
-    # Logo and title for login page
-    col1, col2 = st.columns([1, 5])
-    with col1:
-        st.image("https://i.imgur.com/8RKgXU5.png", width=100)
-    with col2:
-        st.title("Lendora AI – Login")
+    # Page header with logo
+    st.image(logo_url, width=100)
+    st.title("Lendora AI")
     
-    # Role selection
-    role_type = st.radio("Login as:", ["Analyst", "Devs"])
+    # Create two columns for login layout
+    login_col, info_col = st.columns([1, 1])
     
-    # Login form
-    username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
-    password = st.text_input("Password", type="password", key="login_password")
+    # Login Column - Left Side
+    with login_col:
+        st.markdown("### Login")
+        st.markdown("Please enter your credentials to access the platform")
+        
+        # Role selection
+        role_type = st.radio("Login as:", ["Analyst", "Devs"])
+        
+        # Login form
+        username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
+        password = st.text_input("Password", type="password", key="login_password")
+        
+        if st.button("Login", key="login_button", use_container_width=True):
+            if verify_user(username, password, role_type):
+                st.session_state.logged_in = True
+                st.session_state.username = username
+                st.session_state.role = role_type
+                st.success("Login berhasil!")
+                st.rerun()
+            else:
+                st.error("Username atau password salah")
     
-    if st.button("Login", key="login_button"):
-        if verify_user(username, password, role_type):
-            st.session_state.logged_in = True
-            st.session_state.username = username
-            st.session_state.role = role_type
-            st.success("Login berhasil!")
-            st.rerun()
-        else:
-            st.error("Username atau password salah")
+    # Information Column - Right Side
+    with info_col:
+        st.markdown("### About Lendora AI")
+        st.markdown("""
+        **Lendora AI – AI Powered Risk Intelligence**
+        
+        Welcome to the Lendora AI platform, designed to provide intelligent risk assessment and financial analytics.
+        
+        **Key Features:**
+        - Advanced risk assessment analytics
+        - AI-powered decision support
+        - Comprehensive financial reporting
+        - Secure data processing and analysis
+        
+        For assistance, please contact support@lendora.ai
+        """)
+        
+        # Optional: Add version info or other details
+        st.markdown("---")
+        st.markdown("© 2025 Lendora AI. All rights reserved.")
 
 # Initialize session
 init_session()
