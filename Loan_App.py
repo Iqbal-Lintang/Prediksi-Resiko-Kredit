@@ -62,7 +62,7 @@ def init_session():
 def show_login_page():
     # Page header with logo
     st.image(logo_url, width=100)
-    st.title("Lendora AI")
+    st.title("Lendora – AI Powered Risk Intelligence")
     
     # Create two columns for login layout
     login_col, info_col = st.columns([1, 1])
@@ -73,7 +73,8 @@ def show_login_page():
         st.markdown("Please enter your credentials to access the platform")
         
         # Role selection
-        role_type = st.radio("Login as:", ["Analyst", "Devs"])
+        is_dev = st.toggle("Developer Access", value=False)
+        role_type = "Devs" if is_dev else "Analyst"
         
         # Login form
         username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
@@ -93,7 +94,6 @@ def show_login_page():
     with info_col:
         st.markdown("### About Lendora AI")
         st.markdown("""
-        **Lendora AI – AI Powered Risk Intelligence**
         
         Welcome to the Lendora AI platform, designed to provide intelligent risk assessment and financial analytics.
         
@@ -107,11 +107,6 @@ def show_login_page():
         - User input logging for deeper analysis (devs)
         - API Access for seamless integration (devs)
 
-        
-        For assistance, please contact heylintang@gmail.com
-        """)
-        st.markdown("---")
-        st.markdown("Copyright © 2025 Iqbal Lintang. All Rights Reserved.")
 
 # Initialize session
 init_session()
