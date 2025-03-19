@@ -1609,10 +1609,6 @@ if st.session_state.logged_in:
         with dev_tabs[1]:
             st.subheader("User Input Log")
             
-            # Add Google Sheets viewer in this tab
-            st.write("---")
-            st.subheader("Google Sheets Data Viewer")
-            
             try:
                 # Connect to Google Sheets
                 client = connect_to_gsheets()
