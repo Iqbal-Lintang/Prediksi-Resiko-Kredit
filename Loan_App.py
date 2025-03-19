@@ -64,15 +64,7 @@ def show_login_page():
         st.title("Lendora AI – Login")
     
     # Role selection
-    role_selection = st.columns(2)
-    with role_selection[0]:
-        analyst_selected = st.button("Analyst", use_container_width=True, 
-                                    type="primary" if role_type == "Analyst" else "secondary")
-    with role_selection[1]:
-        dev_selected = st.button("Devs", use_container_width=True,
-                                type="primary" if role_type == "Devs" else "secondary")
-    
-    role_type = "Analyst" if analyst_selected else "Devs" if dev_selected else role_type
+    rrole_type = st.radio("Login as:", ["Analyst", "Devs"])
     
     # Login form
     username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
