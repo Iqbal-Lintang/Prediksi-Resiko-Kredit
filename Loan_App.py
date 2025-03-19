@@ -26,6 +26,7 @@ import hashlib
 import sqlite3
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+from google.oauth2.service_account import Credentials
 from io import StringIO
 
 # Set up page configuration
