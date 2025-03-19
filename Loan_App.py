@@ -737,7 +737,7 @@ if st.session_state.logged_in:
                 2. You have the required packages installed (gdown)
                 3. Your internet connection is stable
                 
-                If you're running this locally, try installing gdown: `pip install gdown`
+                If you are running this locally, try installing gdown: `pip install gdown`
                 """)
                 
             # APP TABS Create tabs for better organization
