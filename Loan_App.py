@@ -70,10 +70,9 @@ def show_login_page():
     # Login Column - Left Side
     with login_col:
         st.markdown("### Login")
-        st.markdown("Please enter your credentials to access the platform")
         
         # Role selection
-        role_type = st.radio("Login as:", ["Analyst", "Devs"])
+        role_type = st.radio(["Analyst", "Devs"])
         
         # Login form
         username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
