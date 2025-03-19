@@ -14,3 +14,4 @@ pytesseract
 fpdf2
 gspread
 google-auth
+oauth2client
