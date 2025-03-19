@@ -968,7 +968,7 @@ if st.session_state.logged_in:
             with tab3:
                 # If no prediction has been made yet, show a simple chat interface
                 if "risk_data" not in st.session_state:
-                    st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang pinjaman. Setelah melakukan prediksi, asisten akan dapat menjawab pertanyaan spesifik tentang aplikasi Anda.")
+                    st.info("Gunakan asisten ini untuk menjawab pertanyaan umum tentang aplikasi calon debitur. Lora AI dapat menjawab pertanyaan spesifik tentang calon debitur anda.")
                     chatbot_with_context(key_suffix="tab4")
                 else:
                     # If prediction exists, pass the risk data to the chatbot
