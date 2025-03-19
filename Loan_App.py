@@ -98,12 +98,14 @@ def show_login_page():
         Welcome to the Lendora AI platform, designed to provide intelligent risk assessment and financial analytics.
         
         **Key Features:**
-        - Advanced risk assessment analytics
-        - AI-powered decision support
-        - Comprehensive financial reporting
-        - Secure data processing and analysis
-        
-        For assistance, please contact support@lendora.ai
+        - Machine Learning-based risk prediction model
+        - RBAC for enhanced cybersecurity
+        - DataLense OCR by Lendora AI
+        - Auto-generated real-time reports
+        - LoraAI – Lendora’s exclusive AI technology
+        - Interactive dashboard for data visualization
+        - User input logging for deeper analysis
+        - API Access for seamless integration
         """)
 
 # Initialize session
