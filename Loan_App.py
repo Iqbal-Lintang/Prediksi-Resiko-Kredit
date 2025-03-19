@@ -1492,18 +1492,18 @@ if st.session_state.logged_in:
         
                     # DATALENSE OCR RECOMENDATION
                     st.info("""
-                    🔎 Gunakan tab DataLens OCR untuk scan form otomatis.
+                    Gunakan tab DataLens OCR untuk scan form otomatis.
                     """)
                     
                     # CHATBOT RECOMMENDATION Chatbot recommendation
                     st.info("""
-                    🤖 Gunakan Lora AI asisten virtual anda, di tab Lora AI untuk informasi lebih lanjut tentang hasil analisis ini 
+                    Gunakan Lora AI asisten virtual anda, di tab Lora AI untuk informasi lebih lanjut tentang hasil analisis ini 
                     dan rekomendasi khusus untuk kasus Anda.
                     """)
         
                     # DASHBOARD RECOMENDATION
                     st.info("""
-                    📊 Gunakan tab Dashboard di Lendora untuk mendapatkan informasi tentang riwayat kondisi pasar kredit.
+                    Gunakan tab Dashboard di Lendora untuk mendapatkan informasi tentang riwayat kondisi pasar kredit.
                     """)
                 
                 except Exception as e:
