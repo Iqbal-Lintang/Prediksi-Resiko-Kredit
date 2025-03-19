@@ -1617,7 +1617,7 @@ if st.session_state.logged_in:
                 client = connect_to_gsheets()
                 
                 # Input for sheet URL
-                sheet_url = st.text_input("Enter your Google Sheet URL or ID")
+                sheet_url = st.text_input("1tIrhS2U2AF4wApA8l0E9kPV-ekaG0xKYfHvnxzgeDeU")
                 
                 if sheet_url:
                     # Extract sheet ID from URL if full URL is provided
