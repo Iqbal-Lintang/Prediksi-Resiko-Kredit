@@ -1617,53 +1617,39 @@ if st.session_state.logged_in:
                 # Connect to Google Sheets
                 client = connect_to_gsheets()
                 
-                # Input for sheet URL
-                sheet_url = st.text_input("1tIrhS2U2AF4wApA8l0E9kPV-ekaG0xKYfHvnxzgeDeU")
+                # Set the specific sheet ID directly
+                sheet_id = "1tIrhS2U2AF4wApA8l0E9kPV-ekaG0xKYfHvnxzgeDeU"
                 
-                if sheet_url:
-                    # Extract sheet ID from URL if full URL is provided
-                    if "spreadsheets/d/" in sheet_url:
-                        sheet_id = sheet_url.split("spreadsheets/d/")[1].split("/")[0]
-                    else:
-                        sheet_id = sheet_url
+                try:
+                    # Open the sheet
+                    sheet = client.open_by_key(sheet_id)
                     
-                    try:
-                        # Open the sheet
-                        sheet = client.open_by_key(sheet_id)
-                        
-                        # Get all worksheets
-                        worksheets = sheet.worksheets()
-                        
-                        # Select worksheet
-                        worksheet_names = [ws.title for ws in worksheets]
-                        selected_worksheet = st.selectbox("Select worksheet", worksheet_names)
-                        
-                        # Get data from selected worksheet
-                        worksheet = sheet.worksheet(selected_worksheet)
-                        data = worksheet.get_all_records()
-                        
-                        # Convert to DataFrame
-                        df = pd.DataFrame(data)
-                        
-                        # Show data
-                        st.write("### Data Preview")
-                        st.dataframe(df)
-                        
-                        # Download button for CSV
-                        csv = df.to_csv(index=False)
-                        st.download_button(
-                            label="Download as CSV",
-                            data=csv,
-                            file_name=f"{selected_worksheet}.csv",
-                            mime="text/csv",
-                        )
-                        
-                    except Exception as e:
-                        st.error(f"Error accessing sheet: {str(e)}")
-                        st.write("Please check your sheet URL and make sure it's shared with the service account.")
-                else:
-                    st.info("Please enter your Google Sheet URL to continue.")
+                    # Get the first worksheet (default) or you can specify by index
+                    worksheet = sheet.get_worksheet(0)  # Gets the first worksheet
                     
+                    # Get data from worksheet
+                    data = worksheet.get_all_records()
+                    
+                    # Convert to DataFrame
+                    df = pd.DataFrame(data)
+                    
+                    # Show data
+                    st.write("### User Input Data")
+                    st.dataframe(df)
+                    
+                    # Download button for CSV
+                    csv = df.to_csv(index=False)
+                    st.download_button(
+                        label="Download as CSV",
+                        data=csv,
+                        file_name="user_input_data.csv",
+                        mime="text/csv",
+                    )
+                    
+                except Exception as e:
+                    st.error(f"Error accessing sheet: {str(e)}")
+                    st.write("Please check that the service account has access to this sheet.")
+                        
             except Exception as e:
                 st.error(f"Error connecting to Google Sheets API: {str(e)}")
                 st.write("""
