@@ -1744,7 +1744,4 @@ else:
             <a href="https://wa.me/62816928622" target="_blank" style="margin: 0 10px;">
                 <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" width="40">
             </a>
-            </div>
-            """, 
-            unsafe_allow_html=True
-        )
+            </div> """, unsafe_allow_html=True)
