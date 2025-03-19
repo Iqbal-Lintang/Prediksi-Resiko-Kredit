@@ -1205,6 +1205,7 @@ if st.session_state.logged_in:
                     # Create a dictionary with all the data to save
                     sheet_data = {
                         'Timestamp': timestamp,
+                        'Username': st.session_state.username,
                         'Age': age,
                         'Income': income,
                         'Income_Segment': income_segment,
