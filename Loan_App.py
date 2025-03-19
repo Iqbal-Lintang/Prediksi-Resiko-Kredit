@@ -73,8 +73,7 @@ def show_login_page():
         st.markdown("Please enter your credentials to access the platform")
         
         # Role selection
-        is_dev = st.toggle("Developer Access", value=False)
-        role_type = "Devs" if is_dev else "Analyst"
+        role_type = st.radio("Login as:", ["Analyst", "Devs"])
         
         # Login form
         username = st.text_input(f"{role_type.capitalize()} Username", key="login_username")
