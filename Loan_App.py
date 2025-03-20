@@ -60,6 +60,30 @@ def init_session():
         st.session_state.role = None
 
 def show_login_page():
+    # Background image using CSS
+    background_image_url = "https://i.imgur.com/ADYPYKX.png"  # Replace with your Imgur image URL
+    
+    # Apply background image with CSS
+    st.markdown(
+        f"""
+        <style>
+        .stApp {{
+            background-image: url("{background_image_url}");
+            background-size: cover;
+            background-position: center;
+        }}
+        
+        /* Add background color with opacity for better text readability */
+        .css-1d391kg, .css-1wrcr25, .block-container {{
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 2rem;
+            border-radius: 10px;
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    
     # Page header with logo
     st.image(logo_url, width=100)
     st.title("Lendora – AI Powered Risk Intelligence")
