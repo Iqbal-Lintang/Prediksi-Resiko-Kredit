@@ -37,7 +37,7 @@ st.set_page_config(
 )
 
 # LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON# LOGO FAVICON LOGO FAVICON LOGO FAVICON 
-logo_url = "https://i.imgur.com/8RKgXU5.png"
+logo_url = "https://i.imgur.com/2HcGaw5.png"
 
 # Authentication functions
 def hash_password(password):
