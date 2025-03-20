@@ -86,10 +86,20 @@ def init_session():
 def show_login_page():
     
     # Page header with logo
-    st.image(logo_url, width=100)
-    st.title("Lendora – AI Powered Risk Intelligence")
-    st.write("")
-    st.write("")
+    #st.image(logo_url, width=100)
+    #st.title("Lendora – AI Powered Risk Intelligence")
+    #st.write("")
+    #st.write("")
+
+    # Custom HTML header with logo and title on the same row
+    st.markdown(f"""
+    <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+        <img src="{logo_url}" width="100" style="margin-right: 20px;">
+        <h1 style="margin: 0; padding: 0;">Lendora – AI Powered Risk Intelligence</h1>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.write("")  # Add space after the header
     
     # Create two columns for login layout
     login_col, info_col = st.columns([1, 1])
