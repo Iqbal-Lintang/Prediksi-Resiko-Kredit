@@ -144,6 +144,7 @@ if st.session_state.logged_in:
     with col2:
         st.title("Lendora – AI Powered Risk Intelligence")
     with col3:
+        st.write("")
         # Modern user info area with role indication
         st.markdown(f"""
         <div style='background-color: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 8px;'>
