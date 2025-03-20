@@ -36,7 +36,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON LOGO FAVICON# LOGO FAVICON LOGO FAVICON LOGO FAVICON 
+# LOGO
 logo_url = "https://i.imgur.com/2HcGaw5.png"
 
 # Authentication functions
@@ -140,7 +140,7 @@ if st.session_state.logged_in:
     # LOGO, TITLE, AND USER INFO
     col1, col2, col3 = st.columns([1, 4, 1])
     with col1:
-        st.image("https://i.imgur.com/8RKgXU5.png", width=100)
+        st.image("https://i.imgur.com/2HcGaw5.png", width=100)
     with col2:
         st.title("Lendora – AI Powered Risk Intelligence")
     with col3:
