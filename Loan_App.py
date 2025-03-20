@@ -144,10 +144,25 @@ if st.session_state.logged_in:
     with col2:
         st.title("Lendora – AI Powered Risk Intelligence")
     with col3:
-        # Small user info area with role indication
-        st.text(f"User: {st.session_state.username}")
-        st.text(f"Role: {st.session_state.role}")
-        if st.button("Logout", key="logout_button", help="Logout from application"):
+        # Modern user info area with role indication
+        st.markdown(f"""
+        <div style='background-color: #f8f9fa; padding: 10px; border-radius: 8px; margin-bottom: 8px;'>
+            <div style='display: flex; align-items: center; margin-bottom: 5px;'>
+                <div style='background-color: #4e73df; color: white; border-radius: 50%; width: 28px; height: 28px; 
+                          display: flex; align-items: center; justify-content: center; margin-right: 8px; font-weight: bold;'>
+                    {st.session_state.username[0].upper()}
+                </div>
+                <div style='font-weight: 600; color: #333;'>{st.session_state.username}</div>
+            </div>
+            <div style='font-size: 0.8rem; background-color: #e2e6ea; color: #495057; padding: 3px 8px; 
+                      border-radius: 12px; display: inline-block; margin-bottom: 8px;'>
+                {st.session_state.role}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Styled logout button
+        if st.button("Logout", key="logout_button", help="Logout from application", use_container_width=True):
             st.session_state.logged_in = False
             st.session_state.username = None
             st.session_state.role = None
