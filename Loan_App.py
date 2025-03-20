@@ -59,8 +59,7 @@ def init_session():
     if 'role' not in st.session_state:
         st.session_state.role = None
 
-def show_login_page():
-    # Background image using CSS
+# Background image using CSS
     background_image_url = "https://i.imgur.com/ADYPYKX.png"  # Replace with your Imgur image URL
     
     # Apply background image with CSS
@@ -83,6 +82,8 @@ def show_login_page():
         """,
         unsafe_allow_html=True
     )
+
+def show_login_page():
     
     # Page header with logo
     st.image(logo_url, width=100)
