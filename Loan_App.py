@@ -32,7 +32,7 @@ from io import StringIO
 # Set up page configuration
 st.set_page_config(
     page_title="Lendora AI",
-    page_icon="https://i.imgur.com/8RKgXU5.png",
+    page_icon="https://i.imgur.com/2HcGaw5.png",
     layout="wide"
 )
 
