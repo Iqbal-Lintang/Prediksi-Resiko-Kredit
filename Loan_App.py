@@ -1633,13 +1633,12 @@ if st.session_state.logged_in:
             # Connect to Google Sheets
             client = gspread.authorize(credentials)
             return client
-        
+        st.subheader("Developer Portal")
         # Create tabs for developer portal
         dev_tabs = st.tabs(["Version History", "User Input Log", "Dev's Dashboard"])
         
         # VERSION HISTORY TAB
         with dev_tabs[0]:
-            st.subheader("Version History")
             st.markdown("""
             ## Lendora AI Version History
         
