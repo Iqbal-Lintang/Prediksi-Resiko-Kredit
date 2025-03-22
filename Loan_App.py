@@ -1741,7 +1741,6 @@ if st.session_state.logged_in:
         
         # Dev's Dashboard
         with dev_tabs[2]:
-            st.info("Gunakan dashboard ini untuk menganalisis input user pada apps.")
             st.subheader("Dev's Dashboard")
                 
             # Replace this with your Looker embed URL
