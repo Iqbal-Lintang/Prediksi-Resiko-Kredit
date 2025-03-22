@@ -1742,7 +1742,7 @@ if st.session_state.logged_in:
             looker_embed_url = "https://lookerstudio.google.com/embed/reporting/466b7811-3bbe-4e30-929b-92515728de87/page/amSEF"
             
             # Display the embedded Looker dashboard
-            st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
+            st.components.v1.iframe(looker_embed_url, height=1000, scrolling=True)
             
         st.markdown("---")
         
