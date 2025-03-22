@@ -1677,7 +1677,13 @@ if st.session_state.logged_in:
             *18 Maret 2025*
             - Menerapkan **Role-Based Access Control (RBAC)** untuk meningkatkan keamanan sistem.  
             - Mengatur hak akses khusus bagi **analyst dan developer**.  
-            - Memastikan bahwa hanya pengguna yang berwenang dapat **mengakses, mengedit, atau menghapus data sensitif**.  
+            - Memastikan bahwa hanya pengguna yang berwenang dapat **mengakses, mengedit, atau menghapus data sensitif**. 
+            
+            ### **v7.0 - Pengembangan User Input Log untuk Devs**  
+            *19 Maret 2025*
+            - Menerapkan fitur User Input Log agar developer dapat mengakses riwayat input pengguna.
+            - Menambahkan opsi untuk mengunduh database user input log dalam format yang dapat diolah lebih lanjut (CSV) 
+            - Mengatur hak akses khusus bagi developer untuk memastikan bahwa hanya pengguna yang berwenang dapat mengakses data sensitif.  
             """)
         
         # API ACCESS TAB - GOOGLE SHEETS VIEWER
