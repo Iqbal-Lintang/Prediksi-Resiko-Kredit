@@ -1736,13 +1736,13 @@ if st.session_state.logged_in:
         # Dev's Dashboard
         with dev_tabs[2]:
             st.info("Gunakan dashboard ini untuk menganalisis input user pada apps.")
-                st.subheader("Dev's Dashboard")
+            st.subheader("Dev's Dashboard")
                 
-                # Replace this with your Looker embed URL
-                looker_embed_url = "https://lookerstudio.google.com/embed/reporting"
+            # Replace this with your Looker embed URL
+            looker_embed_url = "https://lookerstudio.google.com/embed/reporting"
             
-                # Display the embedded Looker dashboard
-                st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
+            # Display the embedded Looker dashboard
+            st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
             
         st.markdown("---")
         
