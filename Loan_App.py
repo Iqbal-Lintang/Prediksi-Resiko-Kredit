@@ -1639,8 +1639,8 @@ if st.session_state.logged_in:
         
         # VERSION HISTORY TAB
         with dev_tabs[0]:
-            st.markdown("""
             st.subheader("Lendora AI Version History")
+            st.markdown("""
         
             ### **v1.0 - Model Prediksi Risiko**  
             *11 Maret 2025*
