@@ -1684,6 +1684,13 @@ if st.session_state.logged_in:
             - Menerapkan fitur User Input Log agar developer dapat mengakses riwayat input pengguna.
             - Menambahkan opsi untuk mengunduh database user input log dalam format yang dapat diolah lebih lanjut (CSV) 
             - Mengatur hak akses khusus bagi developer untuk memastikan bahwa hanya pengguna yang berwenang dapat mengakses data sensitif.  
+
+            ### **v8.0 - Pengembangan Dev's Dashboard**  
+            *22 Maret 2025*
+            - Dev's Dashboard mempermudah developer dalam melihat tren input pengguna secara visual.
+            - Analisis data terintegrasi membantu dalam memahami pola dan anomali input pengguna.
+            - Snapshot user data memungkinkan pemantauan dan pengambilan keputusan secara real-time.
+            
             """)
         
         # API ACCESS TAB - GOOGLE SHEETS VIEWER
