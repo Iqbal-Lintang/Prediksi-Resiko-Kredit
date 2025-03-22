@@ -1733,18 +1733,16 @@ if st.session_state.logged_in:
                 It should contain your Google service account credentials under the 'gcp_service_account' key.
                 """)
         
-        # USER INPUT LOG TAB
+        # Dev's Dashboard
         with dev_tabs[2]:
-            st.subheader("User Input Log")
-            st.code("""
-        # API Endpoint (Dummy)
-        @app.route('/api/v1/risk-score', methods=['POST'])
-        def calculate_risk_score():
-            data = request.json
-            # Proses data
-            return jsonify({'risk_score': score})
-            """, language="python")
-            st.write("API Key: `dev_98f7a6c5d4b3e2a1`")
+            st.info("Gunakan dashboard ini untuk menganalisis input user pada apps.")
+                st.subheader("Dev's Dashboard")
+                
+                # Replace this with your Looker embed URL
+                looker_embed_url = "https://lookerstudio.google.com/embed/reporting"
+            
+                # Display the embedded Looker dashboard
+                st.components.v1.iframe(looker_embed_url, height=900, scrolling=True)
             
         st.markdown("---")
         
