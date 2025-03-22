@@ -1635,7 +1635,7 @@ if st.session_state.logged_in:
             return client
         
         # Create tabs for developer portal
-        dev_tabs = st.tabs(["Version History", "User Input Log", "API Access"])
+        dev_tabs = st.tabs(["Version History", "User Input Log", "Dev's Dashboard"])
         
         # VERSION HISTORY TAB
         with dev_tabs[0]:
