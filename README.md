@@ -1,37 +1,41 @@
-📌 Prediksi-Resiko-Kredit
-A machine learning-based credit risk prediction application that helps assess loan eligibility using statistical models and classification techniques.
+Lendora is an intelligent credit scoring platform that combines machine learning, behavioral analysis, OCR, and generative AI to assess an individual's creditworthiness. It is designed for lenders, fintechs, and microfinance institutions to streamline credit evaluation and minimize risk in real time.
 
-🚀 Features
-Loan risk prediction using ML classification models
-Threshold-based classifier for better decision-making
-Calibration script for model performance tuning
-Configurable and easy to integrate with financial applications
+🔍 Overview
+Lendora integrates predictive analytics with modern AI capabilities to:
 
-📂 Project Structure
+Predict loan default probability
 
-├── .devcontainer/        # Dev container setup for reproducibility  
-├── Loan_App.py           # Main application script  
-├── calibration_script.py # Model calibration script  
-├── threshold_classifier.py # Threshold-based classifier  
-├── requirements.txt      # Python dependencies  
-├── packages.txt          # Additional package details  
-├── README.md             # Project documentation  
+Extract applicant data using OCR from uploaded documents
 
-🛠️ Installation
-Clone this repository:
-git clone https://github.com/Iqbal-Lintang/Prediksi-Resiko-Kredit.git
+Generate credit summaries using Anthropic's Claude API
 
-Install dependencies:
-pip install -r requirements.txt
+Enforce secure access using Role-Based Access Control (RBAC)
 
-📌 Usage
-Run the main application:
+Provide a user-friendly, role-sensitive dashboard experience
 
-python Loan_App.py
-🏗️ Model Calibration
-To fine-tune the model using the calibration script:
+🧠 Features
+Credit Risk Prediction: ML-powered predictions based on behavioral and demographic data
 
-python calibration_script.py
-📜 License
-This project is open-source under the MIT License.
+Document OCR: Auto-extracts and parses financial or ID documents using Tesseract OCR
+
+Generative AI Summaries: Converts data into natural language insights using Claude (Anthropic API)
+
+RBAC (Role-Based Access Control): Secure role-layered access for admin, loan officers, and viewers
+
+Interactive Dashboards: Monitor loan applications, approval rates, and model performance
+
+🧱 Tech Stack
+FastAPI – Backend RESTful API
+
+Streamlit – Frontend dashboard and input UI
+
+Anthropic Claude API – For generative summaries
+
+Tesseract OCR – For document image parsing
+
+PostgreSQL / Google Sheets – For database + logs
+
+Scikit-learn  – For ML modeling
+
+Looker Studio  – For external BI dashboard integration
 
