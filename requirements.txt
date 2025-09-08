@@ -6,7 +6,7 @@ joblib
 matplotlib
 seaborn
 gdown
-scikit-learn
+scikit-learn==1.5.1
 anthropic
 reportlab
 pillow
